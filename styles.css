@@ -1116,7 +1116,7 @@ section {
    ========================================================= */
 
 .portfolio-lightbox {
-    position: absolute;
+    position: fixed;
 
     inset: 0;
 
