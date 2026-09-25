@@ -1312,6 +1312,690 @@ from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
         }
 
+/* =========================
+   PHOTO MANAGER
+========================= */
+
+const photoManager =
+    document.getElementById("photo-manager");
+
+const photoGrid =
+    document.getElementById("photo-grid");
+
+const currentCategoryName =
+    document.getElementById("current-category-name");
+
+const currentCategoryPath =
+    document.getElementById("current-category-path");
+
+const backToCategories =
+    document.getElementById("back-to-categories");
+
+const addPhotoButton =
+    document.getElementById("add-photo");
+
+
+let currentCategoryId = null;
+
+let currentCategory = null;
+
+
+/* =========================
+   OPEN PHOTO MANAGER
+========================= */
+
+async function openPhotoManager(category) {
+
+    currentCategoryId =
+        category.id;
+
+    currentCategory =
+        category;
+
+
+    document.querySelector(".admin-panel")
+        .hidden = true;
+
+    photoManager.hidden = false;
+
+
+    currentCategoryName.textContent =
+        category.name;
+
+    currentCategoryPath.textContent =
+        "Portfolio / " +
+        category.name;
+
+
+    await loadPhotos();
+
+}
+
+
+/* =========================
+   BACK
+========================= */
+
+backToCategories.addEventListener(
+    "click",
+    () => {
+
+        photoManager.hidden = true;
+
+        document.querySelector(".admin-panel")
+            .hidden = false;
+
+    }
+);
+
+
+/* =========================
+   LOAD PHOTOS
+========================= */
+
+async function loadPhotos() {
+
+    photoGrid.innerHTML =
+        "<p>Loading photos...</p>";
+
+
+    try {
+
+        const photoQuery =
+            query(
+                collection(
+                    db,
+                    "portfolio_photos"
+                ),
+                orderBy("sortOrder")
+            );
+
+
+        const snapshot =
+            await getDocs(photoQuery);
+
+
+        const photos = [];
+
+
+        snapshot.forEach(
+            item => {
+
+                const data =
+                    item.data();
+
+
+                if (
+                    data.categoryId ===
+                    currentCategoryId
+                ) {
+
+                    photos.push({
+
+                        id:
+                            item.id,
+
+                        ...data
+
+                    });
+
+                }
+
+            }
+        );
+
+
+        photoGrid.innerHTML = "";
+
+
+        if (photos.length === 0) {
+
+            photoGrid.innerHTML =
+                "<p>No photos yet. Click + Add Photo.</p>";
+
+            return;
+
+        }
+
+
+        photos.forEach(
+            photo => {
+
+                renderPhoto(
+                    photo
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        photoGrid.innerHTML =
+            "<p>Unable to load photos.</p>";
+
+        alert(
+            "Photo loading error:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   RENDER PHOTO
+========================= */
+
+function renderPhoto(photo) {
+
+    const card =
+        document.createElement("article");
+
+    card.className =
+        "photo-card";
+
+
+    const imageWrapper =
+        document.createElement("div");
+
+    imageWrapper.className =
+        "photo-image-wrapper";
+
+
+    const image =
+        document.createElement("img");
+
+    image.src =
+        photo.imageUrl;
+
+    image.alt =
+        photo.title || "Portfolio photo";
+
+
+    image.loading =
+        "lazy";
+
+
+    image.onerror =
+        () => {
+
+            image.style.display =
+                "none";
+
+            imageWrapper.innerHTML +=
+                "<p style='padding:20px'>Image not found</p>";
+
+        };
+
+
+    imageWrapper.appendChild(
+        image
+    );
+
+
+    if (photo.isCover) {
+
+        const badge =
+            document.createElement("div");
+
+        badge.className =
+            "cover-badge";
+
+        badge.textContent =
+            "⭐ COVER";
+
+
+        imageWrapper.appendChild(
+            badge
+        );
+
+    }
+
+
+    const info =
+        document.createElement("div");
+
+    info.className =
+        "photo-info";
+
+
+    const title =
+        document.createElement("div");
+
+    title.className =
+        "photo-title";
+
+    title.textContent =
+        photo.title ||
+        "Untitled";
+
+
+    const description =
+        document.createElement("div");
+
+    description.className =
+        "photo-description";
+
+    description.textContent =
+        photo.description ||
+        "";
+
+
+    const actions =
+        document.createElement("div");
+
+    actions.className =
+        "photo-actions";
+
+
+    if (!photo.isCover) {
+
+        const coverButton =
+            document.createElement("button");
+
+        coverButton.textContent =
+            "Set Cover";
+
+
+        coverButton.addEventListener(
+            "click",
+            () =>
+                setCover(
+                    photo.id
+                )
+        );
+
+
+        actions.appendChild(
+            coverButton
+        );
+
+    }
+
+
+    const editButton =
+        document.createElement("button");
+
+    editButton.textContent =
+        "Edit";
+
+
+    editButton.addEventListener(
+        "click",
+        () =>
+            editPhoto(
+                photo
+            )
+    );
+
+
+    const deleteButton =
+        document.createElement("button");
+
+    deleteButton.textContent =
+        "Delete";
+
+    deleteButton.className =
+        "delete-photo";
+
+
+    deleteButton.addEventListener(
+        "click",
+        () =>
+            deletePhoto(
+                photo
+            )
+    );
+
+
+    actions.appendChild(
+        editButton
+    );
+
+    actions.appendChild(
+        deleteButton
+    );
+
+
+    info.appendChild(title);
+
+    info.appendChild(description);
+
+    info.appendChild(actions);
+
+
+    card.appendChild(
+        imageWrapper
+    );
+
+    card.appendChild(
+        info
+    );
+
+
+    photoGrid.appendChild(
+        card
+    );
+
+}
+
+
+/* =========================
+   ADD PHOTO
+========================= */
+
+addPhotoButton.addEventListener(
+    "click",
+    async () => {
+
+        const title =
+            prompt(
+                "Photo title:"
+            );
+
+
+        if (!title) {
+
+            return;
+
+        }
+
+
+        const imageUrl =
+            prompt(
+                "GitHub image URL:\n\nExample:\nhttps://reycreatestudio.github.io/reycreate_studio-portfolio/Assets/portfolio/photography/photo1.jpg"
+            );
+
+
+        if (!imageUrl) {
+
+            return;
+
+        }
+
+
+        const description =
+            prompt(
+                "Photo description (optional):"
+            ) || "";
+
+
+        try {
+
+            await addDoc(
+                collection(
+                    db,
+                    "portfolio_photos"
+                ),
+                {
+
+                    categoryId:
+                        currentCategoryId,
+
+                    title:
+                        title.trim(),
+
+                    description:
+                        description.trim(),
+
+                    imageUrl:
+                        imageUrl.trim(),
+
+                    sortOrder:
+                        Date.now(),
+
+                    isCover:
+                        false,
+
+                    visible:
+                        true,
+
+                    createdAt:
+                        serverTimestamp()
+
+                }
+            );
+
+
+            await loadPhotos();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to add photo:\n\n" +
+                error.message
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================
+   SET COVER
+========================= */
+
+async function setCover(
+    photoId
+) {
+
+    try {
+
+        const photoQuery =
+            query(
+                collection(
+                    db,
+                    "portfolio_photos"
+                ),
+                orderBy("sortOrder")
+            );
+
+
+        const snapshot =
+            await getDocs(photoQuery);
+
+
+        const updates = [];
+
+
+        snapshot.forEach(
+            item => {
+
+                const data =
+                    item.data();
+
+
+                if (
+                    data.categoryId ===
+                    currentCategoryId
+                ) {
+
+                    updates.push(
+
+                        updateDoc(
+                            doc(
+                                db,
+                                "portfolio_photos",
+                                item.id
+                            ),
+                            {
+                                isCover:
+                                    item.id ===
+                                    photoId
+                            }
+                        )
+
+                    );
+
+                }
+
+            }
+        );
+
+
+        await Promise.all(
+            updates
+        );
+
+
+        await loadPhotos();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to set cover:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   EDIT PHOTO
+========================= */
+
+async function editPhoto(
+    photo
+) {
+
+    const title =
+        prompt(
+            "Photo title:",
+            photo.title || ""
+        );
+
+
+    if (!title) {
+
+        return;
+
+    }
+
+
+    const imageUrl =
+        prompt(
+            "Image URL:",
+            photo.imageUrl || ""
+        );
+
+
+    if (!imageUrl) {
+
+        return;
+
+    }
+
+
+    const description =
+        prompt(
+            "Description:",
+            photo.description || ""
+        ) || "";
+
+
+    try {
+
+        await updateDoc(
+            doc(
+                db,
+                "portfolio_photos",
+                photo.id
+            ),
+            {
+
+                title:
+                    title.trim(),
+
+                description:
+                    description.trim(),
+
+                imageUrl:
+                    imageUrl.trim()
+
+            }
+        );
+
+
+        await loadPhotos();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to edit photo:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   DELETE PHOTO
+========================= */
+
+async function deletePhoto(
+    photo
+) {
+
+    const confirmed =
+        confirm(
+            "Delete \"" +
+            photo.title +
+            "\"?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        await deleteDoc(
+            doc(
+                db,
+                "portfolio_photos",
+                photo.id
+            )
+        );
+
+
+        await loadPhotos();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to delete photo:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
     </script>
 
 </body>
