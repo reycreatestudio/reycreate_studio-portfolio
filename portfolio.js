@@ -1,19 +1,23 @@
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+/* =========================================================
+   REYCREATE STUDIO — PORTFOLIO
+   Firebase Firestore + GitHub Pages Images
+   ========================================================= */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 
 import {
   getFirestore,
   collection,
   getDocs,
   query,
+  where,
   orderBy
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 
-/* =========================================
+/* =========================================================
    FIREBASE CONFIG
-========================================= */
+   ========================================================= */
 
 const firebaseConfig = {
   apiKey: "AIzaSyBlbeyeynUXvrSE-TBVjwaEiBobHTrBlQo",
@@ -24,837 +28,1142 @@ const firebaseConfig = {
   appId: "1:41750977632:web:f202e8614f20e5d9ceb705"
 };
 
+
+/* =========================================================
+   INITIALIZE FIREBASE
+   ========================================================= */
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-/* =========================================
-   GLOBAL DATA
-========================================= */
+/* =========================================================
+   GITHUB PAGES BASE
+   ========================================================= */
+
+const GITHUB_PAGES_BASE =
+  "https://reycreatestudio.github.io/reycreate_studio-portfolio/";
+
+
+/* =========================================================
+   DOM ELEMENTS
+   ========================================================= */
+
+const portfolioGrid = document.getElementById("portfolio-grid");
+const portfolioBreadcrumb = document.getElementById("portfolio-breadcrumb");
+const portfolioBack = document.getElementById("portfolio-back");
+
+const lightbox = document.getElementById("portfolio-lightbox");
+const lightboxImage = document.getElementById("lightbox-image");
+const lightboxTitle = document.getElementById("lightbox-title");
+const lightboxDescription = document.getElementById("lightbox-description");
+
+
+/* =========================================================
+   DATA
+   ========================================================= */
 
 let categories = [];
 let photos = [];
 
+let categoryMap = new Map();
+let childrenMap = new Map();
+
 let currentCategoryId = null;
+let currentPhotos = [];
+let currentPhotoIndex = 0;
 
-let lightboxPhotos = [];
-let currentLightboxIndex = 0;
-
-let lightboxAnimating = false;
-
-
-/* =========================================
-   ELEMENTS
-========================================= */
-
-const portfolioGrid =
-  document.getElementById("portfolio-grid");
-
-const breadcrumb =
-  document.getElementById("portfolio-breadcrumb");
-
-const backButton =
-  document.getElementById("portfolio-back");
-
-const lightbox =
-  document.getElementById("portfolio-lightbox");
-
-const lightboxImage =
-  document.getElementById("lightbox-image");
-
-const lightboxTitle =
-  document.getElementById("lightbox-title");
-
-const lightboxDescription =
-  document.getElementById("lightbox-description");
+let isLightboxChanging = false;
 
 
-/* =========================================
+/* =========================================================
+   IMAGE URL HELPER
+   ========================================================= */
+
+function normalizeImageUrl(path) {
+
+  if (!path) {
+    return "";
+  }
+
+  path = String(path).trim();
+
+  if (!path) {
+    return "";
+  }
+
+  // Already a complete URL
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+
+  // Remove leading slash
+  path = path.replace(/^\/+/, "");
+
+  // GitHub Pages URL
+  return GITHUB_PAGES_BASE + path;
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHTML(value) {
+
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+/* =========================================================
+   SORT HELPER
+   ========================================================= */
+
+function sortByOrder(a, b) {
+
+  const orderA = Number(a.sortOrder ?? 0);
+  const orderB = Number(b.sortOrder ?? 0);
+
+  if (orderA !== orderB) {
+    return orderA - orderB;
+  }
+
+  return String(a.name || a.title || "")
+    .localeCompare(
+      String(b.name || b.title || ""),
+      undefined,
+      { numeric: true, sensitivity: "base" }
+    );
+}
+
+
+/* =========================================================
    LOAD PORTFOLIO
-========================================= */
+   ========================================================= */
 
 async function loadPortfolio() {
 
   try {
 
-    portfolioGrid.innerHTML = `
-      <div class="portfolio-loading">
-        Loading portfolio...
-      </div>
-    `;
+    showLoading();
 
+    /* -------------------------------------------------------
+       LOAD CATEGORIES
+       ------------------------------------------------------- */
 
-    /* ---------- CATEGORIES ---------- */
-
-    const categorySnapshot = await getDocs(
-      query(
-        collection(db, "portfolio_categories"),
-        orderBy("sortOrder")
-      )
+    const categoryQuery = query(
+      collection(db, "portfolio_categories"),
+      where("visible", "==", true),
+      orderBy("sortOrder", "asc")
     );
 
+    const categorySnapshot = await getDocs(categoryQuery);
 
-    categories = categorySnapshot.docs
-      .map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
-      .filter(
-        category =>
-          category.visible !== false
-      );
+    categories = categorySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
 
 
-    /* ---------- PHOTOS ---------- */
+    /* -------------------------------------------------------
+       LOAD PHOTOS
+       ------------------------------------------------------- */
 
-    const photoSnapshot = await getDocs(
-      query(
-        collection(db, "portfolio_photos"),
-        orderBy("sortOrder")
-      )
+    const photoQuery = query(
+      collection(db, "portfolio_photos"),
+      where("visible", "==", true),
+      orderBy("sortOrder", "asc")
     );
 
+    const photoSnapshot = await getDocs(photoQuery);
 
-    photos = photoSnapshot.docs
-      .map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
-      .filter(
-        photo =>
-          photo.visible !== false
-      );
+    photos = photoSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
 
 
-    console.log(
-      "Portfolio categories:",
-      categories
-    );
+    /* -------------------------------------------------------
+       PREPARE MAPS
+       ------------------------------------------------------- */
 
-    console.log(
-      "Portfolio photos:",
-      photos
-    );
+    buildCategoryMaps();
 
 
-    renderCurrentView();
+    /* -------------------------------------------------------
+       SHOW ROOT CATEGORIES
+       ------------------------------------------------------- */
 
+    currentCategoryId = null;
+
+    renderRootCategories();
 
   } catch (error) {
 
-    console.error(
-      "Portfolio loading error:",
-      error
+    console.error("Portfolio loading error:", error);
+
+    showError(
+      "Unable to load portfolio. Please refresh the page."
     );
-
-
-    portfolioGrid.innerHTML = `
-      <div class="portfolio-error">
-        Unable to load portfolio.
-      </div>
-    `;
-
   }
-
 }
 
 
-/* =========================================
-   CATEGORY HELPERS
-========================================= */
+/* =========================================================
+   BUILD CATEGORY MAPS
+   ========================================================= */
 
-function getChildren(parentId) {
+function buildCategoryMaps() {
 
-  return categories
-    .filter(category =>
-      (category.parentId || null) === parentId
-    )
-    .sort(
-      (a, b) =>
-        (a.sortOrder || 0) -
-        (b.sortOrder || 0)
-    );
+  categoryMap = new Map();
+  childrenMap = new Map();
 
+  categories.forEach(category => {
+
+    categoryMap.set(category.id, category);
+
+    const parentId =
+      category.parentId ||
+      null;
+
+    if (!childrenMap.has(parentId)) {
+      childrenMap.set(parentId, []);
+    }
+
+    childrenMap.get(parentId).push(category);
+
+  });
+
+
+  /* -------------------------------------------------------
+     SORT CHILDREN
+     ------------------------------------------------------- */
+
+  childrenMap.forEach(list => {
+    list.sort(sortByOrder);
+  });
 }
 
+
+/* =========================================================
+   GET CATEGORY CHILDREN
+   ========================================================= */
+
+function getChildren(categoryId) {
+
+  return childrenMap.get(categoryId) || [];
+}
+
+
+/* =========================================================
+   GET CATEGORY PHOTOS
+   ========================================================= */
 
 function getCategoryPhotos(categoryId) {
 
   return photos
-    .filter(photo =>
-      photo.categoryId === categoryId
-    )
-    .sort(
-      (a, b) =>
-        (a.sortOrder || 0) -
-        (b.sortOrder || 0)
-    );
-
+    .filter(photo => photo.categoryId === categoryId)
+    .sort(sortByOrder);
 }
 
 
-/* =========================================
-   FIND FIRST PHOTO IN CATEGORY TREE
-========================================= */
+/* =========================================================
+   GET CATEGORY COVER
+   ========================================================= */
 
-function getFirstPhotoInCategoryTree(categoryId) {
+function getCategoryCover(categoryId) {
 
-  /* Direct photos first */
+  const categoryPhotos = getCategoryPhotos(categoryId);
 
-  const directPhotos =
-    getCategoryPhotos(categoryId);
-
-
-  if (directPhotos.length) {
-
-    return (
-      directPhotos.find(
-        photo =>
-          photo.isCover === true
-      ) ||
-      directPhotos[0]
-    );
-
+  if (!categoryPhotos.length) {
+    return "";
   }
 
+  // Prefer explicitly selected cover
+  const cover = categoryPhotos.find(photo => photo.isCover === true);
 
-  /* Search child categories */
-
-  const children =
-    getChildren(categoryId);
-
-
-  for (const child of children) {
-
-    const childPhoto =
-      getFirstPhotoInCategoryTree(
-        child.id
-      );
-
-
-    if (childPhoto) {
-      return childPhoto;
-    }
-
+  if (cover) {
+    return getPhotoImageUrl(cover);
   }
 
-
-  return null;
-
+  // Otherwise use first photo
+  return getPhotoImageUrl(categoryPhotos[0]);
 }
 
 
-/* =========================================
-   CATEGORY COVER
-========================================= */
+/* =========================================================
+   GET PHOTO IMAGE URL
+   ========================================================= */
 
-function getCoverPhoto(categoryId) {
+function getPhotoImageUrl(photo) {
 
-  return getFirstPhotoInCategoryTree(
-    categoryId
-  );
+  /*
+   Priority:
 
+   1. githubPath
+   2. imageUrl
+
+   githubPath is preferred because your current
+   system stores the actual image in GitHub.
+  */
+
+  if (photo.githubPath) {
+    return normalizeImageUrl(photo.githubPath);
+  }
+
+  if (photo.imageUrl) {
+    return normalizeImageUrl(photo.imageUrl);
+  }
+
+  return "";
 }
 
 
-/* =========================================
-   CURRENT VIEW
-========================================= */
+/* =========================================================
+   SHOW LOADING
+   ========================================================= */
 
-function renderCurrentView() {
+function showLoading() {
 
-  portfolioGrid.innerHTML = "";
-
-
-  if (!currentCategoryId) {
-
-    renderRootCategories();
-
-    backButton.hidden = true;
-
-    updateBreadcrumb();
-
+  if (!portfolioGrid) {
     return;
-
   }
 
-
-  renderCategoryContents();
-
-  backButton.hidden = false;
-
-  updateBreadcrumb();
-
+  portfolioGrid.innerHTML = `
+    <div class="portfolio-loading">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  `;
 }
 
 
-/* =========================================
-   ROOT CATEGORIES
-========================================= */
+/* =========================================================
+   SHOW ERROR
+   ========================================================= */
+
+function showError(message) {
+
+  if (!portfolioGrid) {
+    return;
+  }
+
+  portfolioGrid.innerHTML = `
+    <div class="portfolio-empty">
+      <p>${escapeHTML(message)}</p>
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   SHOW EMPTY
+   ========================================================= */
+
+function showEmpty(message = "No photos available.") {
+
+  if (!portfolioGrid) {
+    return;
+  }
+
+  portfolioGrid.innerHTML = `
+    <div class="portfolio-empty">
+      <p>${escapeHTML(message)}</p>
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   RENDER ROOT CATEGORIES
+   ========================================================= */
 
 function renderRootCategories() {
+
+  currentCategoryId = null;
+
+  updateBreadcrumb();
+  updateBackButton();
 
   const rootCategories =
     getChildren(null);
 
-
   if (!rootCategories.length) {
 
-    portfolioGrid.innerHTML = `
-      <div class="portfolio-empty">
-        No portfolio categories available.
-      </div>
-    `;
+    /*
+     If there are no categories, check whether
+     there are photos directly available.
+    */
+
+    if (photos.length) {
+      renderPhotos(photos, "Portfolio");
+    } else {
+      showEmpty("No portfolio categories available.");
+    }
 
     return;
-
   }
 
 
-  rootCategories.forEach(
-    category => {
+  portfolioGrid.classList.remove("portfolio-photo-view");
 
-      portfolioGrid.appendChild(
-        createCategoryCard(category)
-      );
+  portfolioGrid.classList.add("portfolio-category-view");
 
-    }
-  );
 
+  portfolioGrid.innerHTML = rootCategories
+    .map(category => createCategoryCard(category))
+    .join("");
+
+  attachCategoryEvents();
+
+  animatePortfolioView();
 }
 
 
-/* =========================================
-   CATEGORY CONTENTS
-========================================= */
-
-function renderCategoryContents() {
-
-  const children =
-    getChildren(currentCategoryId);
-
-
-  const categoryPhotos =
-    getCategoryPhotos(currentCategoryId);
-
-
-  if (
-    !children.length &&
-    !categoryPhotos.length
-  ) {
-
-    portfolioGrid.innerHTML = `
-      <div class="portfolio-empty">
-        This category is empty.
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  /* ---------- SUBCATEGORIES ---------- */
-
-  children.forEach(
-    category => {
-
-      portfolioGrid.appendChild(
-        createCategoryCard(category)
-      );
-
-    }
-  );
-
-
-  /* ---------- PHOTOS ---------- */
-
-  categoryPhotos.forEach(
-    (photo, index) => {
-
-      portfolioGrid.appendChild(
-        createPhotoCard(
-          photo,
-          index
-        )
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================
-   CATEGORY CARD
-========================================= */
+/* =========================================================
+   CREATE CATEGORY CARD
+   ========================================================= */
 
 function createCategoryCard(category) {
 
-  const card =
-    document.createElement("button");
+  const coverUrl =
+    getCategoryCover(category.id);
 
-  card.type = "button";
+  const childCategories =
+    getChildren(category.id);
 
-  card.className =
-    "portfolio-item portfolio-category";
+  const categoryPhotos =
+    getCategoryPhotos(category.id);
 
+  const totalChildren =
+    childCategories.length;
 
-  card.dataset.categoryId =
-    category.id;
-
-
-  /* ---------- COVER ---------- */
-
-  const cover =
-    getCoverPhoto(category.id);
+  const totalPhotos =
+    categoryPhotos.length;
 
 
-  if (cover && cover.imageUrl) {
+  let countText = "";
 
-    const image =
-      document.createElement("img");
+  if (totalChildren > 0 && totalPhotos > 0) {
 
-    image.src =
-      cover.imageUrl;
+    countText =
+      `${totalChildren} ${totalChildren === 1 ? "category" : "categories"} · ` +
+      `${totalPhotos} ${totalPhotos === 1 ? "photo" : "photos"}`;
 
-    image.alt =
-      category.name || "Portfolio category";
+  } else if (totalChildren > 0) {
 
-    image.loading =
-      "lazy";
+    countText =
+      `${totalChildren} ${totalChildren === 1 ? "category" : "categories"}`;
 
-    image.onerror = () => {
+  } else if (totalPhotos > 0) {
 
-      image.style.display =
-        "none";
-
-    };
-
-    card.appendChild(image);
-
-  } else {
-
-    const placeholder =
-      document.createElement("div");
-
-    placeholder.className =
-      "portfolio-placeholder";
-
-    placeholder.textContent =
-      "No Cover Image";
-
-    card.appendChild(
-      placeholder
-    );
+    countText =
+      `${totalPhotos} ${totalPhotos === 1 ? "photo" : "photos"}`;
 
   }
 
 
-  /* ---------- OVERLAY ---------- */
+  return `
+    <article
+      class="portfolio-category-card"
+      data-category-id="${escapeHTML(category.id)}"
+      tabindex="0"
+      role="button"
+      aria-label="Open ${escapeHTML(category.name || "category")}"
+    >
 
-  const overlay =
-    document.createElement("div");
+      <div class="portfolio-category-image">
 
-  overlay.className =
-    "portfolio-overlay";
+        ${
+          coverUrl
+            ? `
+              <img
+                src="${escapeHTML(coverUrl)}"
+                alt="${escapeHTML(category.name || "Portfolio category")}"
+                loading="lazy"
+                decoding="async"
+                onerror="this.closest('.portfolio-category-image').classList.add('image-error'); this.style.display='none';"
+              >
+            `
+            : `
+              <div class="portfolio-image-placeholder">
+                <span>No Image</span>
+              </div>
+            `
+        }
 
+        <div class="portfolio-category-overlay"></div>
 
-  const title =
-    document.createElement("h3");
+        <div class="portfolio-category-info">
 
-  title.textContent =
-    category.name || "Untitled";
+          <h2>
+            ${escapeHTML(category.name || "Untitled")}
+          </h2>
 
+          ${
+            category.description
+              ? `
+                <p>
+                  ${escapeHTML(category.description)}
+                </p>
+              `
+              : ""
+          }
 
-  overlay.appendChild(
-    title
-  );
+          ${
+            countText
+              ? `
+                <span class="portfolio-category-count">
+                  ${escapeHTML(countText)}
+                </span>
+              `
+              : ""
+          }
 
+        </div>
 
-  if (category.description) {
+      </div>
 
-    const description =
-      document.createElement("p");
-
-    description.textContent =
-      category.description;
-
-    overlay.appendChild(
-      description
-    );
-
-  }
-
-
-  card.appendChild(
-    overlay
-  );
-
-
-  /* ---------- CLICK ---------- */
-
-  card.addEventListener(
-    "click",
-    () => {
-
-      currentCategoryId =
-        category.id;
-
-      renderCurrentView();
-
-      document
-        .getElementById("portfolio")
-        ?.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-
-    }
-  );
-
-
-  return card;
-
+    </article>
+  `;
 }
 
 
-/* =========================================
-   PHOTO CARD
-========================================= */
+/* =========================================================
+   ATTACH CATEGORY EVENTS
+   ========================================================= */
 
-function createPhotoCard(
-  photo,
-  index
-) {
+function attachCategoryEvents() {
 
-  const card =
-    document.createElement("button");
-
-  card.type = "button";
-
-  card.className =
-    "portfolio-item portfolio-photo";
-
-
-  card.dataset.photoId =
-    photo.id;
-
-
-  /* ---------- IMAGE ---------- */
-
-  const image =
-    document.createElement("img");
-
-  image.src =
-    photo.imageUrl;
-
-  image.alt =
-    photo.title || "Portfolio photo";
-
-  image.loading =
-    "lazy";
-
-
-  image.onerror = () => {
-
-    image.style.opacity =
-      "0.3";
-
-  };
-
-
-  card.appendChild(
-    image
-  );
-
-
-  /* ---------- OVERLAY ---------- */
-
-  const overlay =
-    document.createElement("div");
-
-  overlay.className =
-    "portfolio-overlay";
-
-
-  const title =
-    document.createElement("h3");
-
-  title.textContent =
-    photo.title || "Untitled";
-
-
-  overlay.appendChild(
-    title
-  );
-
-
-  if (photo.description) {
-
-    const description =
-      document.createElement("p");
-
-    description.textContent =
-      photo.description;
-
-    overlay.appendChild(
-      description
+  const cards =
+    portfolioGrid.querySelectorAll(
+      ".portfolio-category-card"
     );
 
-  }
+  cards.forEach(card => {
+
+    const categoryId =
+      card.dataset.categoryId;
 
 
-  card.appendChild(
-    overlay
-  );
+    card.addEventListener("click", () => {
+
+      openCategory(categoryId);
+
+    });
 
 
-  /* ---------- CLICK ---------- */
+    card.addEventListener("keydown", event => {
 
-  card.addEventListener(
-    "click",
-    () => {
+      if (
+        event.key === "Enter" ||
+        event.key === " "
+      ) {
 
-      const categoryPhotos =
-        getCategoryPhotos(
-          currentCategoryId
-        );
+        event.preventDefault();
 
+        openCategory(categoryId);
+      }
 
-      openLightbox(
-        categoryPhotos,
-        index
-      );
+    });
 
-    }
-  );
-
-
-  return card;
-
+  });
 }
 
 
-/* =========================================
-   BREADCRUMB
-========================================= */
+/* =========================================================
+   OPEN CATEGORY
+   ========================================================= */
+
+function openCategory(categoryId) {
+
+  const category =
+    categoryMap.get(categoryId);
+
+  if (!category) {
+    return;
+  }
+
+  currentCategoryId =
+    categoryId;
+
+  renderCategory(categoryId);
+}
+
+
+/* =========================================================
+   RENDER CATEGORY
+   ========================================================= */
+
+function renderCategory(categoryId) {
+
+  const category =
+    categoryMap.get(categoryId);
+
+  if (!category) {
+    return;
+  }
+
+
+  updateBreadcrumb();
+  updateBackButton();
+
+
+  const childCategories =
+    getChildren(categoryId);
+
+  const categoryPhotos =
+    getCategoryPhotos(categoryId);
+
+
+  portfolioGrid.classList.remove(
+    "portfolio-category-view"
+  );
+
+  portfolioGrid.classList.add(
+    "portfolio-photo-view"
+  );
+
+
+  let html = "";
+
+
+  /* -------------------------------------------------------
+     SUBCATEGORIES
+     ------------------------------------------------------- */
+
+  if (childCategories.length) {
+
+    html += `
+      <div class="portfolio-subcategories">
+        ${childCategories
+          .map(child => createCategoryCard(child))
+          .join("")}
+      </div>
+    `;
+  }
+
+
+  /* -------------------------------------------------------
+     PHOTOS
+     ------------------------------------------------------- */
+
+  if (categoryPhotos.length) {
+
+    html += `
+      <div class="portfolio-photo-grid">
+        ${categoryPhotos
+          .map((photo, index) =>
+            createPhotoCard(photo, index)
+          )
+          .join("")}
+      </div>
+    `;
+  }
+
+
+  /* -------------------------------------------------------
+     EMPTY
+     ------------------------------------------------------- */
+
+  if (!html) {
+
+    html = `
+      <div class="portfolio-empty">
+        <p>No photos or subcategories available.</p>
+      </div>
+    `;
+  }
+
+
+  portfolioGrid.innerHTML = html;
+
+
+  attachCategoryEvents();
+  attachPhotoEvents();
+
+  animatePortfolioView();
+}
+
+
+/* =========================================================
+   CREATE PHOTO CARD
+   ========================================================= */
+
+function createPhotoCard(photo, index) {
+
+  const imageUrl =
+    getPhotoImageUrl(photo);
+
+  const title =
+    photo.title ||
+    "Untitled";
+
+  const description =
+    photo.description ||
+    "";
+
+
+  return `
+    <article
+      class="portfolio-photo-card"
+      data-photo-index="${index}"
+      data-photo-id="${escapeHTML(photo.id)}"
+      tabindex="0"
+      role="button"
+      aria-label="View ${escapeHTML(title)}"
+    >
+
+      <div class="portfolio-photo-image">
+
+        ${
+          imageUrl
+            ? `
+              <img
+                src="${escapeHTML(imageUrl)}"
+                alt="${escapeHTML(title)}"
+                loading="lazy"
+                decoding="async"
+                draggable="false"
+                onerror="this.closest('.portfolio-photo-image').classList.add('image-error'); this.style.display='none';"
+              >
+            `
+            : `
+              <div class="portfolio-image-placeholder">
+                <span>No Image</span>
+              </div>
+            `
+        }
+
+      </div>
+
+      ${
+        title || description
+          ? `
+            <div class="portfolio-photo-info">
+
+              ${
+                title
+                  ? `
+                    <h3>
+                      ${escapeHTML(title)}
+                    </h3>
+                  `
+                  : ""
+              }
+
+              ${
+                description
+                  ? `
+                    <p>
+                      ${escapeHTML(description)}
+                    </p>
+                  `
+                  : ""
+              }
+
+            </div>
+          `
+          : ""
+      }
+
+    </article>
+  `;
+}
+
+
+/* =========================================================
+   ATTACH PHOTO EVENTS
+   ========================================================= */
+
+function attachPhotoEvents() {
+
+  const cards =
+    portfolioGrid.querySelectorAll(
+      ".portfolio-photo-card"
+    );
+
+
+  currentPhotos =
+    currentCategoryId
+      ? getCategoryPhotos(currentCategoryId)
+      : photos;
+
+
+  cards.forEach(card => {
+
+    const index =
+      Number(card.dataset.photoIndex);
+
+
+    card.addEventListener("click", () => {
+
+      openLightbox(index);
+
+    });
+
+
+    card.addEventListener("keydown", event => {
+
+      if (
+        event.key === "Enter" ||
+        event.key === " "
+      ) {
+
+        event.preventDefault();
+
+        openLightbox(index);
+      }
+
+    });
+
+  });
+}
+
+
+/* =========================================================
+   UPDATE BREADCRUMB
+   ========================================================= */
 
 function updateBreadcrumb() {
 
-  breadcrumb.innerHTML = "";
+  if (!portfolioBreadcrumb) {
+    return;
+  }
 
 
-  const home =
-    document.createElement("button");
-
-  home.type = "button";
-
-  home.textContent =
-    "Portfolio";
+  const parts = [];
 
 
-  home.addEventListener(
-    "click",
-    () => {
+  /* -------------------------------------------------------
+     HOME
+     ------------------------------------------------------- */
 
-      currentCategoryId =
-        null;
+  parts.push(`
+    <button
+      type="button"
+      class="portfolio-breadcrumb-item ${
+        currentCategoryId === null
+          ? "active"
+          : ""
+      }"
+      data-breadcrumb-root
+    >
+      Portfolio
+    </button>
+  `);
 
-      renderCurrentView();
 
+  /* -------------------------------------------------------
+     CATEGORY PATH
+     ------------------------------------------------------- */
+
+  if (currentCategoryId) {
+
+    const path =
+      getCategoryPath(currentCategoryId);
+
+
+    path.forEach((category, index) => {
+
+      parts.push(`
+        <span class="portfolio-breadcrumb-separator">
+          /
+        </span>
+
+        <button
+          type="button"
+          class="portfolio-breadcrumb-item ${
+            index === path.length - 1
+              ? "active"
+              : ""
+          }"
+          data-breadcrumb-id="${escapeHTML(category.id)}"
+        >
+          ${escapeHTML(category.name)}
+        </button>
+      `);
+
+    });
+  }
+
+
+  portfolioBreadcrumb.innerHTML =
+    parts.join("");
+
+
+  /* -------------------------------------------------------
+     ROOT EVENT
+     ------------------------------------------------------- */
+
+  const rootButton =
+    portfolioBreadcrumb.querySelector(
+      "[data-breadcrumb-root]"
+    );
+
+  if (rootButton) {
+
+    rootButton.addEventListener(
+      "click",
+      () => {
+
+        if (currentCategoryId !== null) {
+          navigateToRoot();
+        }
+
+      }
+    );
+  }
+
+
+  /* -------------------------------------------------------
+     CATEGORY EVENTS
+     ------------------------------------------------------- */
+
+  const categoryButtons =
+    portfolioBreadcrumb.querySelectorAll(
+      "[data-breadcrumb-id]"
+    );
+
+
+  categoryButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      const categoryId =
+        button.dataset.breadcrumbId;
+
+      if (
+        categoryId &&
+        categoryId !== currentCategoryId
+      ) {
+
+        navigateToCategory(
+          categoryId
+        );
+      }
+
+    });
+
+  });
+}
+
+
+/* =========================================================
+   GET CATEGORY PATH
+   ========================================================= */
+
+function getCategoryPath(categoryId) {
+
+  const path = [];
+
+  let current =
+    categoryMap.get(categoryId);
+
+
+  while (current) {
+
+    path.unshift(current);
+
+    const parentId =
+      current.parentId || null;
+
+    if (!parentId) {
+      break;
     }
-  );
+
+    current =
+      categoryMap.get(parentId);
+  }
 
 
-  breadcrumb.appendChild(
-    home
-  );
+  return path;
+}
 
+
+/* =========================================================
+   UPDATE BACK BUTTON
+   ========================================================= */
+
+function updateBackButton() {
+
+  if (!portfolioBack) {
+    return;
+  }
+
+  portfolioBack.hidden =
+    currentCategoryId === null;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+function goBack() {
 
   if (!currentCategoryId) {
     return;
   }
 
 
-  const chain = [];
+  const current =
+    categoryMap.get(currentCategoryId);
 
 
-  let current =
-    categories.find(
-      category =>
-        category.id ===
-        currentCategoryId
-    );
-
-
-  /* Safety against broken parent relationships */
-
-  const visited = new Set();
-
-
-  while (
-    current &&
-    !visited.has(current.id)
-  ) {
-
-    visited.add(current.id);
-
-    chain.unshift(
-      current
-    );
-
-
-    current =
-      categories.find(
-        category =>
-          category.id ===
-          current.parentId
-      );
-
-  }
-
-
-  chain.forEach(
-    category => {
-
-      const separator =
-        document.createElement("span");
-
-      separator.textContent =
-        " / ";
-
-
-      breadcrumb.appendChild(
-        separator
-      );
-
-
-      const button =
-        document.createElement("button");
-
-      button.type = "button";
-
-      button.textContent =
-        category.name || "Untitled";
-
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          currentCategoryId =
-            category.id;
-
-          renderCurrentView();
-
-        }
-      );
-
-
-      breadcrumb.appendChild(
-        button
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================
-   BACK BUTTON
-========================================= */
-
-backButton.addEventListener(
-  "click",
-  () => {
-
-    if (!currentCategoryId) {
-      return;
-    }
-
-
-    const current =
-      categories.find(
-        category =>
-          category.id ===
-          currentCategoryId
-      );
-
-
-    currentCategoryId =
-      current?.parentId ||
-      null;
-
-
-    renderCurrentView();
-
-  }
-);
-
-
-/* =========================================
-   LIGHTBOX
-========================================= */
-
-function openLightbox(
-  items,
-  index
-) {
-
-  if (!items || !items.length) {
+  if (!current) {
+    navigateToRoot();
     return;
   }
 
 
-  lightboxPhotos =
-    items;
+  const parentId =
+    current.parentId || null;
 
 
-  currentLightboxIndex =
+  if (parentId) {
+
+    navigateToCategory(parentId);
+
+  } else {
+
+    navigateToRoot();
+
+  }
+}
+
+
+/* =========================================================
+   NAVIGATE ROOT
+   ========================================================= */
+
+function navigateToRoot() {
+
+  currentCategoryId = null;
+
+  renderRootCategories();
+
+  scrollToPortfolio();
+}
+
+
+/* =========================================================
+   NAVIGATE CATEGORY
+   ========================================================= */
+
+function navigateToCategory(categoryId) {
+
+  currentCategoryId =
+    categoryId;
+
+  renderCategory(categoryId);
+
+  scrollToPortfolio();
+}
+
+
+/* =========================================================
+   SCROLL TO PORTFOLIO
+   ========================================================= */
+
+function scrollToPortfolio() {
+
+  const section =
+    document.getElementById("portfolio");
+
+  if (!section) {
+    return;
+  }
+
+
+  const rect =
+    section.getBoundingClientRect();
+
+
+  /*
+   Only scroll if portfolio is not already
+   comfortably visible.
+  */
+
+  if (
+    rect.top < 0 ||
+    rect.top > window.innerHeight * 0.35
+  ) {
+
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  }
+}
+
+
+/* =========================================================
+   ANIMATE PORTFOLIO VIEW
+   ========================================================= */
+
+function animatePortfolioView() {
+
+  if (!portfolioGrid) {
+    return;
+  }
+
+
+  portfolioGrid.classList.remove(
+    "portfolio-view-enter"
+  );
+
+
+  /*
+   Force browser reflow so the animation
+   restarts every time.
+  */
+
+  void portfolioGrid.offsetWidth;
+
+
+  portfolioGrid.classList.add(
+    "portfolio-view-enter"
+  );
+}
+
+
+/* =========================================================
+   LIGHTBOX — OPEN
+   ========================================================= */
+
+function openLightbox(index) {
+
+  if (!currentPhotos.length) {
+    return;
+  }
+
+
+  if (
+    index < 0 ||
+    index >= currentPhotos.length
+  ) {
+    return;
+  }
+
+
+  currentPhotoIndex =
     index;
 
 
-  lightboxAnimating =
-    false;
-
-
-  updateLightbox(false);
-
-
-  lightbox.classList.add(
-    "active"
-  );
-
-
-  document.body.style.overflow =
-    "hidden";
-
-}
-
-
-/* =========================================
-   UPDATE LIGHTBOX
-========================================= */
-
-function updateLightbox(
-  animate = true,
-  direction = 1
-) {
-
-  if (
-    !lightboxPhotos.length ||
-    !lightboxImage
-  ) {
-    return;
-  }
-
-
   const photo =
-    lightboxPhotos[
-      currentLightboxIndex
-    ];
+    currentPhotos[currentPhotoIndex];
 
 
   if (!photo) {
@@ -862,167 +1171,283 @@ function updateLightbox(
   }
 
 
+  const imageUrl =
+    getPhotoImageUrl(photo);
+
+
+  if (!imageUrl) {
+    return;
+  }
+
+
+  isLightboxChanging = false;
+
+
+  updateLightboxContent(
+    photo,
+    imageUrl,
+    false
+  );
+
+
+  if (!lightbox) {
+    return;
+  }
+
+
+  lightbox.classList.add("active");
+
+  document.body.classList.add(
+    "lightbox-open"
+  );
+
+
+  /*
+   Prevent background page scrolling.
+  */
+
+  document.body.style.overflow =
+    "hidden";
+}
+
+
+/* =========================================================
+   UPDATE LIGHTBOX CONTENT
+   ========================================================= */
+
+function updateLightboxContent(
+  photo,
+  imageUrl,
+  animate = true,
+  direction = 1
+) {
+
+  if (!lightboxImage) {
+    return;
+  }
+
+
   if (!animate) {
 
-    lightboxImage.className = "";
+    lightboxImage.classList.remove(
+      "slide-out-left",
+      "slide-out-right",
+      "slide-in-left",
+      "slide-in-right"
+    );
+
 
     lightboxImage.src =
-      photo.imageUrl;
+      imageUrl;
+
 
     lightboxImage.alt =
-      photo.title || "Portfolio photo";
-
-    lightboxTitle.textContent =
-      photo.title || "";
-
-    lightboxDescription.textContent =
-      photo.description || "";
-
-    return;
-
-  }
+      photo.title ||
+      "Portfolio image";
 
 
-  if (lightboxAnimating) {
+    updateLightboxText(photo);
+
     return;
   }
 
 
-  lightboxAnimating =
-    true;
+  /*
+   Remove old animation classes.
+  */
+
+  lightboxImage.classList.remove(
+    "slide-out-left",
+    "slide-out-right",
+    "slide-in-left",
+    "slide-in-right"
+  );
 
 
-  const outgoingClass =
+  /*
+   Force animation restart.
+  */
+
+  void lightboxImage.offsetWidth;
+
+
+  /*
+   Slide current image OUT.
+  */
+
+  const outClass =
     direction > 0
       ? "slide-out-left"
       : "slide-out-right";
 
 
-  const incomingClass =
-    direction > 0
-      ? "slide-in-right"
-      : "slide-in-left";
-
-
-  lightboxImage.classList.remove(
-    "slide-in-right",
-    "slide-in-left",
-    "slide-out-left",
-    "slide-out-right"
-  );
-
-
-  /* ---------- OUT ---------- */
-
   lightboxImage.classList.add(
-    outgoingClass
+    outClass
   );
 
 
-  setTimeout(
-    () => {
+  setTimeout(() => {
 
-      lightboxImage.src =
-        photo.imageUrl;
+    lightboxImage.classList.remove(
+      outClass
+    );
 
-      lightboxImage.alt =
-        photo.title || "Portfolio photo";
 
-      lightboxTitle.textContent =
-        photo.title || "";
+    /*
+     Set next image.
+    */
 
-      lightboxDescription.textContent =
-        photo.description || "";
+    lightboxImage.src =
+      imageUrl;
 
+
+    lightboxImage.alt =
+      photo.title ||
+      "Portfolio image";
+
+
+    updateLightboxText(photo);
+
+
+    /*
+     Slide new image IN.
+    */
+
+    const inClass =
+      direction > 0
+        ? "slide-in-right"
+        : "slide-in-left";
+
+
+    lightboxImage.classList.add(
+      inClass
+    );
+
+
+    setTimeout(() => {
 
       lightboxImage.classList.remove(
-        outgoingClass
+        inClass
       );
 
+      isLightboxChanging = false;
 
-      void lightboxImage.offsetWidth;
-
-
-      /* ---------- IN ---------- */
-
-      lightboxImage.classList.add(
-        incomingClass
-      );
+    }, 380);
 
 
-      setTimeout(
-        () => {
-
-          lightboxImage.classList.remove(
-            incomingClass
-          );
-
-          lightboxAnimating =
-            false;
-
-        },
-        350
-      );
-
-    },
-    180
-  );
-
+  }, 190);
 }
 
 
-/* =========================================
-   NEXT / PREVIOUS
-========================================= */
+/* =========================================================
+   UPDATE LIGHTBOX TEXT
+   ========================================================= */
 
-function changeLightboxImage(
-  direction
-) {
+function updateLightboxText(photo) {
+
+  if (lightboxTitle) {
+
+    lightboxTitle.textContent =
+      photo.title || "";
+
+  }
+
+
+  if (lightboxDescription) {
+
+    lightboxDescription.textContent =
+      photo.description || "";
+
+  }
+}
+
+
+/* =========================================================
+   CHANGE LIGHTBOX IMAGE
+   ========================================================= */
+
+function changeLightboxImage(direction) {
 
   if (
-    !lightboxPhotos.length ||
-    lightboxAnimating
+    !lightbox ||
+    !lightbox.classList.contains("active")
   ) {
     return;
   }
 
 
-  currentLightboxIndex +=
-    direction;
-
-
   if (
-    currentLightboxIndex >=
-    lightboxPhotos.length
+    isLightboxChanging ||
+    !currentPhotos.length
   ) {
-
-    currentLightboxIndex =
-      0;
-
+    return;
   }
 
 
   if (
-    currentLightboxIndex < 0
+    direction !== 1 &&
+    direction !== -1
   ) {
-
-    currentLightboxIndex =
-      lightboxPhotos.length - 1;
-
+    return;
   }
 
 
-  updateLightbox(
+  isLightboxChanging = true;
+
+
+  /*
+   Wrap around.
+  */
+
+  let newIndex =
+    currentPhotoIndex + direction;
+
+
+  if (newIndex >= currentPhotos.length) {
+    newIndex = 0;
+  }
+
+
+  if (newIndex < 0) {
+    newIndex =
+      currentPhotos.length - 1;
+  }
+
+
+  currentPhotoIndex =
+    newIndex;
+
+
+  const photo =
+    currentPhotos[currentPhotoIndex];
+
+
+  const imageUrl =
+    getPhotoImageUrl(photo);
+
+
+  if (!imageUrl) {
+
+    isLightboxChanging = false;
+
+    changeLightboxImage(direction);
+
+    return;
+  }
+
+
+  updateLightboxContent(
+    photo,
+    imageUrl,
     true,
     direction
   );
-
 }
 
 
-/* =========================================
+/* =========================================================
    CLOSE LIGHTBOX
-========================================= */
+   ========================================================= */
 
 function closeLightbox() {
 
@@ -1036,19 +1461,34 @@ function closeLightbox() {
   );
 
 
+  document.body.classList.remove(
+    "lightbox-open"
+  );
+
+
   document.body.style.overflow =
     "";
 
 
-  lightboxAnimating =
-    false;
+  isLightboxChanging = false;
 
+
+  if (lightboxImage) {
+
+    lightboxImage.classList.remove(
+      "slide-out-left",
+      "slide-out-right",
+      "slide-in-left",
+      "slide-in-right"
+    );
+
+  }
 }
 
 
-/* =========================================
+/* =========================================================
    KEYBOARD CONTROLS
-========================================= */
+   ========================================================= */
 
 document.addEventListener(
   "keydown",
@@ -1062,35 +1502,31 @@ document.addEventListener(
     }
 
 
-    if (
-      event.key === "Escape"
-    ) {
+    switch (event.key) {
 
-      closeLightbox();
+      case "Escape":
 
-      return;
+        closeLightbox();
 
-    }
+        break;
 
 
-    if (
-      event.key === "ArrowRight"
-    ) {
+      case "ArrowRight":
 
-      changeLightboxImage(1);
+        event.preventDefault();
 
-      return;
+        changeLightboxImage(1);
 
-    }
+        break;
 
 
-    if (
-      event.key === "ArrowLeft"
-    ) {
+      case "ArrowLeft":
 
-      changeLightboxImage(-1);
+        event.preventDefault();
 
-      return;
+        changeLightboxImage(-1);
+
+        break;
 
     }
 
@@ -1098,9 +1534,146 @@ document.addEventListener(
 );
 
 
-/* =========================================
-   GLOBAL FUNCTIONS
-========================================= */
+/* =========================================================
+   LIGHTBOX BACKGROUND CLICK
+   ========================================================= */
+
+if (lightbox) {
+
+  lightbox.addEventListener(
+    "click",
+    event => {
+
+      /*
+       Close when clicking the empty
+       lightbox background.
+
+       Do not close when clicking the
+       image/caption/content.
+      */
+
+      if (
+        event.target === lightbox
+      ) {
+
+        closeLightbox();
+
+      }
+
+    }
+  );
+}
+
+
+/* =========================================================
+   LIGHTBOX TOUCH / SWIPE
+   ========================================================= */
+
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+
+if (lightbox) {
+
+  lightbox.addEventListener(
+    "touchstart",
+    event => {
+
+      if (!event.touches.length) {
+        return;
+      }
+
+      touchStartX =
+        event.touches[0].clientX;
+
+      touchStartY =
+        event.touches[0].clientY;
+
+    },
+    { passive: true }
+  );
+
+
+  lightbox.addEventListener(
+    "touchend",
+    event => {
+
+      if (!event.changedTouches.length) {
+        return;
+      }
+
+
+      touchEndX =
+        event.changedTouches[0].clientX;
+
+      touchEndY =
+        event.changedTouches[0].clientY;
+
+
+      const deltaX =
+        touchEndX - touchStartX;
+
+      const deltaY =
+        touchEndY - touchStartY;
+
+
+      /*
+       Ignore mostly vertical swipes.
+      */
+
+      if (
+        Math.abs(deltaX) <
+        Math.abs(deltaY)
+      ) {
+        return;
+      }
+
+
+      /*
+       Minimum swipe distance.
+      */
+
+      if (Math.abs(deltaX) < 50) {
+        return;
+      }
+
+
+      if (deltaX < 0) {
+
+        changeLightboxImage(1);
+
+      } else {
+
+        changeLightboxImage(-1);
+
+      }
+
+    },
+    { passive: true }
+  );
+}
+
+
+/* =========================================================
+   BACK BUTTON EVENT
+   ========================================================= */
+
+if (portfolioBack) {
+
+  portfolioBack.addEventListener(
+    "click",
+    goBack
+  );
+
+}
+
+
+/* =========================================================
+   GLOBAL LIGHTBOX FUNCTIONS
+   Required by index.html onclick=""
+   ========================================================= */
 
 window.openLightbox =
   openLightbox;
@@ -1112,8 +1685,8 @@ window.closeLightbox =
   closeLightbox;
 
 
-/* =========================================
+/* =========================================================
    START
-========================================= */
+   ========================================================= */
 
 loadPortfolio();
