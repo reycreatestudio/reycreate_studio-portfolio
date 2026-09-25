@@ -1,0 +1,49 @@
+/* =========================
+   TABLET / MOBILE
+   ========================= */
+
+@media screen and (max-width: 1200px) {
+
+    /* Hide desktop navigation */
+    #desktop-nav {
+        display: none;
+    }
+
+    /* Show hamburger navigation */
+    #hamburger-nav {
+        display: flex;
+    }
+
+    nav {
+        height: 17vh;
+    }
+
+    .hamburger-menu {
+        position: relative;
+    }
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media screen and (max-width: flex) {
+
+    nav {
+        height: 17vh;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    .hamburger-icon {
+        width: 25px;
+        height: 20px;
+    }
+
+    .menu-links a {
+        font-size: 1.2rem;
+    }
+}
