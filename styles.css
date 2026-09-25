@@ -1057,3 +1057,487 @@ article p {
         width: 100%;
     }
 }
+
+/* =========================================================
+   DYNAMIC PORTFOLIO
+   ========================================================= */
+
+#portfolio {
+    position: relative;
+}
+
+.portfolio-breadcrumb {
+    width: 100%;
+    margin: 15px auto 20px;
+    text-align: center;
+    min-height: 24px;
+}
+
+.portfolio-breadcrumb button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font: inherit;
+    padding: 0 3px;
+}
+
+.portfolio-breadcrumb button:hover {
+    text-decoration: underline;
+}
+
+.portfolio-back {
+    display: block;
+    margin: 0 auto 25px;
+
+    border: 1px solid #222;
+    background: white;
+    color: #222;
+
+    padding: 9px 18px;
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    transition: .25s ease;
+}
+
+.portfolio-back:hover {
+    background: #222;
+    color: white;
+}
+
+
+/* =========================================================
+   PORTFOLIO GRID
+   ========================================================= */
+
+#portfolio-grid {
+    width: 100%;
+}
+
+.portfolio-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(260px, 1fr));
+
+    gap: 25px;
+
+    margin-top: 20px;
+}
+
+
+/* =========================================================
+   PORTFOLIO CARD
+   ========================================================= */
+
+.portfolio-item {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 4 / 3;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background: #eee;
+
+    cursor: pointer;
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+}
+
+.portfolio-item:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, .15);
+}
+
+
+.portfolio-item img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+    transition:
+        transform .5s ease;
+}
+
+
+.portfolio-item:hover img {
+    transform: scale(1.05);
+}
+
+
+/* =========================================================
+   PORTFOLIO OVERLAY
+   ========================================================= */
+
+.portfolio-overlay {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    padding: 25px 20px 20px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            transparent,
+            rgba(0, 0, 0, .85)
+        );
+
+    transform: translateY(5px);
+
+    transition:
+        opacity .3s ease,
+        transform .3s ease;
+}
+
+.portfolio-overlay h3 {
+    margin: 0 0 5px;
+
+    font-size: 1.1rem;
+}
+
+.portfolio-overlay p {
+    margin: 0;
+
+    font-size: .85rem;
+
+    opacity: .9;
+}
+
+
+/* =========================================================
+   PLACEHOLDER
+   ========================================================= */
+
+.portfolio-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #777;
+
+    background: #eee;
+}
+
+
+/* =========================================================
+   EMPTY / ERROR
+   ========================================================= */
+
+.portfolio-empty,
+.portfolio-error {
+    width: 100%;
+
+    text-align: center;
+
+    padding: 40px;
+
+    color: #777;
+}
+
+
+/* =========================================================
+   LIGHTBOX
+   ========================================================= */
+
+.portfolio-lightbox {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    background: rgba(0, 0, 0, .92);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity .3s ease,
+        visibility .3s ease;
+}
+
+.portfolio-lightbox.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+.lightbox-content {
+    position: relative;
+
+    width: min(90vw, 1100px);
+    max-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+
+#lightbox-image {
+    max-width: 100%;
+    max-height: 75vh;
+
+    display: block;
+
+    object-fit: contain;
+
+    will-change: transform, opacity;
+}
+
+
+.lightbox-caption {
+    width: 100%;
+
+    padding: 15px;
+
+    text-align: center;
+
+    color: white;
+}
+
+.lightbox-caption h3 {
+    margin: 0 0 5px;
+}
+
+.lightbox-caption p {
+    margin: 0;
+
+    opacity: .8;
+}
+
+
+/* =========================================================
+   LIGHTBOX BUTTONS
+   ========================================================= */
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+    position: fixed;
+
+    z-index: 10000;
+
+    border: none;
+
+    background: rgba(255, 255, 255, .12);
+
+    color: white;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover {
+    background: rgba(255, 255, 255, .25);
+}
+
+
+.lightbox-close {
+    top: 20px;
+    right: 25px;
+
+    width: 45px;
+    height: 45px;
+
+    border-radius: 50%;
+
+    font-size: 30px;
+}
+
+
+.lightbox-prev,
+.lightbox-next {
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 50px;
+    height: 70px;
+
+    border-radius: 10px;
+
+    font-size: 30px;
+}
+
+
+.lightbox-prev {
+    left: 20px;
+}
+
+
+.lightbox-next {
+    right: 20px;
+}
+
+
+/* =========================================================
+   SMOOTH PHOTO SLIDE
+   ========================================================= */
+
+@keyframes lightboxSlideInRight {
+
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+}
+
+
+@keyframes lightboxSlideInLeft {
+
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+}
+
+
+@keyframes lightboxSlideOutLeft {
+
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+}
+
+
+@keyframes lightboxSlideOutRight {
+
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+}
+
+
+.slide-in-right {
+    animation:
+        lightboxSlideInRight .35s ease forwards;
+}
+
+
+.slide-in-left {
+    animation:
+        lightboxSlideInLeft .35s ease forwards;
+}
+
+
+.slide-out-left {
+    animation:
+        lightboxSlideOutLeft .25s ease forwards;
+}
+
+
+.slide-out-right {
+    animation:
+        lightboxSlideOutRight .25s ease forwards;
+}
+
+
+/* =========================================================
+   PREVENT PAGE SCROLL WHEN LIGHTBOX IS OPEN
+   ========================================================= */
+
+body.lightbox-open {
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .portfolio-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .portfolio-lightbox {
+        padding: 15px;
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+        width: 42px;
+        height: 55px;
+
+        font-size: 24px;
+    }
+
+    .lightbox-prev {
+        left: 8px;
+    }
+
+    .lightbox-next {
+        right: 8px;
+    }
+
+    .lightbox-close {
+        top: 10px;
+        right: 10px;
+    }
+
+}
