@@ -1,82 +1,53 @@
-/* =========================================================
-   REYCREATE STUDIO
-   DYNAMIC FIRESTORE PORTFOLIO
-   ========================================================= */
-
 import {
-    initializeApp
+  initializeApp
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 
 import {
-    getFirestore,
-    collection,
-    getDocs,
-    query,
-    orderBy
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 
-/* =========================================================
+/* =========================================
    FIREBASE CONFIG
-   ========================================================= */
+========================================= */
 
 const firebaseConfig = {
 
-    apiKey:
-        "AIzaSyBlbeyeynUXvrSE-TBVjwaEiBobHTrBlQo",
+  apiKey:
+    "AIzaSyBlbeyeynUXvrSE-TBVjwaEiBobHTrBlQo",
 
-    authDomain:
-        "reycreatestudio-portfoli-9b09b.firebaseapp.com",
+  authDomain:
+    "reycreatestudio-portfoli-9b09b.firebaseapp.com",
 
-    projectId:
-        "reycreatestudio-portfoli-9b09b",
+  projectId:
+    "reycreatestudio-portfoli-9b09b",
 
-    storageBucket:
-        "reycreatestudio-portfoli-9b09b.firebasestorage.app",
+  storageBucket:
+    "reycreatestudio-portfoli-9b09b.firebasestorage.app",
 
-    messagingSenderId:
-        "41750977632",
+  messagingSenderId:
+    "41750977632",
 
-    appId:
-        "1:41750977632:web:f202e8614f20e5d9ceb705"
+  appId:
+    "1:41750977632:web:f202e8614f20e5d9ceb705"
 
 };
 
 
-const app = initializeApp(firebaseConfig);
+const app =
+  initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
-
-
-/* =========================================================
-   ELEMENTS
-   ========================================================= */
-
-const portfolioGrid =
-    document.getElementById("portfolio-grid");
-
-const portfolioBreadcrumb =
-    document.getElementById("portfolio-breadcrumb");
-
-const portfolioBack =
-    document.getElementById("portfolio-back");
-
-const lightbox =
-    document.getElementById("portfolio-lightbox");
-
-const lightboxImage =
-    document.getElementById("lightbox-image");
-
-const lightboxTitle =
-    document.getElementById("lightbox-title");
-
-const lightboxDescription =
-    document.getElementById("lightbox-description");
+const db =
+  getFirestore(app);
 
 
-/* =========================================================
-   DATA
-   ========================================================= */
+/* =========================================
+   GLOBAL DATA
+========================================= */
 
 let categories = [];
 
@@ -84,1177 +55,961 @@ let photos = [];
 
 let currentCategoryId = null;
 
-let navigationHistory = [];
-
 let lightboxPhotos = [];
 
 let currentLightboxIndex = 0;
 
-let isLightboxAnimating = false;
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const portfolioGrid =
+  document.getElementById(
+    "portfolio-grid"
+  );
+
+const breadcrumb =
+  document.getElementById(
+    "portfolio-breadcrumb"
+  );
+
+const backButton =
+  document.getElementById(
+    "portfolio-back"
+  );
+
+const lightbox =
+  document.getElementById(
+    "portfolio-lightbox"
+  );
+
+const lightboxImage =
+  document.getElementById(
+    "lightbox-image"
+  );
+
+const lightboxTitle =
+  document.getElementById(
+    "lightbox-title"
+  );
+
+const lightboxDescription =
+  document.getElementById(
+    "lightbox-description"
+  );
 
 
-/* =========================================================
-   INITIALIZE
-   ========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        loadPortfolio();
-
-    }
-);
-
-
-/* =========================================================
-   LOAD PORTFOLIO
-   ========================================================= */
+/* =========================================
+   LOAD
+========================================= */
 
 async function loadPortfolio() {
 
-    try {
+  try {
 
-        portfolioGrid.innerHTML =
-            "<p>Loading portfolio...</p>";
-
-
-        /* =========================
-           LOAD CATEGORIES
-        ========================= */
-
-        const categoryQuery =
-            query(
-                collection(
-                    db,
-                    "portfolio_categories"
-                ),
-                orderBy("sortOrder")
-            );
+    const categorySnapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "portfolio_categories"
+          ),
+          orderBy("sortOrder")
+        )
+      );
 
 
-        const categorySnapshot =
-            await getDocs(
-                categoryQuery
-            );
+    categories =
+      categorySnapshot.docs
 
+        .map(item => ({
+          id: item.id,
+          ...item.data()
+        }))
 
-        categories = [];
-
-
-        categorySnapshot.forEach(
-            item => {
-
-                const data =
-                    item.data();
-
-
-                if (
-                    data.visible !== false
-                ) {
-
-                    categories.push({
-
-                        id:
-                            item.id,
-
-                        ...data
-
-                    });
-
-                }
-
-            }
+        .filter(
+          item =>
+            item.visible !== false
         );
 
 
-        /* =========================
-           LOAD PHOTOS
-        ========================= */
-
-        const photoQuery =
-            query(
-                collection(
-                    db,
-                    "portfolio_photos"
-                ),
-                orderBy("sortOrder")
-            );
+    const photoSnapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "portfolio_photos"
+          ),
+          orderBy("sortOrder")
+        )
+      );
 
 
-        const photoSnapshot =
-            await getDocs(
-                photoQuery
-            );
+    photos =
+      photoSnapshot.docs
 
+        .map(item => ({
+          id: item.id,
+          ...item.data()
+        }))
 
-        photos = [];
-
-
-        photoSnapshot.forEach(
-            item => {
-
-                const data =
-                    item.data();
-
-
-                if (
-                    data.visible !== false
-                ) {
-
-                    photos.push({
-
-                        id:
-                            item.id,
-
-                        ...data
-
-                    });
-
-                }
-
-            }
+        .filter(
+          item =>
+            item.visible !== false
         );
 
 
-        /* =========================
-           SHOW ROOT
-        ========================= */
-
-        navigationHistory = [];
-
-        currentCategoryId = null;
-
-        renderCurrentLevel();
+    renderCurrentView();
 
 
-    } catch (error) {
+  } catch (error) {
 
-        console.error(
-            "Portfolio loading error:",
-            error
-        );
+    console.error(
+      "Portfolio loading error:",
+      error
+    );
 
 
-        portfolioGrid.innerHTML = `
-            <p class="portfolio-error">
-                Unable to load portfolio.
-            </p>
-        `;
+    portfolioGrid.innerHTML = `
+      <div class="portfolio-error">
+        Unable to load portfolio.
+      </div>
+    `;
 
-    }
+  }
 
 }
 
 
-/* =========================================================
-   GET CHILD CATEGORIES
-   ========================================================= */
+/* =========================================
+   CATEGORY HELPERS
+========================================= */
 
-function getChildren(
-    parentId
-) {
+function getChildren(parentId) {
 
-    return categories.filter(
-        category =>
-            (
-                category.parentId ||
-                null
-            ) === parentId
+  return categories
+
+    .filter(
+      category =>
+        (category.parentId || null) === parentId
+    )
+
+    .sort(
+      (a, b) =>
+        (a.sortOrder || 0) -
+        (b.sortOrder || 0)
     );
 
 }
 
 
-/* =========================================================
-   GET CATEGORY PHOTOS
-   ========================================================= */
+function getCategoryPhotos(categoryId) {
 
-function getCategoryPhotos(
-    categoryId
-) {
+  return photos
 
-    return photos.filter(
-        photo =>
-            photo.categoryId ===
-            categoryId
+    .filter(
+      photo =>
+        photo.categoryId === categoryId
+    )
+
+    .sort(
+      (a, b) =>
+        (a.sortOrder || 0) -
+        (b.sortOrder || 0)
     );
 
 }
 
 
-/* =========================================================
-   GET COVER PHOTO
-   ========================================================= */
+function getCoverPhoto(categoryId) {
 
-function getCoverPhoto(
-    categoryId
-) {
-
-    const categoryPhotos =
-        getCategoryPhotos(
-            categoryId
-        );
+  const categoryPhotos =
+    getCategoryPhotos(categoryId);
 
 
-    if (
-        categoryPhotos.length === 0
-    ) {
-
-        return null;
-
-    }
+  if (!categoryPhotos.length) {
+    return null;
+  }
 
 
-    const selectedCover =
-        categoryPhotos.find(
-            photo =>
-                photo.isCover === true
-        );
-
-
-    return (
-        selectedCover ||
-        categoryPhotos[0]
-    );
+  return (
+    categoryPhotos.find(
+      photo =>
+        photo.isCover === true
+    ) ||
+    categoryPhotos[0]
+  );
 
 }
 
 
-/* =========================================================
-   RENDER CURRENT LEVEL
-   ========================================================= */
+/* =========================================
+   CURRENT VIEW
+========================================= */
 
-function renderCurrentLevel() {
+function renderCurrentView() {
 
-    portfolioGrid.innerHTML = "";
-
-
-    /* =========================
-       ROOT CATEGORIES
-    ========================= */
-
-    if (
-        currentCategoryId === null
-    ) {
-
-        renderCategories(
-            getChildren(null)
-        );
+  portfolioGrid.innerHTML = "";
 
 
-        portfolioBack.hidden =
-            true;
+  if (!currentCategoryId) {
 
+    renderRootCategories();
 
-        updateBreadcrumb();
-
-        return;
-
-    }
-
-
-    const currentCategory =
-        categories.find(
-            category =>
-                category.id ===
-                currentCategoryId
-        );
-
-
-    if (!currentCategory) {
-
-        return;
-
-    }
-
-
-    const children =
-        getChildren(
-            currentCategoryId
-        );
-
-
-    const categoryPhotos =
-        getCategoryPhotos(
-            currentCategoryId
-        );
-
-
-    /* =========================
-       SHOW SUBCATEGORIES
-       ========================= */
-
-    if (
-        children.length > 0
-    ) {
-
-        renderCategories(
-            children
-        );
-
-    }
-
-
-    /* =========================
-       SHOW PHOTOS
-       ========================= */
-
-    if (
-        categoryPhotos.length > 0
-    ) {
-
-        renderPhotos(
-            categoryPhotos
-        );
-
-    }
-
-
-    /* =========================
-       EMPTY
-    ========================= */
-
-    if (
-        children.length === 0 &&
-        categoryPhotos.length === 0
-    ) {
-
-        portfolioGrid.innerHTML = `
-            <p class="portfolio-empty">
-                No portfolio items yet.
-            </p>
-        `;
-
-    }
-
-
-    portfolioBack.hidden =
-        false;
-
+    backButton.hidden = true;
 
     updateBreadcrumb();
 
-}
+    return;
 
+  }
 
-/* =========================================================
-   RENDER CATEGORY CARDS
-   ========================================================= */
 
-function renderCategories(
-    categoryList
-) {
+  renderCategoryContents();
 
-    categoryList.forEach(
-        category => {
+  backButton.hidden = false;
 
-            const card =
-                document.createElement(
-                    "article"
-                );
-
-
-            card.className =
-                "portfolio-item";
-
-
-            const cover =
-                getCoverPhoto(
-                    category.id
-                );
-
-
-            /* =========================
-               IMAGE
-            ========================= */
-
-            if (cover) {
-
-                const image =
-                    document.createElement(
-                        "img"
-                    );
-
-
-                image.src =
-                    cover.imageUrl;
-
-
-                image.alt =
-                    category.name;
-
-
-                image.loading =
-                    "lazy";
-
-
-                card.appendChild(
-                    image
-                );
-
-            } else {
-
-                const placeholder =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                placeholder.className =
-                    "portfolio-placeholder";
-
-
-                placeholder.textContent =
-                    "No Cover";
-
-
-                card.appendChild(
-                    placeholder
-                );
-
-            }
-
-
-            /* =========================
-               OVERLAY
-            ========================= */
-
-            const overlay =
-                document.createElement(
-                    "div"
-                );
-
-
-            overlay.className =
-                "portfolio-overlay";
-
-
-            const title =
-                document.createElement(
-                    "h3"
-                );
-
-
-            title.textContent =
-                category.name;
-
-
-            overlay.appendChild(
-                title
-            );
-
-
-            const childCount =
-                getChildren(
-                    category.id
-                ).length;
-
-
-            const photoCount =
-                getCategoryPhotos(
-                    category.id
-                ).length;
-
-
-            const info =
-                document.createElement(
-                    "p"
-                );
-
-
-            if (
-                childCount > 0
-            ) {
-
-                info.textContent =
-                    childCount +
-                    (
-                        childCount === 1
-                            ? " category"
-                            : " categories"
-                    );
-
-            } else if (
-                photoCount > 0
-            ) {
-
-                info.textContent =
-                    photoCount +
-                    (
-                        photoCount === 1
-                            ? " photo"
-                            : " photos"
-                    );
-
-            } else {
-
-                info.textContent =
-                    "Open category";
-
-            }
-
-
-            overlay.appendChild(
-                info
-            );
-
-
-            card.appendChild(
-                overlay
-            );
-
-
-            /* =========================
-               CLICK
-            ========================= */
-
-            card.addEventListener(
-                "click",
-                () => {
-
-                    navigationHistory.push(
-                        currentCategoryId
-                    );
-
-
-                    currentCategoryId =
-                        category.id;
-
-
-                    renderCurrentLevel();
-
-
-                    document
-                        .getElementById(
-                            "portfolio"
-                        )
-                        ?.scrollIntoView({
-                            behavior: "smooth"
-                        });
-
-                }
-            );
-
-
-            portfolioGrid.appendChild(
-                card
-            );
-
-        }
-    );
+  updateBreadcrumb();
 
 }
 
 
-/* =========================================================
-   RENDER PHOTOS
-   ========================================================= */
+/* =========================================
+   ROOT CATEGORIES
+========================================= */
 
-function renderPhotos(
-    photoList
-) {
+function renderRootCategories() {
 
-    photoList.forEach(
-        (photo, index) => {
+  const rootCategories =
+    getChildren(null);
 
-            const card =
-                document.createElement(
-                    "article"
-                );
 
+  if (!rootCategories.length) {
 
-            card.className =
-                "portfolio-item portfolio-photo-item";
+    portfolioGrid.innerHTML = `
+      <div class="portfolio-empty">
+        No portfolio categories available.
+      </div>
+    `;
 
+    return;
 
-            const image =
-                document.createElement(
-                    "img"
-                );
+  }
 
 
-            image.src =
-                photo.imageUrl;
+  rootCategories.forEach(
+    category => {
 
-
-            image.alt =
-                photo.title ||
-                "Portfolio photo";
-
-
-            image.loading =
-                "lazy";
-
-
-            card.appendChild(
-                image
-            );
-
-
-            /* =========================
-               OVERLAY
-            ========================= */
-
-            const overlay =
-                document.createElement(
-                    "div"
-                );
-
-
-            overlay.className =
-                "portfolio-overlay";
-
-
-            const title =
-                document.createElement(
-                    "h3"
-                );
-
-
-            title.textContent =
-                photo.title ||
-                "Untitled";
-
-
-            overlay.appendChild(
-                title
-            );
-
-
-            if (
-                photo.description
-            ) {
-
-                const description =
-                    document.createElement(
-                        "p"
-                    );
-
-
-                description.textContent =
-                    photo.description;
-
-
-                overlay.appendChild(
-                    description
-                );
-
-            }
-
-
-            card.appendChild(
-                overlay
-            );
-
-
-            /* =========================
-               OPEN LIGHTBOX
-            ========================= */
-
-            card.addEventListener(
-                "click",
-                () => {
-
-                    openLightbox(
-                        photoList,
-                        index
-                    );
-
-                }
-            );
-
-
-            portfolioGrid.appendChild(
-                card
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   BREADCRUMB
-   ========================================================= */
-
-function updateBreadcrumb() {
-
-    portfolioBreadcrumb.innerHTML =
-        "";
-
-
-    const home =
-        document.createElement(
-            "button"
-        );
-
-
-    home.type =
-        "button";
-
-
-    home.textContent =
-        "Portfolio";
-
-
-    home.addEventListener(
-        "click",
-        () => {
-
-            navigationHistory = [];
-
-            currentCategoryId = null;
-
-            renderCurrentLevel();
-
-        }
-    );
-
-
-    portfolioBreadcrumb.appendChild(
-        home
-    );
-
-
-    if (
-        currentCategoryId === null
-    ) {
-
-        return;
+      portfolioGrid.appendChild(
+        createCategoryCard(
+          category
+        )
+      );
 
     }
+  );
+
+}
 
 
-    const path =
-        buildCategoryPath(
-            currentCategoryId
-        );
+/* =========================================
+   CATEGORY CONTENTS
+========================================= */
 
+function renderCategoryContents() {
 
-    path.forEach(
-        (category, index) => {
-
-            const separator =
-                document.createElement(
-                    "span"
-                );
-
-
-            separator.textContent =
-                " / ";
-
-
-            portfolioBreadcrumb.appendChild(
-                separator
-            );
-
-
-            const item =
-                document.createElement(
-                    "button"
-                );
-
-
-            item.type =
-                "button";
-
-
-            item.textContent =
-                category.name;
-
-
-            item.addEventListener(
-                "click",
-                () => {
-
-                    currentCategoryId =
-                        category.id;
-
-
-                    navigationHistory =
-                        [];
-
-
-                    renderCurrentLevel();
-
-                }
-            );
-
-
-            portfolioBreadcrumb.appendChild(
-                item
-            );
-
-        }
+  const children =
+    getChildren(
+      currentCategoryId
     );
 
-}
+
+  const categoryPhotos =
+    getCategoryPhotos(
+      currentCategoryId
+    );
 
 
-/* =========================================================
-   BUILD CATEGORY PATH
-   ========================================================= */
+  if (
+    !children.length &&
+    !categoryPhotos.length
+  ) {
 
-function buildCategoryPath(
-    categoryId
-) {
+    portfolioGrid.innerHTML = `
+      <div class="portfolio-empty">
+        This category is empty.
+      </div>
+    `;
 
-    const path = [];
+    return;
 
-    let category =
-        categories.find(
-            item =>
-                item.id ===
-                categoryId
-        );
+  }
 
 
-    while (category) {
+  children.forEach(
+    category => {
 
-        path.unshift(
-            category
-        );
-
-
-        if (
-            !category.parentId
-        ) {
-
-            break;
-
-        }
-
-
-        category =
-            categories.find(
-                item =>
-                    item.id ===
-                    category.parentId
-            );
+      portfolioGrid.appendChild(
+        createCategoryCard(
+          category
+        )
+      );
 
     }
+  );
 
 
-    return path;
+  categoryPhotos.forEach(
+    (photo, index) => {
+
+      portfolioGrid.appendChild(
+        createPhotoCard(
+          photo,
+          index
+        )
+      );
+
+    }
+  );
 
 }
 
 
-/* =========================================================
-   BACK BUTTON
-   ========================================================= */
+/* =========================================
+   CATEGORY CARD
+========================================= */
 
-portfolioBack.addEventListener(
+function createCategoryCard(category) {
+
+  const card =
+    document.createElement("button");
+
+  card.type = "button";
+
+  card.className =
+    "portfolio-item portfolio-category";
+
+
+  const cover =
+    getCoverPhoto(
+      category.id
+    );
+
+
+  if (cover) {
+
+    const image =
+      document.createElement("img");
+
+    image.src =
+      cover.imageUrl;
+
+    image.alt =
+      category.name || "";
+
+    image.loading =
+      "lazy";
+
+    card.appendChild(
+      image
+    );
+
+  } else {
+
+    const placeholder =
+      document.createElement("div");
+
+    placeholder.className =
+      "portfolio-placeholder";
+
+    placeholder.textContent =
+      "No Cover Image";
+
+    card.appendChild(
+      placeholder
+    );
+
+  }
+
+
+  const overlay =
+    document.createElement("div");
+
+  overlay.className =
+    "portfolio-overlay";
+
+
+  const title =
+    document.createElement("h3");
+
+  title.textContent =
+    category.name || "Untitled";
+
+
+  const description =
+    document.createElement("p");
+
+  description.textContent =
+    category.description || "";
+
+
+  overlay.appendChild(title);
+
+  if (category.description) {
+    overlay.appendChild(description);
+  }
+
+
+  card.appendChild(
+    overlay
+  );
+
+
+  card.addEventListener(
     "click",
     () => {
 
-        if (
-            navigationHistory.length > 0
-        ) {
+      currentCategoryId =
+        category.id;
 
-            currentCategoryId =
-                navigationHistory.pop();
+      renderCurrentView();
 
-        } else {
-
-            currentCategoryId =
-                null;
-
-        }
-
-
-        renderCurrentLevel();
+      document
+        .getElementById("portfolio")
+        ?.scrollIntoView({
+          behavior: "smooth"
+        });
 
     }
+  );
+
+
+  return card;
+
+}
+
+
+/* =========================================
+   PHOTO CARD
+========================================= */
+
+function createPhotoCard(
+  photo,
+  index
+) {
+
+  const card =
+    document.createElement("button");
+
+  card.type = "button";
+
+  card.className =
+    "portfolio-item portfolio-photo";
+
+
+  const image =
+    document.createElement("img");
+
+  image.src =
+    photo.imageUrl;
+
+  image.alt =
+    photo.title || "";
+
+  image.loading =
+    "lazy";
+
+
+  card.appendChild(
+    image
+  );
+
+
+  const overlay =
+    document.createElement("div");
+
+  overlay.className =
+    "portfolio-overlay";
+
+
+  const title =
+    document.createElement("h3");
+
+  title.textContent =
+    photo.title || "Untitled";
+
+
+  overlay.appendChild(
+    title
+  );
+
+
+  if (photo.description) {
+
+    const description =
+      document.createElement("p");
+
+    description.textContent =
+      photo.description;
+
+    overlay.appendChild(
+      description
+    );
+
+  }
+
+
+  card.appendChild(
+    overlay
+  );
+
+
+  card.addEventListener(
+    "click",
+    () => {
+
+      const categoryPhotos =
+        getCategoryPhotos(
+          currentCategoryId
+        );
+
+
+      openLightbox(
+        categoryPhotos,
+        index
+      );
+
+    }
+  );
+
+
+  return card;
+
+}
+
+
+/* =========================================
+   BREADCRUMB
+========================================= */
+
+function updateBreadcrumb() {
+
+  breadcrumb.innerHTML = "";
+
+
+  const home =
+    document.createElement("button");
+
+  home.type = "button";
+
+  home.textContent =
+    "Portfolio";
+
+
+  home.addEventListener(
+    "click",
+    () => {
+
+      currentCategoryId =
+        null;
+
+      renderCurrentView();
+
+    }
+  );
+
+
+  breadcrumb.appendChild(
+    home
+  );
+
+
+  if (!currentCategoryId) {
+    return;
+  }
+
+
+  const chain =
+    [];
+
+
+  let current =
+    categories.find(
+      category =>
+        category.id ===
+        currentCategoryId
+    );
+
+
+  while (current) {
+
+    chain.unshift(
+      current
+    );
+
+
+    current =
+      categories.find(
+        category =>
+          category.id ===
+          current.parentId
+      );
+
+  }
+
+
+  chain.forEach(
+    category => {
+
+      const separator =
+        document.createElement(
+          "span"
+        );
+
+      separator.textContent =
+        " / ";
+
+      breadcrumb.appendChild(
+        separator
+      );
+
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+      button.type = "button";
+
+      button.textContent =
+        category.name;
+
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          currentCategoryId =
+            category.id;
+
+          renderCurrentView();
+
+        }
+      );
+
+
+      breadcrumb.appendChild(
+        button
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================
+   BACK
+========================================= */
+
+backButton.addEventListener(
+  "click",
+  () => {
+
+    if (!currentCategoryId) {
+      return;
+    }
+
+
+    const current =
+      categories.find(
+        category =>
+          category.id ===
+          currentCategoryId
+      );
+
+
+    currentCategoryId =
+      current?.parentId ||
+      null;
+
+
+    renderCurrentView();
+
+  }
 );
 
 
-/* =========================================================
+/* =========================================
    LIGHTBOX
-   ========================================================= */
+========================================= */
 
 function openLightbox(
-    photoList,
-    index
+  items,
+  index
 ) {
 
-    lightboxPhotos =
-        photoList;
-
-    currentLightboxIndex =
-        index;
+  lightboxPhotos =
+    items;
 
 
-    showLightboxImage(
-        index,
-        "none"
-    );
+  currentLightboxIndex =
+    index;
 
 
-    lightbox.classList.add(
-        "active"
-    );
+  updateLightbox(
+    false
+  );
 
 
-    document.body.classList.add(
-        "lightbox-open"
-    );
+  lightbox.classList.add(
+    "active"
+  );
+
+
+  document.body.style.overflow =
+    "hidden";
 
 }
 
 
-/* =========================================================
-   SHOW LIGHTBOX IMAGE
-   ========================================================= */
-
-function showLightboxImage(
-    index,
-    direction = "none"
+function updateLightbox(
+  animate = true,
+  direction = 1
 ) {
 
-    if (
-        !lightboxPhotos.length
-    ) {
-
-        return;
-
-    }
+  if (!lightboxPhotos.length) {
+    return;
+  }
 
 
-    const photo =
-        lightboxPhotos[index];
+  const photo =
+    lightboxPhotos[
+      currentLightboxIndex
+    ];
 
 
-    if (!photo) {
-
-        return;
-
-    }
-
-
-    lightboxImage.classList.remove(
-        "slide-in-right",
-        "slide-in-left",
-        "slide-out-left",
-        "slide-out-right"
-    );
-
-
-    if (
-        direction === "next"
-    ) {
-
-        lightboxImage.classList.add(
-            "slide-in-right"
-        );
-
-    }
-
-
-    if (
-        direction === "prev"
-    ) {
-
-        lightboxImage.classList.add(
-            "slide-in-left"
-        );
-
-    }
-
+  if (!animate) {
 
     lightboxImage.src =
-        photo.imageUrl;
-
-
-    lightboxImage.alt =
-        photo.title ||
-        "Portfolio photo";
-
+      photo.imageUrl;
 
     lightboxTitle.textContent =
-        photo.title ||
-        "";
-
+      photo.title || "";
 
     lightboxDescription.textContent =
-        photo.description ||
-        "";
+      photo.description || "";
 
-}
+    return;
 
-
-/* =========================================================
-   CHANGE LIGHTBOX IMAGE
-   ========================================================= */
-
-function changeLightboxImage(
-    direction
-) {
-
-    if (
-        isLightboxAnimating ||
-        lightboxPhotos.length <= 1
-    ) {
-
-        return;
-
-    }
+  }
 
 
-    isLightboxAnimating =
-        true;
+  const outgoingClass =
+    direction > 0
+      ? "slide-out-left"
+      : "slide-out-right";
 
 
-    const oldDirection =
-        direction === 1
-            ? "slide-out-left"
-            : "slide-out-right";
+  const incomingClass =
+    direction > 0
+      ? "slide-in-right"
+      : "slide-in-left";
 
 
-    lightboxImage.classList.remove(
-        "slide-in-right",
-        "slide-in-left"
-    );
+  lightboxImage.classList.remove(
+    "slide-in-right",
+    "slide-in-left",
+    "slide-out-left",
+    "slide-out-right"
+  );
 
 
-    lightboxImage.classList.add(
-        oldDirection
-    );
+  lightboxImage.classList.add(
+    outgoingClass
+  );
 
 
-    setTimeout(
+  setTimeout(
+    () => {
+
+      lightboxImage.src =
+        photo.imageUrl;
+
+      lightboxTitle.textContent =
+        photo.title || "";
+
+      lightboxDescription.textContent =
+        photo.description || "";
+
+
+      lightboxImage.classList.remove(
+        outgoingClass
+      );
+
+
+      void lightboxImage.offsetWidth;
+
+
+      lightboxImage.classList.add(
+        incomingClass
+      );
+
+
+      setTimeout(
         () => {
 
-            currentLightboxIndex +=
-                direction;
-
-
-            if (
-                currentLightboxIndex <
-                0
-            ) {
-
-                currentLightboxIndex =
-                    lightboxPhotos.length - 1;
-
-            }
-
-
-            if (
-                currentLightboxIndex >=
-                lightboxPhotos.length
-            ) {
-
-                currentLightboxIndex =
-                    0;
-
-            }
-
-
-            showLightboxImage(
-                currentLightboxIndex,
-                direction === 1
-                    ? "next"
-                    : "prev"
-            );
-
-
-            setTimeout(
-                () => {
-
-                    isLightboxAnimating =
-                        false;
-
-                },
-                350
-            );
+          lightboxImage.classList.remove(
+            incomingClass
+          );
 
         },
-        250
-    );
+        350
+      );
+
+    },
+    180
+  );
 
 }
 
 
-/* =========================================================
+/* =========================================
+   NEXT / PREVIOUS
+========================================= */
+
+function changeLightboxImage(
+  direction
+) {
+
+  if (!lightboxPhotos.length) {
+    return;
+  }
+
+
+  currentLightboxIndex +=
+    direction;
+
+
+  if (
+    currentLightboxIndex >=
+    lightboxPhotos.length
+  ) {
+
+    currentLightboxIndex =
+      0;
+
+  }
+
+
+  if (
+    currentLightboxIndex < 0
+  ) {
+
+    currentLightboxIndex =
+      lightboxPhotos.length - 1;
+
+  }
+
+
+  updateLightbox(
+    true,
+    direction
+  );
+
+}
+
+
+/* =========================================
    CLOSE LIGHTBOX
-   ========================================================= */
+========================================= */
 
 function closeLightbox() {
 
-    lightbox.classList.remove(
-        "active"
-    );
+  lightbox.classList.remove(
+    "active"
+  );
 
 
-    document.body.classList.remove(
-        "lightbox-open"
-    );
+  document.body.style.overflow =
+    "";
 
 }
 
 
-/* =========================================================
-   GLOBAL FUNCTIONS
-   Needed by existing HTML onclick buttons
-   ========================================================= */
-
-window.openLightbox =
-    openLightbox;
-
-window.changeLightboxImage =
-    changeLightboxImage;
-
-window.closeLightbox =
-    closeLightbox;
-
-
-/* =========================================================
-   KEYBOARD CONTROLS
-   ========================================================= */
+/* =========================================
+   KEYBOARD
+========================================= */
 
 document.addEventListener(
-    "keydown",
-    event => {
+  "keydown",
+  event => {
 
-        if (
-            !lightbox.classList.contains(
-                "active"
-            )
-        ) {
+    if (
+      !lightbox.classList.contains(
+        "active"
+      )
+    ) {
 
-            return;
-
-        }
-
-
-        if (
-            event.key === "Escape"
-        ) {
-
-            closeLightbox();
-
-        }
-
-
-        if (
-            event.key === "ArrowRight"
-        ) {
-
-            changeLightboxImage(1);
-
-        }
-
-
-        if (
-            event.key === "ArrowLeft"
-        ) {
-
-            changeLightboxImage(-1);
-
-        }
+      return;
 
     }
+
+
+    if (
+      event.key ===
+      "Escape"
+    ) {
+
+      closeLightbox();
+
+    }
+
+
+    if (
+      event.key ===
+      "ArrowRight"
+    ) {
+
+      changeLightboxImage(
+        1
+      );
+
+    }
+
+
+    if (
+      event.key ===
+      "ArrowLeft"
+    ) {
+
+      changeLightboxImage(
+        -1
+      );
+
+    }
+
+  }
 );
+
+
+/* =========================================
+   GLOBAL FUNCTIONS
+========================================= */
+
+window.openLightbox =
+  openLightbox;
+
+window.changeLightboxImage =
+  changeLightboxImage;
+
+window.closeLightbox =
+  closeLightbox;
+
+
+/* =========================================
+   START
+========================================= */
+
+loadPortfolio();
