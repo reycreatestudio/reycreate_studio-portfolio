@@ -2,11 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>ReyCreate Studio | Admin</title>
 
@@ -26,7 +22,8 @@
 
     button,
     input,
-    textarea {
+    textarea,
+    select {
       font: inherit;
     }
 
@@ -44,109 +41,2680 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-      background: #f5f5f5;
     }
 
     .login-box {
       width: 100%;
       max-width: 420px;
-      background: white;
+      background: #fff;
       padding: 35px;
       border-radius: 16px;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.10);
+      box-shadow: 0 10px 35px rgba(0,0,0,.1);
     }
 
     .login-box h1 {
       text-align: center;
-      font-size: 26px;
       margin-bottom: 8px;
     }
 
     .login-box p {
       text-align: center;
       color: #777;
-      margin-bottom: 28px;
+      margin-bottom: 25px;
     }
 
     .form-group {
-      margin-bottom: 18px;
+      margin-bottom: 17px;
     }
 
-    .form-group label {
+    label {
       display: block;
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 7px;
     }
 
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
+    input,
+    textarea,
+    select {
       width: 100%;
-      padding: 12px 14px;
+      padding: 12px 13px;
       border: 1px solid #ddd;
       border-radius: 8px;
+      background: #fff;
       outline: none;
-      background: white;
     }
 
-    .form-group textarea {
+    textarea {
       min-height: 100px;
       resize: vertical;
     }
 
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
+    input:focus,
+    textarea:focus,
+    select:focus {
       border-color: #222;
     }
 
-    .primary-btn {
-      border: none;
-      background: #222;
-      color: white;
-      padding: 12px 18px;
+    button {
+      border: 0;
       border-radius: 8px;
-      transition: 0.2s;
+      padding: 11px 15px;
     }
 
-    .primary-btn:hover {
-      opacity: 0.85;
-    }
-
-    .primary-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .primary-btn {
+      background: #222;
+      color: #fff;
     }
 
     .secondary-btn {
-      border: 1px solid #ddd;
-      background: white;
+      background: #fff;
       color: #222;
-      padding: 10px 15px;
-      border-radius: 8px;
+      border: 1px solid #ddd;
     }
 
     .danger-btn {
-      border: none;
       background: #d93636;
-      color: white;
-      padding: 9px 12px;
-      border-radius: 7px;
+      color: #fff;
     }
 
     .small-btn {
+      background: #fff;
       border: 1px solid #ddd;
-      background: white;
       padding: 7px 10px;
-      border-radius: 7px;
       font-size: 13px;
     }
 
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
     .status {
+      display: none;
       margin-top: 15px;
       padding: 11px 13px;
       border-radius: 8px;
-      display: none;
       font-size: 14px;
-      line-height: 1.
+      line-height: 1.4;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.error {
+      background: #ffe5e5;
+      color: #a00000;
+    }
+
+    .status.success {
+      background: #e4f7e8;
+      color: #176b2b;
+    }
+
+    .status.info {
+      background: #e8f1ff;
+      color: #174f91;
+    }
+
+    /* =========================
+       ADMIN
+    ========================= */
+
+    #admin-screen {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .admin-header {
+      background: #222;
+      color: #fff;
+      padding: 18px 20px;
+    }
+
+    .admin-header-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .admin-header h1 {
+      font-size: 21px;
+    }
+
+    .admin-header small {
+      display: block;
+      color: #bbb;
+      margin-top: 4px;
+    }
+
+    .logout-btn {
+      background: #fff;
+      color: #222;
+      padding: 9px 13px;
+    }
+
+    .admin-container {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .panel {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+      margin-bottom: 20px;
+    }
+
+    .panel h2 {
+      font-size: 19px;
+      margin-bottom: 15px;
+    }
+
+    #loading {
+      color: #777;
+      padding: 15px 0;
+    }
+
+    /* =========================
+       CATEGORY TREE
+    ========================= */
+
+    .category-item {
+      border: 1px solid #e3e3e3;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .category-header {
+      padding: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #fafafa;
+    }
+
+    .category-name {
+      font-weight: 600;
+    }
+
+    .category-info {
+      color: #777;
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .category-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .category-children {
+      padding: 0 0 0 22px;
+      border-top: 1px solid #eee;
+    }
+
+    /* =========================
+       PHOTOS
+    ========================= */
+
+    .photo-list {
+      padding: 12px;
+    }
+
+    .photo-card {
+      display: grid;
+      grid-template-columns: 90px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 9px;
+      margin-bottom: 8px;
+    }
+
+    .photo-thumb {
+      width: 90px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #eee;
+    }
+
+    .photo-title {
+      font-weight: 600;
+    }
+
+    .photo-description {
+      font-size: 13px;
+      color: #777;
+      margin-top: 3px;
+    }
+
+    .photo-path {
+      font-size: 11px;
+      color: #999;
+      word-break: break-all;
+      margin-top: 5px;
+    }
+
+    .photo-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      justify-content: flex-end;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      background: #222;
+      color: #fff;
+      border-radius: 20px;
+      padding: 3px 8px;
+      font-size: 11px;
+      margin-left: 5px;
+    }
+
+    .hidden-badge {
+      display: inline-block;
+      background: #eee;
+      color: #777;
+      border-radius: 20px;
+      padding: 3px 8px;
+      font-size: 11px;
+      margin-left: 5px;
+    }
+
+    /* =========================
+       MODAL
+    ========================= */
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 9999;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 520px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h3 {
+      font-size: 20px;
+    }
+
+    .close-btn {
+      background: transparent;
+      font-size: 25px;
+      padding: 2px 7px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .github-help {
+      background: #f5f5f5;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 17px;
+    }
+
+    .image-preview {
+      display: none;
+      width: 100%;
+      max-height: 250px;
+      object-fit: contain;
+      background: #eee;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .image-preview.show {
+      display: block;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 700px) {
+
+      .admin-header-inner {
+        align-items: flex-start;
+      }
+
+      .photo-card {
+        grid-template-columns: 70px 1fr;
+      }
+
+      .photo-thumb {
+        width: 70px;
+        height: 60px;
+      }
+
+      .photo-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+      }
+
+      .category-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .category-actions {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     LOGIN SCREEN
+===================================================== -->
+
+<section id="login-screen">
+
+  <div class="login-box">
+
+    <h1>ReyCreate Studio</h1>
+
+    <p>Portfolio Administration</p>
+
+    <form id="login-form">
+
+      <div class="form-group">
+        <label for="login-email">Email</label>
+        <input
+          id="login-email"
+          type="email"
+          autocomplete="email"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input
+          id="login-password"
+          type="password"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <button
+        id="login-button"
+        class="primary-btn"
+        type="submit"
+        style="width:100%;"
+      >
+        Login
+      </button>
+
+    </form>
+
+    <div id="login-status" class="status"></div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     ADMIN SCREEN
+===================================================== -->
+
+<section id="admin-screen">
+
+  <header class="admin-header">
+
+    <div class="admin-header-inner">
+
+      <div>
+        <h1>ReyCreate Studio</h1>
+        <small>Portfolio Administration</small>
+      </div>
+
+      <button
+        id="logout-button"
+        class="logout-btn"
+        type="button"
+      >
+        Logout
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <main class="admin-container">
+
+    <div class="toolbar">
+
+      <button
+        id="add-category-button"
+        class="primary-btn"
+        type="button"
+      >
+        + Add Category
+      </button>
+
+      <button
+        id="refresh-button"
+        class="secondary-btn"
+        type="button"
+      >
+        ↻ Refresh
+      </button>
+
+      <button
+        id="view-portfolio-button"
+        class="secondary-btn"
+        type="button"
+      >
+        View Portfolio
+      </button>
+
+    </div>
+
+
+    <div id="global-status" class="status"></div>
+
+
+    <section class="panel">
+
+      <h2>Portfolio Categories</h2>
+
+      <div id="loading">
+        Loading portfolio...
+      </div>
+
+      <div id="category-tree"></div>
+
+    </section>
+
+  </main>
+
+</section>
+
+
+<!-- =====================================================
+     CATEGORY MODAL
+===================================================== -->
+
+<div id="category-modal" class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h3 id="category-modal-title">
+        Add Category
+      </h3>
+
+      <button
+        id="category-modal-close"
+        class="close-btn"
+        type="button"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form id="category-form">
+
+      <div class="form-group">
+
+        <label for="category-name">
+          Category Name
+        </label>
+
+        <input
+          id="category-name"
+          type="text"
+          placeholder="Wedding Photography"
+          required
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="category-description">
+          Description
+        </label>
+
+        <textarea
+          id="category-description"
+          placeholder="Optional description"
+        ></textarea>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="category-parent">
+          Parent Category
+        </label>
+
+        <select id="category-parent">
+
+          <option value="">
+            None — Main Category
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          id="category-cancel"
+          class="secondary-btn"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="primary-btn"
+        >
+          Save Category
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     PHOTO MODAL
+===================================================== -->
+
+<div id="photo-modal" class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h3 id="photo-modal-title">
+        Add Photo
+      </h3>
+
+      <button
+        id="photo-modal-close"
+        class="close-btn"
+        type="button"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="github-help">
+
+      <strong>GitHub Image</strong><br>
+
+      First upload the actual image into your GitHub repository.
+
+      <br><br>
+
+      Example:
+
+      <br>
+
+      <code>Assets/Portfolio/Wedding/76897.jpg</code>
+
+      <br><br>
+
+      Enter the path below. The website will automatically use
+      your GitHub Pages image URL.
+
+    </div>
+
+
+    <form id="photo-form">
+
+      <input
+        id="photo-id"
+        type="hidden"
+      >
+
+
+      <input
+        id="photo-category-id"
+        type="hidden"
+      >
+
+
+      <div class="form-group">
+
+        <label for="photo-path">
+          GitHub Image Path
+        </label>
+
+        <input
+          id="photo-path"
+          type="text"
+          placeholder="Assets/Portfolio/Wedding/76897.jpg"
+          required
+        >
+
+        <img
+          id="photo-preview"
+          class="image-preview"
+          alt="Image preview"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="photo-title">
+          Photo Title
+        </label>
+
+        <input
+          id="photo-title"
+          type="text"
+          placeholder="Keira"
+          required
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="photo-description">
+          Description
+        </label>
+
+        <textarea
+          id="photo-description"
+          placeholder="Optional description"
+        ></textarea>
+
+      </div>
+
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          id="photo-cancel"
+          class="secondary-btn"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="primary-btn"
+        >
+          Save Photo
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
+
+<script type="module">
+
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+
+  import {
+    getAuth,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+  import {
+    getFirestore,
+    collection,
+    getDocs,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    doc,
+    query,
+    orderBy,
+    where,
+    serverTimestamp,
+    writeBatch
+  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+
+  /* =====================================================
+     FIREBASE CONFIG
+  ===================================================== */
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBlbeyeynUXvrSE-TBVjwaEiBobHTrBlQo",
+    authDomain: "reycreatestudio-portfoli-9b09b.firebaseapp.com",
+    projectId: "reycreatestudio-portfoli-9b09b",
+    storageBucket: "reycreatestudio-portfoli-9b09b.firebasestorage.app",
+    messagingSenderId: "41750977632",
+    appId: "1:41750977632:web:f202e8614f20e5d9ceb705"
+  };
+
+
+  const app = initializeApp(firebaseConfig);
+
+  const auth = getAuth(app);
+
+  const db = getFirestore(app);
+
+
+  /* =====================================================
+     GITHUB SETTINGS
+  ===================================================== */
+
+  const GITHUB_PAGES_BASE =
+    "https://reycreatestudio.github.io/reycreate_studio-portfolio/";
+
+
+  /* =====================================================
+     ELEMENTS
+  ===================================================== */
+
+  const loginScreen =
+    document.getElementById("login-screen");
+
+  const adminScreen =
+    document.getElementById("admin-screen");
+
+  const loginForm =
+    document.getElementById("login-form");
+
+  const loginButton =
+    document.getElementById("login-button");
+
+  const loginStatus =
+    document.getElementById("login-status");
+
+  const logoutButton =
+    document.getElementById("logout-button");
+
+  const categoryTree =
+    document.getElementById("category-tree");
+
+  const loading =
+    document.getElementById("loading");
+
+  const globalStatus =
+    document.getElementById("global-status");
+
+
+  /* =====================================================
+     DATA
+  ===================================================== */
+
+  let categories = [];
+
+  let photos = [];
+
+  let editingCategoryId = null;
+
+  let editingPhotoId = null;
+
+
+  /* =====================================================
+     STATUS
+  ===================================================== */
+
+  function showStatus(element, message, type = "info") {
+
+    element.textContent = message;
+
+    element.className =
+      "status show " + type;
+
+  }
+
+
+  function hideStatus(element) {
+
+    element.className = "status";
+
+    element.textContent = "";
+
+  }
+
+
+  /* =====================================================
+     GITHUB URL
+  ===================================================== */
+
+  function normalizeGitHubPath(path) {
+
+    if (!path) {
+      return "";
+    }
+
+    path = path.trim();
+
+    if (/^https?:\/\//i.test(path)) {
+      return path;
+    }
+
+    return GITHUB_PAGES_BASE +
+      path.replace(/^\/+/, "");
+
+  }
+
+
+  /* =====================================================
+     LOGIN
+  ===================================================== */
+
+  loginForm.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+    const email =
+      document.getElementById("login-email").value.trim();
+
+    const password =
+      document.getElementById("login-password").value;
+
+    loginButton.disabled = true;
+
+    loginButton.textContent = "Logging in...";
+
+    showStatus(
+      loginStatus,
+      "Checking login...",
+      "info"
+    );
+
+    try {
+
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      showStatus(
+        loginStatus,
+        "Login successful. Loading admin...",
+        "success"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      let message = error.message;
+
+      if (error.code === "auth/invalid-credential") {
+        message =
+          "Incorrect email or password.";
+      }
+
+      if (error.code === "auth/invalid-email") {
+        message =
+          "Please enter a valid email address.";
+      }
+
+      if (error.code === "auth/too-many-requests") {
+        message =
+          "Too many attempts. Please wait and try again.";
+      }
+
+      showStatus(
+        loginStatus,
+        message,
+        "error"
+      );
+
+    } finally {
+
+      loginButton.disabled = false;
+
+      loginButton.textContent = "Login";
+
+    }
+
+  });
+
+
+  /* =====================================================
+     AUTH STATE
+  ===================================================== */
+
+  onAuthStateChanged(auth, async (user) => {
+
+    console.log(
+      "Auth state:",
+      user ? user.email : "Logged out"
+    );
+
+    if (user) {
+
+      loginScreen.style.display = "none";
+
+      adminScreen.style.display = "block";
+
+      hideStatus(loginStatus);
+
+      await loadPortfolio();
+
+    } else {
+
+      loginScreen.style.display = "flex";
+
+      adminScreen.style.display = "none";
+
+    }
+
+  });
+
+
+  /* =====================================================
+     LOGOUT
+  ===================================================== */
+
+  logoutButton.addEventListener("click", async () => {
+
+    try {
+
+      await signOut(auth);
+
+    } catch (error) {
+
+      console.error(error);
+
+      showStatus(
+        globalStatus,
+        error.message,
+        "error"
+      );
+
+    }
+
+  });
+
+
+  /* =====================================================
+     LOAD PORTFOLIO
+  ===================================================== */
+
+  async function loadPortfolio() {
+
+    loading.style.display = "block";
+
+    loading.textContent =
+      "Loading portfolio...";
+
+    categoryTree.innerHTML = "";
+
+    try {
+
+      const categorySnapshot =
+        await getDocs(
+          query(
+            collection(db, "portfolio_categories"),
+            orderBy("sortOrder", "asc")
+          )
+        );
+
+      const photoSnapshot =
+        await getDocs(
+          query(
+            collection(db, "portfolio_photos"),
+            orderBy("sortOrder", "asc")
+          )
+        );
+
+
+      categories = categorySnapshot.docs.map(
+        item => ({
+          id: item.id,
+          ...item.data()
+        })
+      );
+
+
+      photos = photoSnapshot.docs.map(
+        item => ({
+          id: item.id,
+          ...item.data()
+        })
+      );
+
+
+      console.log(
+        "Categories:",
+        categories
+      );
+
+      console.log(
+        "Photos:",
+        photos
+      );
+
+
+      loading.style.display = "none";
+
+      renderCategoryTree();
+
+      populateParentSelect();
+
+    } catch (error) {
+
+      console.error(error);
+
+      loading.style.display = "block";
+
+      loading.textContent =
+        "Unable to load portfolio.";
+
+      showStatus(
+        globalStatus,
+        "Firestore error: " + error.message,
+        "error"
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     RENDER TREE
+  ===================================================== */
+
+  function renderCategoryTree() {
+
+    categoryTree.innerHTML = "";
+
+    const roots =
+      categories
+        .filter(category =>
+          !category.parentId
+        )
+        .sort(
+          (a, b) =>
+            (a.sortOrder || 0) -
+            (b.sortOrder || 0)
+        );
+
+
+    if (roots.length === 0) {
+
+      categoryTree.innerHTML =
+        "<p style='color:#777;'>No categories yet. Click + Add Category.</p>";
+
+      return;
+
+    }
+
+
+    roots.forEach(category => {
+
+      categoryTree.appendChild(
+        createCategoryElement(category)
+      );
+
+    });
+
+  }
+
+
+  /* =====================================================
+     CATEGORY ELEMENT
+  ===================================================== */
+
+  function createCategoryElement(category) {
+
+    const wrapper =
+      document.createElement("div");
+
+    wrapper.className =
+      "category-item";
+
+
+    const header =
+      document.createElement("div");
+
+    header.className =
+      "category-header";
+
+
+    const left =
+      document.createElement("div");
+
+    const name =
+      document.createElement("div");
+
+    name.className =
+      "category-name";
+
+    name.textContent =
+      category.name || "Untitled Category";
+
+
+    const info =
+      document.createElement("div");
+
+    info.className =
+      "category-info";
+
+    const categoryPhotos =
+      photos.filter(
+        photo =>
+          photo.categoryId === category.id
+      );
+
+    const childCategories =
+      categories.filter(
+        child =>
+          child.parentId === category.id
+      );
+
+
+    info.textContent =
+      `${categoryPhotos.length} photo(s) • ${childCategories.length} subcategory(s)`;
+
+    if (category.visible === false) {
+
+      const badge =
+        document.createElement("span");
+
+      badge.className =
+        "hidden-badge";
+
+      badge.textContent =
+        "Hidden";
+
+      name.appendChild(badge);
+
+    }
+
+
+    left.appendChild(name);
+
+    left.appendChild(info);
+
+
+    const actions =
+      document.createElement("div");
+
+    actions.className =
+      "category-actions";
+
+
+    const addSub =
+      document.createElement("button");
+
+    addSub.className =
+      "small-btn";
+
+    addSub.textContent =
+      "+ Subcategory";
+
+    addSub.onclick = () =>
+      openCategoryModal(category.id);
+
+
+    const addPhoto =
+      document.createElement("button");
+
+    addPhoto.className =
+      "small-btn";
+
+    addPhoto.textContent =
+      "+ Photo";
+
+    addPhoto.onclick = () =>
+      openPhotoModal(category.id);
+
+
+    const edit =
+      document.createElement("button");
+
+    edit.className =
+      "small-btn";
+
+    edit.textContent =
+      "Edit";
+
+    edit.onclick = () =>
+      openCategoryModal(null, category.id);
+
+
+    const visibility =
+      document.createElement("button");
+
+    visibility.className =
+      "small-btn";
+
+    visibility.textContent =
+      category.visible === false
+        ? "Show"
+        : "Hide";
+
+    visibility.onclick = () =>
+      toggleCategoryVisibility(category);
+
+
+    const remove =
+      document.createElement("button");
+
+    remove.className =
+      "danger-btn";
+
+    remove.textContent =
+      "Delete";
+
+    remove.onclick = () =>
+      deleteCategory(category);
+
+
+    actions.appendChild(addSub);
+
+    actions.appendChild(addPhoto);
+
+    actions.appendChild(edit);
+
+    actions.appendChild(visibility);
+
+    actions.appendChild(remove);
+
+
+    header.appendChild(left);
+
+    header.appendChild(actions);
+
+    wrapper.appendChild(header);
+
+
+    /* PHOTOS */
+
+    const ownPhotos =
+      photos
+        .filter(
+          photo =>
+            photo.categoryId === category.id
+        )
+        .sort(
+          (a, b) =>
+            (a.sortOrder || 0) -
+            (b.sortOrder || 0)
+        );
+
+
+    if (ownPhotos.length > 0) {
+
+      const photoList =
+        document.createElement("div");
+
+      photoList.className =
+        "photo-list";
+
+
+      ownPhotos.forEach(photo => {
+
+        photoList.appendChild(
+          createPhotoElement(photo)
+        );
+
+      });
+
+
+      wrapper.appendChild(photoList);
+
+    }
+
+
+    /* CHILDREN */
+
+    const children =
+      categories
+        .filter(
+          child =>
+            child.parentId === category.id
+        )
+        .sort(
+          (a, b) =>
+            (a.sortOrder || 0) -
+            (b.sortOrder || 0)
+        );
+
+
+    if (children.length > 0) {
+
+      const childrenContainer =
+        document.createElement("div");
+
+      childrenContainer.className =
+        "category-children";
+
+
+      children.forEach(child => {
+
+        childrenContainer.appendChild(
+          createCategoryElement(child)
+        );
+
+      });
+
+
+      wrapper.appendChild(
+        childrenContainer
+      );
+
+    }
+
+
+    return wrapper;
+
+  }
+
+
+  /* =====================================================
+     PHOTO ELEMENT
+  ===================================================== */
+
+  function createPhotoElement(photo) {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "photo-card";
+
+
+    const image =
+      document.createElement("img");
+
+    image.className =
+      "photo-thumb";
+
+    image.src =
+      normalizeGitHubPath(
+        photo.imageUrl || photo.githubPath
+      );
+
+    image.alt =
+      photo.title || "";
+
+
+    image.onerror = () => {
+
+      image.style.opacity = ".35";
+
+      image.title =
+        "Image could not be loaded";
+
+    };
+
+
+    const information =
+      document.createElement("div");
+
+
+    const title =
+      document.createElement("div");
+
+    title.className =
+      "photo-title";
+
+    title.textContent =
+      photo.title || "Untitled";
+
+
+    if (photo.isCover) {
+
+      const badge =
+        document.createElement("span");
+
+      badge.className =
+        "cover-badge";
+
+      badge.textContent =
+        "Cover";
+
+      title.appendChild(badge);
+
+    }
+
+
+    if (photo.visible === false) {
+
+      const badge =
+        document.createElement("span");
+
+      badge.className =
+        "hidden-badge";
+
+      badge.textContent =
+        "Hidden";
+
+      title.appendChild(badge);
+
+    }
+
+
+    const description =
+      document.createElement("div");
+
+    description.className =
+      "photo-description";
+
+    description.textContent =
+      photo.description || "";
+
+
+    const path =
+      document.createElement("div");
+
+    path.className =
+      "photo-path";
+
+    path.textContent =
+      photo.githubPath ||
+      photo.imageUrl ||
+      "";
+
+
+    information.appendChild(title);
+
+    information.appendChild(description);
+
+    information.appendChild(path);
+
+
+    const actions =
+      document.createElement("div");
+
+    actions.className =
+      "photo-actions";
+
+
+    const cover =
+      document.createElement("button");
+
+    cover.className =
+      "small-btn";
+
+    cover.textContent =
+      photo.isCover
+        ? "Cover ✓"
+        : "Set Cover";
+
+    cover.onclick = () =>
+      setCoverPhoto(photo);
+
+
+    const edit =
+      document.createElement("button");
+
+    edit.className =
+      "small-btn";
+
+    edit.textContent =
+      "Edit";
+
+    edit.onclick = () =>
+      openPhotoModal(
+        photo.categoryId,
+        photo.id
+      );
+
+
+    const visibility =
+      document.createElement("button");
+
+    visibility.className =
+      "small-btn";
+
+    visibility.textContent =
+      photo.visible === false
+        ? "Show"
+        : "Hide";
+
+    visibility.onclick = () =>
+      togglePhotoVisibility(photo);
+
+
+    const remove =
+      document.createElement("button");
+
+    remove.className =
+      "danger-btn";
+
+    remove.textContent =
+      "Delete";
+
+    remove.onclick = () =>
+      deletePhoto(photo);
+
+
+    actions.appendChild(cover);
+
+    actions.appendChild(edit);
+
+    actions.appendChild(visibility);
+
+    actions.appendChild(remove);
+
+
+    card.appendChild(image);
+
+    card.appendChild(information);
+
+    card.appendChild(actions);
+
+
+    return card;
+
+  }
+
+
+  /* =====================================================
+     PARENT SELECT
+  ===================================================== */
+
+  function populateParentSelect() {
+
+    const select =
+      document.getElementById(
+        "category-parent"
+      );
+
+    select.innerHTML =
+      `<option value="">None — Main Category</option>`;
+
+
+    categories
+      .slice()
+      .sort(
+        (a, b) =>
+          String(a.name || "")
+            .localeCompare(
+              String(b.name || "")
+            )
+      )
+      .forEach(category => {
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          category.id;
+
+        option.textContent =
+          category.name || "Untitled";
+
+        select.appendChild(option);
+
+      });
+
+  }
+
+
+  /* =====================================================
+     CATEGORY MODAL
+  ===================================================== */
+
+  function openCategoryModal(
+    parentId = "",
+    editId = null
+  ) {
+
+    editingCategoryId =
+      editId;
+
+    const modal =
+      document.getElementById(
+        "category-modal"
+      );
+
+    const title =
+      document.getElementById(
+        "category-modal-title"
+      );
+
+    const nameInput =
+      document.getElementById(
+        "category-name"
+      );
+
+    const descriptionInput =
+      document.getElementById(
+        "category-description"
+      );
+
+    const parentSelect =
+      document.getElementById(
+        "category-parent"
+      );
+
+
+    populateParentSelect();
+
+
+    if (editId) {
+
+      const category =
+        categories.find(
+          item =>
+            item.id === editId
+        );
+
+      if (!category) {
+        return;
+      }
+
+      title.textContent =
+        "Edit Category";
+
+      nameInput.value =
+        category.name || "";
+
+      descriptionInput.value =
+        category.description || "";
+
+      parentSelect.value =
+        category.parentId || "";
+
+    } else {
+
+      title.textContent =
+        "Add Category";
+
+      nameInput.value =
+        "";
+
+      descriptionInput.value =
+        "";
+
+      parentSelect.value =
+        parentId || "";
+
+    }
+
+
+    modal.classList.add("show");
+
+    nameInput.focus();
+
+  }
+
+
+  function closeCategoryModal() {
+
+    document
+      .getElementById("category-modal")
+      .classList.remove("show");
+
+    editingCategoryId = null;
+
+  }
+
+
+  document
+    .getElementById("category-modal-close")
+    .onclick =
+    closeCategoryModal;
+
+
+  document
+    .getElementById("category-cancel")
+    .onclick =
+    closeCategoryModal;
+
+
+  /* =====================================================
+     SAVE CATEGORY
+  ===================================================== */
+
+  document
+    .getElementById("category-form")
+    .addEventListener(
+      "submit",
+      async event => {
+
+        event.preventDefault();
+
+        const name =
+          document
+            .getElementById(
+              "category-name"
+            )
+            .value
+            .trim();
+
+        const description =
+          document
+            .getElementById(
+              "category-description"
+            )
+            .value
+            .trim();
+
+        const parentId =
+          document
+            .getElementById(
+              "category-parent"
+            )
+            .value;
+
+
+        if (!name) {
+          return;
+        }
+
+
+        try {
+
+          if (editingCategoryId) {
+
+            await updateDoc(
+              doc(
+                db,
+                "portfolio_categories",
+                editingCategoryId
+              ),
+              {
+                name,
+                description,
+                parentId:
+                  parentId || null,
+                updatedAt:
+                  serverTimestamp()
+              }
+            );
+
+            showStatus(
+              globalStatus,
+              "Category updated.",
+              "success"
+            );
+
+          } else {
+
+            await addDoc(
+              collection(
+                db,
+                "portfolio_categories"
+              ),
+              {
+                name,
+                description,
+                parentId:
+                  parentId || null,
+                sortOrder:
+                  categories.length,
+                visible: true,
+                createdAt:
+                  serverTimestamp()
+              }
+            );
+
+            showStatus(
+              globalStatus,
+              "Category added.",
+              "success"
+            );
+
+          }
+
+
+          closeCategoryModal();
+
+          await loadPortfolio();
+
+        } catch (error) {
+
+          console.error(error);
+
+          showStatus(
+            globalStatus,
+            "Could not save category: " +
+              error.message,
+            "error"
+          );
+
+        }
+
+      }
+    );
+
+
+  /* =====================================================
+     DELETE CATEGORY
+  ===================================================== */
+
+  async function deleteCategory(category) {
+
+    const children =
+      categories.filter(
+        item =>
+          item.parentId === category.id
+      );
+
+    const categoryPhotos =
+      photos.filter(
+        item =>
+          item.categoryId === category.id
+      );
+
+
+    if (
+      children.length ||
+      categoryPhotos.length
+    ) {
+
+      alert(
+        "This category still contains " +
+        `${children.length} subcategory(s) and ` +
+        `${categoryPhotos.length} photo(s).\n\n` +
+        "Delete or move them first."
+      );
+
+      return;
+
+    }
+
+
+    if (
+      !confirm(
+        `Delete "${category.name}"?`
+      )
+    ) {
+      return;
+    }
+
+
+    try {
+
+      await deleteDoc(
+        doc(
+          db,
+          "portfolio_categories",
+          category.id
+        )
+      );
+
+      showStatus(
+        globalStatus,
+        "Category deleted.",
+        "success"
+      );
+
+      await loadPortfolio();
+
+    } catch (error) {
+
+      console.error(error);
+
+      showStatus(
+        globalStatus,
+        "Could not delete category: " +
+          error.message,
+        "error"
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     CATEGORY VISIBILITY
+  ===================================================== */
+
+  async function toggleCategoryVisibility(
+    category
+  ) {
+
+    try {
+
+      await updateDoc(
+        doc(
+          db,
+          "portfolio_categories",
+          category.id
+        ),
+        {
+          visible:
+            category.visible === false
+              ? true
+              : false,
+          updatedAt:
+            serverTimestamp()
+        }
+      );
+
+      await loadPortfolio();
+
+    } catch (error) {
+
+      console.error(error);
+
+      showStatus(
+        globalStatus,
+        error.message,
+        "error"
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     PHOTO MODAL
+  ===================================================== */
+
+  function openPhotoModal(
+    categoryId,
+    editId = null
+  ) {
+
+    editingPhotoId =
+      editId;
+
+    document
+      .getElementById(
+        "photo-category-id"
+      )
+      .value =
+      categoryId;
+
+
+    const modal =
+      document.getElementById(
+        "photo-modal"
+      );
+
+    const title =
+      document.getElementById(
+        "photo-modal-title"
+      );
+
+    const path =
+      document.getElementById(
+        "photo-path"
+      );
+
+    const photoTitle =
+      document.getElementById(
+        "photo-title"
+      );
+
+    const description =
+      document.getElementById(
+        "photo-description"
+      );
+
+
+    if (editId) {
+
+      const photo =
+        photos.find(
+          item =>
+            item.id === editId
+        );
+
+      if (!photo) {
+        return;
+      }
+
+      title.textContent =
+        "Edit Photo";
+
+      path.value =
+        photo.githubPath ||
+        extractGitHubPath(
+          photo.imageUrl || ""
+        );
+
+      photoTitle.value =
+        photo.title || "";
+
+      description.value =
+        photo.description || "";
+
+      updatePreview();
+
+    } else {
+
+      title.textContent =
+        "Add Photo";
+
+      path.value =
+        "";
+
+      photoTitle.value =
+        "";
+
+      description.value =
+        "";
+
+      hidePreview();
+
+    }
+
+
+    modal.classList.add("show");
+
+    path.focus();
+
+  }
+
+
+  function closePhotoModal() {
+
+    document
+      .getElementById("photo-modal")
+      .classList.remove("show");
+
+    editingPhotoId = null;
+
+    hidePreview();
+
+  }
+
+
+  document
+    .getElementById("photo-modal-close")
+    .onclick =
+    closePhotoModal;
+
+
+  document
+    .getElementById("photo-cancel")
+    .onclick =
+    closePhotoModal;
+
+
+  /* =====================================================
+     EXTRACT PATH
+  ===================================================== */
+
+  function extractGitHubPath(url) {
+
+    if (!url) {
+      return "";
+    }
+
+    if (
+      url.startsWith(
+        GITHUB_PAGES_BASE
+      )
+    ) {
+
+      return url.substring(
+        GITHUB_PAGES_BASE.length
+      );
+
+    }
+
+    return url;
+
+  }
+
+
+  /* =====================================================
+     IMAGE PREVIEW
+  ===================================================== */
+
+  const photoPathInput =
+    document.getElementById(
+      "photo-path"
+    );
+
+  const photoPreview =
+    document.getElementById(
+      "photo-preview"
+    );
+
+
+  photoPathInput.addEventListener(
+    "input",
+    updatePreview
+  );
+
+
+  function updatePreview() {
+
+    const path =
+      photoPathInput.value.trim();
+
+    if (!path) {
+
+      hidePreview();
+
+      return;
+
+    }
+
+
+    const url =
+      normalizeGitHubPath(path);
+
+
+    photoPreview.src =
+      url;
+
+    photoPreview.classList.add(
+      "show"
+    );
+
+
+    photoPreview.onerror = () => {
+
+      photoPreview.classList.remove(
+        "show"
+      );
+
+    };
+
+  }
+
+
+  function hidePreview() {
+
+    photoPreview.src = "";
+
+    photoPreview.classList.remove(
+      "show"
+    );
+
+  }
+
+
+  /* =====================================================
+     SAVE PHOTO
+  ===================================================== */
+
+  document
+    .getElementById("photo-form")
+    .addEventListener(
+      "submit",
+      async event => {
+
+        event.preventDefault();
+
+        const categoryId =
+          document
+            .getElementById(
+              "photo-category-id"
+            )
+            .value;
+
+        const path =
+          document
+            .getElementById(
+              "photo-path"
+            )
+            .value
+            .trim();
+
+        const title =
+          document
+            .getElementById(
+              "photo-title"
+            )
+            .value
+            .trim();
+
+        const description =
+          document
+            .getElementById(
+              "photo-description"
+            )
+            .value
+            .trim();
+
+
+        if (
+          !categoryId ||
+          !path ||
+          !title
+        ) {
+
+          alert(
+            "Please complete all required fields."
+          );
+
+          return;
+
+        }
+
+
+        const imageUrl =
+          normalizeGitHubPath(path);
+
+
+        try {
+
+          if (editingPhotoId) {
+
+            await updateDoc(
+              doc(
+                db,
+                "portfolio_photos",
+                editingPhotoId
+              ),
+              {
+                categoryId,
+                githubPath:
+                  path,
+                imageUrl,
+                title,
+                description,
+                updatedAt:
+                  serverTimestamp()
+              }
+            );
+
+            showStatus(
+              globalStatus,
+              "Photo updated.",
+              "success"
+            );
+
+          } else {
+
+            const existingPhotos =
+              photos.filter(
+                photo =>
+                  photo.categoryId ===
+                  categoryId
+              );
+
+
+            await addDoc(
+              collection(
+                db,
+                "portfolio_photos"
+              ),
+              {
+                categoryId,
+                githubPath:
+                  path,
+                imageUrl,
+                title,
+                description,
+                sortOrder:
+                  existingPhotos.length,
+                isCover:
+                  existingPhotos.length === 0,
+                visible: true,
+                createdAt:
+                  serverTimestamp()
+              }
+            );
+
+            showStatus(
+              globalStatus,
+              "Photo added.",
+              "success"
+            );
+
+          }
+
+
+          closePhotoModal();
+
+          await loadPortfolio();
+
+        } catch (error) {
+
+          console.error(error);
+
+          showStatus(
+            globalStatus,
+            "Could not save photo: " +
+              error.message,
+            "error"
+          );
+
+        }
+
+      }
+    );
+
+
+  /* =====================================================
+     SET COVER
+  ===================================================== */
+
+  async function setCoverPhoto(photo) {
+
+    try {
+
+      const batch =
+        writeBatch(db);
+
+
+      photos
+        .filter(
+          item =>
+            item.categoryId ===
+            photo.categoryId
+        )
+        .forEach(item => {
+
+          batch.update(
+            doc(
+              db,
+              "portfolio_photos",
+              item.id
+            ),
+            {
+              isCover:
+                item.id === photo.id
+            }
+          );
+
+        });
+
+
+      await batch.commit();
+
+
+      showStatus(
+        globalStatus,
+        `"${photo.title}" is now the cover.`,
+        "success"
+      );
+
+
+      await loadPortfolio();
+
+    } catch (error) {
+
+      console.error(error);
+
+      showStatus(
+        globalStatus,
+        "Could not set cover: " +
+          error.message,
+        "error"
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     PHOTO VISIBILITY
+  ===================================================== */
+
+  async function togglePhotoVisibility(
+    photo
+  ) {
+
+    try {
+
+      await updateDoc(
+        doc(
+          db,
+          "portfolio_photos",
+          photo.id
+        ),
+        {
+          visible:
+            photo.visible === false
+              ? true
+              : false,
+          updatedAt:
+            serverTimestamp()
+        }
+      );
+
+
+      await loadPortfolio();
+
+    } catch (error) {
+
+      console.error(error);
+
+      showStatus(
+        globalStatus,
+        error.message,
+        "error"
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     DELETE PHOTO
+  ===================================================== */
+
+  async function deletePhoto(photo) {
+
+    if (
+      !confirm(
+        `Delete "${photo.title}" from the portfolio?`
+      )
+    ) {
+      return;
+    }
+
+
+    try {
+
+      await deleteDoc(
+        doc(
+          db,
+          "portfolio_photos",
+          photo.id
+        )
+      );
+
+
+      showStatus(
+        globalStatus,
+        "Photo removed from portfolio.",
+        "success"
+      );
+
+
+      await loadPortfolio();
+
+    } catch (error) {
+
+      console.error(error);
+
+      showStatus(
+        globalStatus,
+        "Could not delete photo: " +
+          error.message,
+        "error"
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     BUTTONS
+  ===================================================== */
+
+  document
+    .getElementById(
+      "add-category-button"
+    )
+    .onclick = () =>
+      openCategoryModal();
+
+
+  document
+    .getElementById(
+      "refresh-button"
+    )
+    .onclick = () =>
+      loadPortfolio();
+
+
+  document
+    .getElementById(
+      "view-portfolio-button"
+    )
+    .onclick = () => {
+
+      window.open(
+        "./index.html#portfolio",
+        "_blank"
+      );
+
+    };
+
+
+  /* =====================================================
+     CLOSE MODALS WHEN CLICKING OUTSIDE
+  ===================================================== */
+
+  document
+    .getElementById("category-modal")
+    .addEventListener(
+      "click",
+      event => {
+
+        if (
+          event.target.id ===
+          "category-modal"
+        ) {
+
+          closeCategoryModal();
+
+        }
+
+      }
+    );
+
+
+  document
+    .getElementById("photo-modal")
+    .addEventListener(
+      "click",
+      event => {
+
+        if (
+          event.target.id ===
+          "photo-modal"
+        ) {
+
+          closePhotoModal();
+
+        }
+
+      }
+    );
+
+
+  /* =====================================================
+     ESC CLOSE
+  ===================================================== */
+
+  document.addEventListener(
+    "keydown",
+    event => {
+
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      closeCategoryModal();
+
+      closePhotoModal();
+
+    }
+  );
+
+
+  console.log(
+    "ReyCreate Studio Admin loaded."
+  );
+
+</script>
+
+</body>
+</html>
