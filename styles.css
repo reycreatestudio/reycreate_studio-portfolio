@@ -465,238 +465,1268 @@ transform: translateY(0);
 
 }
 
-/* =========================
-PORTFOLIO SECTION
-========================= */
+/* =========================================================
+   REYCREATE STUDIO
+   MINIMALIST PORTFOLIO CSS
+   ========================================================= */
+
+
+/* =========================================================
+   PORTFOLIO SECTION
+   ========================================================= */
 
 #portfolio {
-display: flex;
-flex-direction: column;
-justify-content: center;
-
-min-height: 100vh;
-
-padding-top: 8vh;
-padding-bottom: 8vh;
-
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
 }
 
-/* =========================
-PORTFOLIO FILTERS
-========================= */
 
-.portfolio-filters {
-display: flex;
+/* Section heading */
 
-justify-content: center;
-align-items: center;
-
-flex-wrap: wrap;
-
-gap: 0.7rem;
-
-margin: 2rem auto;
-
-max-width: 1100px;
-
+#portfolio .section__text__p1 {
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #777;
+  text-align: center;
 }
 
-.portfolio-filter {
-border: 1px solid rgb(53, 53, 53);
 
-background: white;
-
-color: black;
-
-padding: 0.7rem 1.2rem;
-
-border-radius: 2rem;
-
-font-family: "Poppins", sans-serif;
-
-font-size: 0.9rem;
-
-cursor: pointer;
-
-transition: all 0.3s ease;
-
+#portfolio .title {
+  margin-bottom: 45px;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  text-align: center;
+  color: #111;
 }
 
-.portfolio-filter:hover {
-background: rgb(53, 53, 53);
 
-color: white;
+/* =========================================================
+   BREADCRUMB
+   ========================================================= */
 
+.portfolio-breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-bottom: 25px;
+
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  color: #888;
 }
 
-.portfolio-filter.active {
-background: rgb(53, 53, 53);
 
-color: white;
+.portfolio-breadcrumb-item {
+  appearance: none;
+  border: 0;
+  padding: 0;
 
+  background: transparent;
+
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+
+  color: #888;
+
+  cursor: pointer;
+
+  transition:
+    color 0.25s ease,
+    opacity 0.25s ease;
 }
 
-/* =========================
-PORTFOLIO GRID
-========================= */
+
+.portfolio-breadcrumb-item:hover {
+  color: #111;
+}
+
+
+.portfolio-breadcrumb-item.active {
+  color: #111;
+}
+
+
+.portfolio-breadcrumb-separator {
+  color: #ccc;
+  user-select: none;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.portfolio-back {
+  display: block;
+
+  margin: 0 auto 30px;
+
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  color: #555;
+
+  cursor: pointer;
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.portfolio-back:hover {
+  color: #111;
+  transform: translateX(-4px);
+}
+
+
+.portfolio-back[hidden] {
+  display: none;
+}
+
+
+/* =========================================================
+   MAIN PORTFOLIO GRID
+   ========================================================= */
 
 .portfolio-grid {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+  width: 100%;
+  min-height: 100px;
+}
 
-    display: grid;
 
-    grid-template-columns: repeat(
-        auto-fit,
-        minmax(400px, 1fr)
+/* =========================================================
+   CATEGORY GRID
+   ========================================================= */
+
+.portfolio-category-view {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 24px;
+}
+
+
+/* =========================================================
+   CATEGORY CARD
+   ========================================================= */
+
+.portfolio-category-card {
+  position: relative;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  background: #f5f5f5;
+
+  cursor: pointer;
+
+  outline: none;
+}
+
+
+/* Keyboard focus */
+
+.portfolio-category-card:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 4px;
+}
+
+
+/* =========================================================
+   CATEGORY IMAGE
+   ========================================================= */
+
+.portfolio-category-image {
+  position: relative;
+
+  width: 100%;
+  min-height: 300px;
+
+  overflow: hidden;
+
+  background: #f1f1f1;
+}
+
+
+.portfolio-category-image img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  min-height: 300px;
+
+  object-fit: cover;
+
+  transition:
+    transform 0.7s cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+
+/* Minimal image zoom */
+
+.portfolio-category-card:hover
+.portfolio-category-image img {
+  transform: scale(1.035);
+}
+
+
+/* =========================================================
+   CATEGORY OVERLAY
+   ========================================================= */
+
+.portfolio-category-overlay {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.62),
+      rgba(0, 0, 0, 0.08) 55%,
+      rgba(0, 0, 0, 0)
     );
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   CATEGORY INFORMATION
+   ========================================================= */
+
+.portfolio-category-info {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  padding: 28px;
+
+  color: #fff;
+
+  z-index: 2;
+}
+
+
+.portfolio-category-info h2 {
+  margin: 0 0 7px;
+
+  font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+
+.portfolio-category-info p {
+  max-width: 550px;
+
+  margin: 0 0 8px;
+
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 1.6;
+
+  opacity: 0.9;
+}
+
+
+.portfolio-category-count {
+  display: inline-block;
+
+  font-size: 0.68rem;
+  font-weight: 400;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  opacity: 0.78;
+}
+
+
+/* =========================================================
+   IMAGE PLACEHOLDER
+   ========================================================= */
+
+.portfolio-image-placeholder {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+
+  background: #f3f3f3;
+
+  color: #999;
+
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+
+.portfolio-category-image.image-error,
+.portfolio-photo-image.image-error {
+  background: #f3f3f3;
+}
+
+
+/* =========================================================
+   SUBCATEGORIES
+   ========================================================= */
+
+.portfolio-subcategories {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+
+  margin-bottom: 35px;
+}
+
+
+.portfolio-subcategories
+.portfolio-category-image {
+  min-height: 240px;
+}
+
+
+.portfolio-subcategories
+.portfolio-category-image img {
+  min-height: 240px;
+}
+
+
+.portfolio-subcategories
+.portfolio-category-info {
+  padding: 22px;
+}
+
+
+.portfolio-subcategories
+.portfolio-category-info h2 {
+  font-size: 1.2rem;
+}
+
+
+/* =========================================================
+   PHOTO GALLERY
+   ========================================================= */
+
+.portfolio-photo-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 22px;
+
+  width: 100%;
+}
+
+
+/* =========================================================
+   PHOTO CARD
+   ========================================================= */
+
+.portfolio-photo-card {
+  position: relative;
+
+  width: 100%;
+
+  cursor: pointer;
+
+  outline: none;
+}
+
+
+.portfolio-photo-card:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 5px;
+}
+
+
+/* =========================================================
+   PHOTO IMAGE
+   ========================================================= */
+
+.portfolio-photo-image {
+  position: relative;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  background: #f4f4f4;
+}
+
+
+.portfolio-photo-image img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  object-fit: contain;
+
+  transition:
+    transform 0.65s cubic-bezier(0.2, 0.65, 0.3, 1),
+    opacity 0.3s ease;
+}
+
+
+/* Minimal hover effect */
+
+.portfolio-photo-card:hover
+.portfolio-photo-image img {
+  transform: scale(1.018);
+}
+
+
+/* =========================================================
+   PHOTO INFORMATION
+   ========================================================= */
+
+.portfolio-photo-info {
+  padding: 13px 2px 8px;
+}
+
+
+.portfolio-photo-info h3 {
+  margin: 0 0 4px;
+
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.4;
+
+  color: #222;
+}
+
+
+.portfolio-photo-info p {
+  margin: 0;
+
+  font-size: 0.75rem;
+  font-weight: 300;
+  line-height: 1.55;
+
+  color: #777;
+}
+
+
+/* =========================================================
+   PORTFOLIO VIEW TRANSITION
+   ========================================================= */
+
+.portfolio-view-enter {
+  animation:
+    portfolioFadeIn 0.45s ease both;
+}
+
+
+@keyframes portfolioFadeIn {
+
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.portfolio-loading {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  min-height: 150px;
+}
+
+
+.portfolio-loading span {
+  display: block;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #777;
+
+  animation:
+    portfolioLoading 1.2s infinite ease-in-out;
+}
+
+
+.portfolio-loading span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+
+.portfolio-loading span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+
+.portfolio-loading span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+
+@keyframes portfolioLoading {
+
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.portfolio-empty {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 180px;
+
+  padding: 30px;
+
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+
+  text-align: center;
+
+  color: #888;
+}
+
+
+.portfolio-empty p {
+  margin: 0;
+
+  font-size: 0.8rem;
+  font-weight: 300;
+}
+
+
+/* =========================================================
+   LIGHTBOX
+   ========================================================= */
+
+.portfolio-lightbox {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 35px;
+
+  background: rgba(15, 15, 15, 0.96);
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+
+.portfolio-lightbox.active {
+  opacity: 1;
+  visibility: visible;
+
+  pointer-events: auto;
+}
+
+
+/* =========================================================
+   LIGHTBOX CONTENT
+   ========================================================= */
+
+.portfolio-lightbox .lightbox-content {
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  width: min(100%, 1100px);
+  max-height: 92vh;
+
+  overflow: hidden;
+}
+
+
+#lightbox-image {
+  display: block;
+
+  width: auto;
+  max-width: 100%;
+
+  max-height: 78vh;
+
+  object-fit: contain;
+
+  will-change:
+    transform,
+    opacity;
+
+  user-select: none;
+
+  -webkit-user-drag: none;
+}
+
+
+/* =========================================================
+   LIGHTBOX SLIDE OUT
+   ========================================================= */
+
+#lightbox-image.slide-out-left {
+  animation:
+    lightboxSlideOutLeft
+    0.18s
+    ease
+    forwards;
+}
+
+
+#lightbox-image.slide-out-right {
+  animation:
+    lightboxSlideOutRight
+    0.18s
+    ease
+    forwards;
+}
+
+
+/* =========================================================
+   LIGHTBOX SLIDE IN
+   ========================================================= */
+
+#lightbox-image.slide-in-right {
+  animation:
+    lightboxSlideInRight
+    0.35s
+    ease
+    forwards;
+}
+
+
+#lightbox-image.slide-in-left {
+  animation:
+    lightboxSlideInLeft
+    0.35s
+    ease
+    forwards;
+}
+
+
+/* =========================================================
+   LIGHTBOX ANIMATIONS
+   ========================================================= */
+
+@keyframes lightboxSlideOutLeft {
+
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+}
+
+
+@keyframes lightboxSlideOutRight {
+
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+}
+
+
+@keyframes lightboxSlideInRight {
+
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+}
+
+
+@keyframes lightboxSlideInLeft {
+
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+}
+
+
+/* =========================================================
+   LIGHTBOX CAPTION
+   ========================================================= */
+
+.lightbox-caption {
+  width: 100%;
+
+  padding-top: 16px;
+
+  text-align: center;
+
+  color: #fff;
+}
+
+
+.lightbox-caption h3 {
+  margin: 0 0 5px;
+
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+
+.lightbox-caption p {
+  max-width: 650px;
+
+  margin: 0 auto;
+
+  font-size: 0.75rem;
+  font-weight: 300;
+  line-height: 1.6;
+
+  color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* =========================================================
+   LIGHTBOX BUTTONS
+   ========================================================= */
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+
+  z-index: 10;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #fff;
+
+  cursor: pointer;
+
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  opacity: 0.65;
+}
+
+
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
+
+.lightbox-close {
+  top: 18px;
+  right: 25px;
+
+  width: 45px;
+  height: 45px;
+
+  font-size: 2rem;
+  font-weight: 200;
+
+  line-height: 1;
+}
+
+
+.lightbox-close:hover {
+  transform: rotate(90deg);
+}
+
+
+/* =========================================================
+   PREVIOUS BUTTON
+   ========================================================= */
+
+.lightbox-prev {
+  top: 50%;
+  left: 18px;
+
+  width: 48px;
+  height: 48px;
+
+  margin-top: -24px;
+
+  font-size: 2rem;
+  font-weight: 200;
+
+  transform: translateY(0);
+}
+
+
+.lightbox-prev:hover {
+  transform: translateX(-3px);
+}
+
+
+/* =========================================================
+   NEXT BUTTON
+   ========================================================= */
+
+.lightbox-next {
+  top: 50%;
+  right: 18px;
+
+  width: 48px;
+  height: 48px;
+
+  margin-top: -24px;
+
+  font-size: 2rem;
+  font-weight: 200;
+}
+
+
+.lightbox-next:hover {
+  transform: translateX(3px);
+}
+
+
+/* =========================================================
+   BODY WHEN LIGHTBOX IS OPEN
+   ========================================================= */
+
+body.lightbox-open {
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media screen and (max-width: 900px) {
+
+  #portfolio {
+    padding: 70px 20px;
+  }
+
+
+  .portfolio-category-view {
+    gap: 18px;
+  }
+
+
+  .portfolio-photo-grid {
+    gap: 18px;
+  }
+
+
+  .portfolio-category-image {
+    min-height: 260px;
+  }
+
+
+  .portfolio-category-image img {
+    min-height: 260px;
+  }
+
+
+  .portfolio-category-info {
+    padding: 22px;
+  }
+
+
+  .portfolio-subcategories {
+    gap: 18px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 600px) {
+
+  #portfolio {
+    padding: 60px 15px;
+  }
+
+
+  #portfolio .section__text__p1 {
+    font-size: 0.7rem;
+  }
+
+
+  #portfolio .title {
+    margin-bottom: 32px;
+
+    font-size: 2rem;
+  }
+
+
+  /* Breadcrumb */
+
+  .portfolio-breadcrumb {
+    gap: 6px;
+
+    margin-bottom: 20px;
+
+    font-size: 0.65rem;
+  }
+
+
+  /* Back */
+
+  .portfolio-back {
+    margin-bottom: 22px;
+
+    font-size: 0.7rem;
+  }
+
+
+  /* Category grid */
+
+  .portfolio-category-view {
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+  }
+
+
+  /* Category image */
+
+  .portfolio-category-image {
+    min-height: 240px;
+  }
+
+
+  .portfolio-category-image img {
+    min-height: 240px;
+  }
+
+
+  /* Category text */
+
+  .portfolio-category-info {
+    padding: 20px;
+  }
+
+
+  .portfolio-category-info h2 {
+    font-size: 1.3rem;
+  }
+
+
+  .portfolio-category-info p {
+    font-size: 0.75rem;
+  }
+
+
+  /* Subcategories */
+
+  .portfolio-subcategories {
+    grid-template-columns: 1fr;
 
     gap: 16px;
 
-    justify-content: center;
-}
+    margin-bottom: 25px;
+  }
 
 
-.portfolio-item img {
+  .portfolio-subcategories
+  .portfolio-category-image {
+    min-height: 210px;
+  }
+
+
+  .portfolio-subcategories
+  .portfolio-category-image img {
+    min-height: 210px;
+  }
+
+
+  /* Photos */
+
+  .portfolio-photo-grid {
+    grid-template-columns: 1fr;
+
+    gap: 25px;
+  }
+
+
+  .portfolio-photo-info {
+    padding-top: 10px;
+  }
+
+
+  .portfolio-photo-info h3 {
+    font-size: 0.85rem;
+  }
+
+
+  .portfolio-photo-info p {
+    font-size: 0.7rem;
+  }
+
+
+  /* Lightbox */
+
+  .portfolio-lightbox {
+    padding: 15px;
+  }
+
+
+  .portfolio-lightbox .lightbox-content {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
+    max-height: 90vh;
+  }
 
-/* =========================
-PORTFOLIO ITEM
-========================= */
 
-.portfolio-item {
-    position: relative;
+  #lightbox-image {
     width: 100%;
-    aspect-ratio: 3 / 2;
-    overflow: hidden;
-    border-radius: 0;
-    cursor: pointer;
-    background: rgb(240, 240, 240);
+    max-width: 100%;
 
-    transition:
-        transform 0.3s ease,
-        opacity 0.3s ease;
-}
+    max-height: 72vh;
+  }
 
-.portfolio-item img {
-width: 100%;
 
-height: 100%;
+  /* Caption */
 
-object-fit: cover;
+  .lightbox-caption {
+    padding: 13px 35px 0;
+  }
 
-display: block;
 
-transition: transform 0.5s ease;
+  .lightbox-caption h3 {
+    font-size: 0.85rem;
+  }
 
-}
 
-.portfolio-item:hover img {
-transform: scale(1.08);
-}
+  .lightbox-caption p {
+    font-size: 0.7rem;
+  }
 
-/* =========================
-PORTFOLIO OVERLAY
-========================= */
 
-.portfolio-overlay {
-position: absolute;
+  /* Lightbox arrows */
 
-left: 0;
-right: 0;
-bottom: 0;
+  .lightbox-prev,
+  .lightbox-next {
+    width: 38px;
+    height: 38px;
 
-padding: 1.5rem;
+    font-size: 1.5rem;
+  }
 
-color: white;
 
-background:
-    linear-gradient(
-        transparent,
-        rgba(0, 0, 0, 0.85)
-    );
+  .lightbox-prev {
+    left: 4px;
+  }
 
-transform: translateY(100%);
 
-transition:
-    transform 0.3s ease;
+  .lightbox-next {
+    right: 4px;
+  }
 
-}
 
-.portfolio-overlay h3 {
-margin-bottom: 0.3rem;
+  /* Close */
 
-color: white;
+  .lightbox-close {
+    top: 8px;
+    right: 10px;
+
+    width: 40px;
+    height: 40px;
+
+    font-size: 1.8rem;
+  }
 
 }
 
-.portfolio-overlay p {
-color: white;
 
-font-size: 0.85rem;
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
 
-}
+@media screen and (max-width: 380px) {
 
-.portfolio-item:hover .portfolio-overlay {
-    transform: translateY(0);
-}
+  #portfolio {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 
-/* =========================
-HIDDEN PORTFOLIO ITEMS
-========================= */
 
-.portfolio-item.hidden {
-display: none;
-}
+  #portfolio .title {
+    font-size: 1.8rem;
+  }
 
-/* =========================
-PORTFOLIO LIGHTBOX
-========================= */
 
-.portfolio-lightbox {
-position: fixed;
+  .portfolio-category-image,
+  .portfolio-category-image img {
+    min-height: 210px;
+  }
 
-inset: 0;
 
-width: 100%;
-height: 100%;
+  .portfolio-category-info {
+    padding: 17px;
+  }
 
-background: rgba(0, 0, 0, 0.92);
 
-display: flex;
+  .portfolio-category-info h2 {
+    font-size: 1.15rem;
+  }
 
-align-items: center;
-justify-content: center;
 
-padding: 2rem;
-
-opacity: 0;
-
-visibility: hidden;
-
-pointer-events: none;
-
-transition:
-    opacity 0.3s ease,
-    visibility 0.3s ease;
-
-z-index: 9999;
+  .portfolio-photo-grid {
+    gap: 20px;
+  }
 
 }
 
-/* OPEN STATE */
 
-.portfolio-lightbox.open {
-opacity: 1;
+/* =========================================================
+   REDUCED MOTION ACCESSIBILITY
+   ========================================================= */
 
-visibility: visible;
+@media (prefers-reduced-motion: reduce) {
 
-pointer-events: auto;
+  .portfolio-category-image img,
+  .portfolio-photo-image img,
+  .portfolio-breadcrumb-item,
+  .portfolio-back,
+  .portfolio-lightbox,
+  .lightbox-close,
+  .lightbox-prev,
+  .lightbox-next {
+    transition: none;
+  }
+
+
+  .portfolio-view-enter {
+    animation: none;
+  }
+
+
+  #lightbox-image.slide-out-left,
+  #lightbox-image.slide-out-right,
+  #lightbox-image.slide-in-right,
+  #lightbox-image.slide-in-left {
+    animation: none;
+  }
+
+
+  .portfolio-loading span {
+    animation: none;
+  }
 
 }
 
