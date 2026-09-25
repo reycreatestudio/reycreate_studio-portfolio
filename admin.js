@@ -1,10 +1,17 @@
-import { auth } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
 
 import {
     signInWithEmailAndPassword,
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+import {
+    collection,
+    getDocs,
+    query,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 
 const loginSection =
@@ -22,6 +29,13 @@ const loginMessage =
 const logoutButton =
     document.getElementById("logout-button");
 
+const categoryManager =
+    document.getElementById("category-manager");
+
+
+/* =========================
+   LOGIN
+========================= */
 
 loginForm.addEventListener("submit", async (event) => {
 
@@ -57,6 +71,10 @@ loginForm.addEventListener("submit", async (event) => {
 });
 
 
+/* =========================
+   LOGOUT
+========================= */
+
 logoutButton.addEventListener("click", async () => {
 
     await signOut(auth);
@@ -64,18 +82,79 @@ logoutButton.addEventListener("click", async () => {
 });
 
 
-onAuthStateChanged(auth, (user) => {
+/* =========================
+   AUTH STATE
+========================= */
+
+onAuthStateChanged(auth, async (user) => {
 
     if (user) {
 
-        loginSection.style.display = "none";
-        adminSection.style.display = "block";
+        loginSection.hidden = true;
+        adminSection.hidden = false;
+
+        await loadCategories();
 
     } else {
 
-        loginSection.style.display = "block";
-        adminSection.style.display = "none";
+        loginSection.hidden = false;
+        adminSection.hidden = true;
 
     }
 
 });
+
+
+/* =========================
+   LOAD CATEGORIES
+========================= */
+
+async function loadCategories() {
+
+    categoryManager.innerHTML =
+        "<p>Loading categories...</p>";
+
+    try {
+
+        const categoryQuery = query(
+            collection(db, "portfolio_categories"),
+            orderBy("sortOrder")
+        );
+
+        const snapshot =
+            await getDocs(categoryQuery);
+
+        categoryManager.innerHTML = "";
+
+        if (snapshot.empty) {
+
+            categoryManager.innerHTML =
+                "<p>No categories yet.</p>";
+
+            return;
+        }
+
+        snapshot.forEach((doc) => {
+
+            const data = doc.data();
+
+            const item =
+                document.createElement("div");
+
+            item.textContent =
+                data.name || "Unnamed category";
+
+            categoryManager.appendChild(item);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        categoryManager.innerHTML =
+            "<p>Unable to load categories.</p>";
+
+    }
+
+}
