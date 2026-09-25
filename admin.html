@@ -1,2385 +1,3011 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>ReyCreate Studio | Admin</title>
-
-
-    <style>
-
-        /* =========================
-           RESET
-        ========================= */
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            color: #222;
-        }
-
-        button,
-        input,
-        textarea {
-            font: inherit;
-        }
-
-        button {
-            cursor: pointer;
-        }
-
-
-        /* =========================
-           LOGIN
-        ========================= */
-
-        #login-section {
-            width: min(420px, 92%);
-            margin: 100px auto;
-            background: #fff;
-            padding: 35px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
-        }
-
-        #login-section h1 {
-            margin: 0 0 8px;
-        }
-
-        .login-subtitle {
-            color: #666;
-            margin: 0 0 25px;
-        }
-
-        #login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        #login-form input {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        #login-form input:focus {
-            border-color: #111;
-        }
-
-        #login-form button {
-            padding: 14px;
-            border: 0;
-            border-radius: 8px;
-            background: #111;
-            color: #fff;
-        }
-
-        #login-form button:disabled {
-            opacity: .6;
-            cursor: not-allowed;
-        }
-
-        #login-message {
-            margin-top: 15px;
-            word-break: break-word;
-        }
-
-
-        /* =========================
-           ADMIN
-        ========================= */
-
-        #admin-section {
-            width: min(1150px, 94%);
-            margin: 30px auto;
-        }
-
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-
-            background: #fff;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-        }
-
-        .admin-header h1 {
-            margin: 0 0 5px;
-        }
-
-        .admin-header p {
-            margin: 0;
-            color: #777;
-        }
-
-        #logout-button {
-            border: 0;
-            background: #111;
-            color: #fff;
-            padding: 11px 18px;
-            border-radius: 8px;
-        }
-
-
-        /* =========================
-           PANELS
-        ========================= */
-
-        .admin-panel {
-            background: #fff;
-            padding: 25px;
-            border-radius: 15px;
-        }
-
-        .panel-heading {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .panel-heading h2 {
-            margin: 0;
-        }
-
-        #add-category,
-        #add-photo {
-            border: 0;
-            background: #111;
-            color: #fff;
-            padding: 11px 16px;
-            border-radius: 8px;
-        }
-
-
-        /* =========================
-           CATEGORY TREE
-        ========================= */
-
-        #category-manager {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .category-row {
-            border: 1px solid #e5e5e5;
-            border-radius: 10px;
-            padding: 15px;
-            background: #fafafa;
-        }
-
-        .category-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .category-name {
-            font-weight: 600;
-        }
-
-        .category-info {
-            color: #777;
-            font-size: 13px;
-            margin-top: 4px;
-        }
-
-        .category-actions {
-            display: flex;
-            gap: 7px;
-            flex-wrap: wrap;
-        }
-
-        .category-actions button {
-            border: 0;
-            padding: 8px 11px;
-            border-radius: 6px;
-            background: #e9e9e9;
-        }
-
-        .category-actions .delete-button {
-            color: #b00020;
-        }
-
-        .children {
-            margin-top: 10px;
-            margin-left: 25px;
-            padding-left: 15px;
-            border-left: 2px solid #ddd;
-
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-
-        /* =========================
-           PHOTO MANAGER
-        ========================= */
-
-        #photo-manager {
-            background: #fff;
-            padding: 25px;
-            border-radius: 15px;
-        }
-
-        .photo-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .photo-header h2 {
-            margin: 0 0 5px;
-        }
-
-        .photo-header p {
-            margin: 0;
-            color: #777;
-            font-size: 13px;
-        }
-
-        #back-to-categories {
-            border: 0;
-            padding: 10px 15px;
-            border-radius: 8px;
-            background: #eee;
-        }
-
-
-        /* =========================
-           PHOTO GRID
-        ========================= */
-
-        #photo-grid {
-            display: grid;
-            grid-template-columns:
-                repeat(auto-fill, minmax(220px, 1fr));
-
-            gap: 20px;
-        }
-
-        .photo-card {
-            overflow: hidden;
-            background: #fafafa;
-            border: 1px solid #e5e5e5;
-            border-radius: 12px;
-        }
-
-        .photo-image-wrapper {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 4 / 3;
-            background: #eee;
-        }
-
-        .photo-image-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .cover-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-
-            background: #111;
-            color: #fff;
-
-            padding: 6px 9px;
-            border-radius: 6px;
-
-            font-size: 12px;
-        }
-
-        .photo-info {
-            padding: 14px;
-        }
-
-        .photo-title {
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .photo-description {
-            font-size: 13px;
-            color: #777;
-            margin-bottom: 12px;
-        }
-
-        .photo-actions {
-            display: flex;
-            gap: 7px;
-            flex-wrap: wrap;
-        }
-
-        .photo-actions button {
-            border: 0;
-            padding: 8px 10px;
-            border-radius: 6px;
-            background: #e9e9e9;
-        }
-
-        .photo-actions .delete-photo {
-            color: #b00020;
-        }
-
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 600px) {
-
-            #admin-section {
-                width: 94%;
-                margin: 15px auto;
-            }
-
-            .admin-header {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .panel-heading {
-                align-items: stretch;
-                flex-direction: column;
-            }
-
-            .category-content {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .category-actions {
-                width: 100%;
-            }
-
-            .category-actions button {
-                flex: 1;
-            }
-
-            #photo-grid {
-                grid-template-columns: 1fr;
-            }
-
-        }
-
-    </style>
-
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>ReyCreate Studio | Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+      padding: 20px;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      margin-bottom: 5px;
+    }
+
+    header p {
+      color: #bbb;
+    }
+
+    .login-box,
+    .admin-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 5px 25px rgba(0,0,0,.08);
+    }
+
+    .login-box {
+      max-width: 450px;
+      margin: 50px auto;
+    }
+
+    .login-box h2 {
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      background: white;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 7px;
+      padding: 10px 15px;
+      margin: 4px;
+      background: #222;
+      color: white;
+    }
+
+    .btn:hover {
+      opacity: .85;
+    }
+
+    .btn-primary {
+      background: #111;
+    }
+
+    .btn-green {
+      background: #16803c;
+    }
+
+    .btn-blue {
+      background: #1769aa;
+    }
+
+    .btn-red {
+      background: #c62828;
+    }
+
+    .btn-gray {
+      background: #777;
+    }
+
+    .btn-orange {
+      background: #d97706;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .toolbar .btn {
+      margin: 0;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 7px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.success {
+      background: #e8f5e9;
+      color: #166534;
+    }
+
+    .status.error {
+      background: #ffebee;
+      color: #b91c1c;
+    }
+
+    .status.info {
+      background: #e3f2fd;
+      color: #075985;
+    }
+
+    .category-tree {
+      margin-top: 20px;
+    }
+
+    .category-item {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .category-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px;
+    }
+
+    .category-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .category-name {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .category-meta {
+      color: #777;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .category-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .children {
+      margin-left: 25px;
+      border-left: 2px solid #ddd;
+      padding-left: 10px;
+    }
+
+    .cover-label {
+      color: #d97706;
+      font-weight: bold;
+    }
+
+    .hidden-label {
+      color: #c62828;
+      font-weight: bold;
+    }
+
+    .photo-list {
+      padding: 15px;
+      border-top: 1px solid #ddd;
+      background: white;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .photo-card {
+      border: 1px solid #ddd;
+      border-radius: 9px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .photo-preview {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+      background: #eee;
+    }
+
+    .photo-info {
+      padding: 10px;
+    }
+
+    .photo-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+      word-break: break-word;
+    }
+
+    .photo-description {
+      color: #777;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .photo-actions {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .photo-actions .btn {
+      font-size: 12px;
+      padding: 7px 9px;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      background: #f59e0b;
+      color: white;
+      padding: 3px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-bottom: 7px;
+    }
+
+    .empty {
+      color: #777;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 12px;
+      padding: 25px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .close-modal {
+      border: 0;
+      background: transparent;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .selected-file {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #555;
+      word-break: break-word;
+    }
+
+    .upload-progress {
+      height: 8px;
+      background: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .upload-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #16803c;
+      transition: width .2s;
+    }
+
+    .logout {
+      float: right;
+    }
+
+    .loading {
+      padding: 30px;
+      text-align: center;
+      color: #777;
+    }
+
+    @media (max-width: 700px) {
+
+      body {
+        padding: 10px;
+      }
+
+      .category-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .category-actions {
+        justify-content: flex-start;
+      }
+
+      .children {
+        margin-left: 10px;
+      }
+
+      .photo-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 430px) {
+
+      .photo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-
 
 <body>
 
+<div class="container">
 
-    <!-- =====================================================
-         LOGIN
-    ====================================================== -->
-
-    <section id="login-section">
-
-        <h1>
-            ReyCreate Studio
-        </h1>
-
-        <p class="login-subtitle">
-            Portfolio Administration
-        </p>
-
-
-        <form id="login-form">
-
-            <input
-                type="email"
-                id="email"
-                placeholder="Email"
-                autocomplete="email"
-                required
-            >
-
-            <input
-                type="password"
-                id="password"
-                placeholder="Password"
-                autocomplete="current-password"
-                required
-            >
-
-            <button
-                type="submit"
-                id="login-button"
-            >
-                Login
-            </button>
-
-        </form>
-
-
-        <p id="login-message"></p>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         ADMIN DASHBOARD
-    ====================================================== -->
-
-    <section
-        id="admin-section"
-        hidden
+  <header>
+    <button
+      id="logout-btn"
+      class="btn btn-red logout"
+      style="display:none;"
     >
+      Logout
+    </button>
 
-        <header class="admin-header">
-
-            <div>
-
-                <h1>
-                    Portfolio Manager
-                </h1>
-
-                <p>
-                    ReyCreate Studio
-                </p>
-
-            </div>
+    <h1>ReyCreate Studio</h1>
+    <p>Portfolio Administration</p>
+  </header>
 
 
-            <button id="logout-button">
-                Logout
-            </button>
+  <!-- LOGIN -->
 
-        </header>
+  <div id="login-section" class="login-box">
+
+    <h2>Admin Login</h2>
+
+    <div id="login-status" class="status"></div>
+
+    <form id="login-form">
+
+      <div class="form-group">
+        <label>Email</label>
+
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+      >
+        Login
+      </button>
+
+    </form>
+
+  </div>
 
 
+  <!-- ADMIN -->
 
-        <!-- =================================================
-             CATEGORY MANAGER
-        ================================================== -->
+  <div
+    id="admin-section"
+    class="admin-panel"
+    style="display:none;"
+  >
 
-        <section
-            class="admin-panel"
-            id="category-panel"
+    <div id="admin-status" class="status"></div>
+
+    <div class="toolbar">
+
+      <button
+        id="add-category-btn"
+        class="btn btn-primary"
+      >
+        + Add Category
+      </button>
+
+      <button
+        id="refresh-btn"
+        class="btn btn-gray"
+      >
+        ↻ Refresh
+      </button>
+
+      <a
+        href="index.html#portfolio"
+        target="_blank"
+        class="btn btn-blue"
+      >
+        View Portfolio
+      </a>
+
+    </div>
+
+    <h2>Portfolio Categories</h2>
+
+    <div
+      id="category-tree"
+      class="category-tree"
+    >
+      <div class="loading">
+        Loading portfolio...
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- PHOTO MODAL -->
+
+<div
+  id="photo-modal"
+  class="modal"
+>
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h2>Add Photo</h2>
+
+      <button
+        id="close-photo-modal"
+        class="close-modal"
+        type="button"
+      >
+        &times;
+      </button>
+
+    </div>
+
+    <div id="photo-status" class="status"></div>
+
+    <form id="photo-form">
+
+      <div class="form-group">
+
+        <label>Choose Image</label>
+
+        <input
+          id="photo-file"
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          required
         >
 
-            <div class="panel-heading">
+        <div
+          id="selected-file"
+          class="selected-file"
+        ></div>
 
-                <h2>
-                    Categories
-                </h2>
-
-                <button id="add-category">
-                    + Add Category
-                </button>
-
-            </div>
+      </div>
 
 
-            <div id="category-manager">
+      <div class="form-group">
 
-                <p>
-                    Loading categories...
-                </p>
+        <label>Photo Title</label>
 
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             PHOTO MANAGER
-        ================================================== -->
-
-        <section
-            id="photo-manager"
-            hidden
+        <input
+          id="photo-title"
+          type="text"
+          required
+          placeholder="Example: Wedding Ceremony"
         >
 
-            <div class="photo-header">
-
-                <button id="back-to-categories">
-                    ← Categories
-                </button>
+      </div>
 
 
-                <div>
+      <div class="form-group">
 
-                    <h2 id="current-category-name">
-                        Photos
-                    </h2>
+        <label>Description</label>
 
-                    <p id="current-category-path">
-                    </p>
+        <textarea
+          id="photo-description"
+          placeholder="Optional description"
+        ></textarea>
 
-                </div>
-
-
-                <button id="add-photo">
-                    + Add Photo
-                </button>
-
-            </div>
+      </div>
 
 
-            <div id="photo-grid">
+      <div class="upload-progress">
 
-                <p>
-                    No photos yet.
-                </p>
+        <div
+          id="upload-progress-bar"
+          class="upload-progress-bar"
+        ></div>
 
-            </div>
-
-        </section>
-
-    </section>
+      </div>
 
 
+      <button
+        id="upload-photo-btn"
+        type="submit"
+        class="btn btn-green"
+      >
+        Upload Photo
+      </button>
 
-    <!-- =====================================================
-         FIREBASE + ADMIN SYSTEM
-    ====================================================== -->
+      <button
+        id="cancel-photo-btn"
+        type="button"
+        class="btn btn-gray"
+      >
+        Cancel
+      </button>
 
-    <script type="module">
+    </form>
 
-        /* =====================================================
-           FIREBASE IMPORTS
-        ====================================================== */
+  </div>
 
-        import {
-            initializeApp
-        }
-        from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-
-
-        import {
-            getAuth,
-            signInWithEmailAndPassword,
-            onAuthStateChanged,
-            signOut
-        }
-        from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+</div>
 
 
-        import {
-            getFirestore,
-            collection,
-            getDocs,
-            addDoc,
-            updateDoc,
-            deleteDoc,
-            doc,
-            query,
-            orderBy,
-            serverTimestamp
-        }
-        from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+<!-- EDIT PHOTO MODAL -->
+
+<div
+  id="edit-photo-modal"
+  class="modal"
+>
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h2>Edit Photo</h2>
+
+      <button
+        id="close-edit-photo-modal"
+        class="close-modal"
+        type="button"
+      >
+        &times;
+      </button>
+
+    </div>
+
+    <div id="edit-photo-status" class="status"></div>
+
+    <form id="edit-photo-form">
+
+      <input
+        id="edit-photo-id"
+        type="hidden"
+      >
+
+      <div class="form-group">
+
+        <label>Photo Title</label>
+
+        <input
+          id="edit-photo-title"
+          type="text"
+          required
+        >
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Description</label>
+
+        <textarea
+          id="edit-photo-description"
+        ></textarea>
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Replace Image</label>
+
+        <input
+          id="edit-photo-file"
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+        >
+
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-green"
+      >
+        Save Changes
+      </button>
+
+      <button
+        id="cancel-edit-photo-btn"
+        type="button"
+        class="btn btn-gray"
+      >
+        Cancel
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
 
 
+<script type="module">
 
-        /* =====================================================
-           FIREBASE CONFIG
-        ====================================================== */
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 
-        const firebaseConfig = {
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-    apiKey:
-        "AIzaSyBlbeyeynUXvrSE-TBVjwaEiBobHTrBlQo",
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    getDoc,
+    doc,
+    updateDoc,
+    deleteDoc,
+    query,
+    orderBy,
+    where,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+  import {
+    getStorage,
+    ref,
+    uploadBytesResumable,
+    getDownloadURL,
+    deleteObject
+  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
+
+
+  /* =========================================
+     FIREBASE CONFIG
+  ========================================= */
+
+  const firebaseConfig = {
+
+    apiKey: "AIzaSyBlbeyeynUXvrSE-TBVjwaEiBobHTrBlQo",
 
     authDomain:
-        "reycreatestudio-portfoli-9b09b.firebaseapp.com",
+      "reycreatestudio-portfoli-9b09b.firebaseapp.com",
 
     projectId:
-        "reycreatestudio-portfoli-9b09b",
+      "reycreatestudio-portfoli-9b09b",
 
     storageBucket:
-        "reycreatestudio-portfoli-9b09b.firebasestorage.app",
+      "reycreatestudio-portfoli-9b09b.firebasestorage.app",
 
     messagingSenderId:
-        "41750977632",
+      "41750977632",
 
     appId:
-        "1:41750977632:web:f202e8614f20e5d9ceb705"
+      "1:41750977632:web:f202e8614f20e5d9ceb705"
 
-};
-        
+  };
 
 
-        const app =
-            initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseConfig);
 
+  const auth = getAuth(app);
 
-        const auth =
-            getAuth(app);
+  const db = getFirestore(app);
 
+  const storage = getStorage(app);
 
-        const db =
-            getFirestore(app);
 
+  /* =========================================
+     ELEMENTS
+  ========================================= */
 
+  const loginSection =
+    document.getElementById("login-section");
 
-        /* =====================================================
-           ELEMENTS
-        ====================================================== */
+  const adminSection =
+    document.getElementById("admin-section");
 
-        const loginSection =
-            document.getElementById(
-                "login-section"
-            );
+  const loginForm =
+    document.getElementById("login-form");
 
+  const logoutBtn =
+    document.getElementById("logout-btn");
 
-        const adminSection =
-            document.getElementById(
-                "admin-section"
-            );
+  const categoryTree =
+    document.getElementById("category-tree");
 
+  const addCategoryBtn =
+    document.getElementById("add-category-btn");
 
-        const categoryPanel =
-            document.getElementById(
-                "category-panel"
-            );
+  const refreshBtn =
+    document.getElementById("refresh-btn");
 
+  const photoModal =
+    document.getElementById("photo-modal");
 
-        const loginForm =
-            document.getElementById(
-                "login-form"
-            );
+  const editPhotoModal =
+    document.getElementById("edit-photo-modal");
 
+  let categories = [];
 
-        const loginButton =
-            document.getElementById(
-                "login-button"
-            );
+  let photos = [];
 
+  let currentPhotoCategoryId = null;
 
-        const loginMessage =
-            document.getElementById(
-                "login-message"
-            );
 
+  /* =========================================
+     STATUS
+  ========================================= */
 
-        const logoutButton =
-            document.getElementById(
-                "logout-button"
-            );
+  function showStatus(element, message, type = "info") {
 
+    element.textContent = message;
 
-        const addCategoryButton =
-            document.getElementById(
-                "add-category"
-            );
+    element.className =
+      "status show " + type;
 
+  }
 
-        const categoryManager =
-            document.getElementById(
-                "category-manager"
-            );
 
+  function hideStatus(element) {
 
-        const photoManager =
-            document.getElementById(
-                "photo-manager"
-            );
+    element.className = "status";
 
+    element.textContent = "";
 
-        const backToCategories =
-            document.getElementById(
-                "back-to-categories"
-            );
+  }
 
 
-        const addPhotoButton =
-            document.getElementById(
-                "add-photo"
-            );
+  /* =========================================
+     LOGIN
+  ========================================= */
 
+  loginForm.addEventListener("submit", async (event) => {
 
-        const photoGrid =
-            document.getElementById(
-                "photo-grid"
-            );
+    event.preventDefault();
 
+    const email =
+      document.getElementById("email").value.trim();
 
-        const currentCategoryName =
-            document.getElementById(
-                "current-category-name"
-            );
+    const password =
+      document.getElementById("password").value;
 
+    const status =
+      document.getElementById("login-status");
 
-        const currentCategoryPath =
-            document.getElementById(
-                "current-category-path"
-            );
+    try {
 
+      showStatus(
+        status,
+        "Logging in...",
+        "info"
+      );
 
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-        /* =====================================================
-           CURRENT CATEGORY
-        ====================================================== */
+      hideStatus(status);
 
-        let currentCategoryId = null;
+    } catch (error) {
 
-        let currentCategory = null;
+      console.error(error);
 
+      showStatus(
+        status,
+        error.message,
+        "error"
+      );
 
+    }
 
-        /* =====================================================
-           LOGIN
-        ====================================================== */
+  });
 
-        loginForm.addEventListener(
-            "submit",
-            async (event) => {
 
-                event.preventDefault();
+  logoutBtn.addEventListener("click", async () => {
 
+    await signOut(auth);
 
-                const email =
-                    document
-                        .getElementById("email")
-                        .value
-                        .trim();
+  });
 
 
-                const password =
-                    document
-                        .getElementById("password")
-                        .value;
+  onAuthStateChanged(auth, async (user) => {
 
+    if (user) {
 
-                loginButton.disabled =
-                    true;
+      loginSection.style.display = "none";
 
+      adminSection.style.display = "block";
 
-                loginMessage.textContent =
-                    "Logging in...";
+      logoutBtn.style.display = "block";
 
+      await loadPortfolio();
 
-                try {
+    } else {
 
-                    await signInWithEmailAndPassword(
-                        auth,
-                        email,
-                        password
-                    );
+      loginSection.style.display = "block";
 
+      adminSection.style.display = "none";
 
-                    loginMessage.textContent =
-                        "";
+      logoutBtn.style.display = "none";
 
-                } catch (error) {
+    }
 
-                    console.error(
-                        "Login error:",
-                        error
-                    );
+  });
 
 
-                    loginMessage.textContent =
-                        error.code +
-                        " — " +
-                        error.message;
+  /* =========================================
+     LOAD PORTFOLIO
+  ========================================= */
 
-                } finally {
+  async function loadPortfolio() {
 
-                    loginButton.disabled =
-                        false;
+    const status =
+      document.getElementById("admin-status");
 
-                }
+    try {
 
-            }
+      categoryTree.innerHTML =
+        '<div class="loading">Loading...</div>';
+
+      const categorySnapshot =
+        await getDocs(
+          query(
+            collection(db, "portfolio_categories"),
+            orderBy("sortOrder")
+          )
+        );
+
+      categories =
+        categorySnapshot.docs.map(item => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+
+      const photoSnapshot =
+        await getDocs(
+          query(
+            collection(db, "portfolio_photos"),
+            orderBy("sortOrder")
+          )
+        );
+
+      photos =
+        photoSnapshot.docs.map(item => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+
+      renderCategories();
+
+      hideStatus(status);
+
+    } catch (error) {
+
+      console.error(error);
+
+      showStatus(
+        status,
+        "Error loading portfolio: " +
+        error.message,
+        "error"
+      );
+
+      categoryTree.innerHTML =
+        '<div class="empty">Unable to load portfolio.</div>';
+
+    }
+
+  }
+
+
+  refreshBtn.addEventListener(
+    "click",
+    loadPortfolio
+  );
+
+
+  /* =========================================
+     CATEGORY TREE
+  ========================================= */
+
+  function getChildren(parentId) {
+
+    return categories
+      .filter(category =>
+        (category.parentId || null) === parentId
+      )
+      .sort(
+        (a, b) =>
+          (a.sortOrder || 0) -
+          (b.sortOrder || 0)
+      );
+
+  }
+
+
+  function renderCategories() {
+
+    categoryTree.innerHTML = "";
+
+    const roots =
+      getChildren(null);
+
+    if (!roots.length) {
+
+      categoryTree.innerHTML =
+        '<div class="empty">No categories yet.</div>';
+
+      return;
+
+    }
+
+    roots.forEach(category => {
+
+      categoryTree.appendChild(
+        createCategoryElement(category)
+      );
+
+    });
+
+  }
+
+
+  function createCategoryElement(category) {
+
+    const wrapper =
+      document.createElement("div");
+
+    wrapper.className = "category-item";
+
+
+    const row =
+      document.createElement("div");
+
+    row.className = "category-row";
+
+
+    const info =
+      document.createElement("div");
+
+    info.className = "category-info";
+
+
+    const name =
+      document.createElement("div");
+
+    name.className = "category-name";
+
+    name.textContent =
+      category.name || "Untitled";
+
+
+    const meta =
+      document.createElement("div");
+
+    meta.className = "category-meta";
+
+    const photoCount =
+      photos.filter(
+        photo =>
+          photo.categoryId === category.id
+      ).length;
+
+    const childCount =
+      categories.filter(
+        item =>
+          item.parentId === category.id
+      ).length;
+
+    meta.innerHTML =
+      `${photoCount} photo(s) • ` +
+      `${childCount} subcategory(ies)`;
+
+
+    if (category.visible === false) {
+
+      meta.innerHTML +=
+        ' • <span class="hidden-label">Hidden</span>';
+
+    }
+
+
+    info.appendChild(name);
+
+    info.appendChild(meta);
+
+
+    const actions =
+      document.createElement("div");
+
+    actions.className =
+      "category-actions";
+
+
+    const photoBtn =
+      makeButton(
+        "Photos",
+        "btn btn-green"
+      );
+
+    photoBtn.addEventListener(
+      "click",
+      () => openPhotoManager(category.id)
+    );
+
+
+    const subBtn =
+      makeButton(
+        "+ Subcategory",
+        "btn btn-blue"
+      );
+
+    subBtn.addEventListener(
+      "click",
+      () => addCategory(category.id)
+    );
+
+
+    const renameBtn =
+      makeButton(
+        "Rename",
+        "btn btn-gray"
+      );
+
+    renameBtn.addEventListener(
+      "click",
+      () => renameCategory(category)
+    );
+
+
+    const visibilityBtn =
+      makeButton(
+        category.visible === false
+          ? "Show"
+          : "Hide",
+        "btn btn-orange"
+      );
+
+    visibilityBtn.addEventListener(
+      "click",
+      () => toggleCategoryVisibility(category)
+    );
+
+
+    const deleteBtn =
+      makeButton(
+        "Delete",
+        "btn btn-red"
+      );
+
+    deleteBtn.addEventListener(
+      "click",
+      () => deleteCategory(category)
+    );
+
+
+    actions.appendChild(photoBtn);
+
+    actions.appendChild(subBtn);
+
+    actions.appendChild(renameBtn);
+
+    actions.appendChild(visibilityBtn);
+
+    actions.appendChild(deleteBtn);
+
+
+    row.appendChild(info);
+
+    row.appendChild(actions);
+
+
+    wrapper.appendChild(row);
+
+
+    const children =
+      getChildren(category.id);
+
+
+    if (children.length) {
+
+      const childContainer =
+        document.createElement("div");
+
+      childContainer.className =
+        "children";
+
+      children.forEach(child => {
+
+        childContainer.appendChild(
+          createCategoryElement(child)
+        );
+
+      });
+
+      wrapper.appendChild(
+        childContainer
+      );
+
+    }
+
+
+    return wrapper;
+
+  }
+
+
+  function makeButton(text, className) {
+
+    const button =
+      document.createElement("button");
+
+    button.type = "button";
+
+    button.textContent = text;
+
+    button.className = className;
+
+    return button;
+
+  }
+
+
+  /* =========================================
+     ADD CATEGORY
+  ========================================= */
+
+  addCategoryBtn.addEventListener(
+    "click",
+    () => addCategory(null)
+  );
+
+
+  async function addCategory(parentId) {
+
+    const name =
+      prompt(
+        parentId
+          ? "Subcategory name:"
+          : "Category name:"
+      );
+
+    if (!name || !name.trim()) {
+      return;
+    }
+
+
+    try {
+
+      const siblings =
+        getChildren(parentId);
+
+      await addDoc(
+        collection(
+          db,
+          "portfolio_categories"
+        ),
+        {
+          name: name.trim(),
+          description: "",
+          parentId: parentId || null,
+          sortOrder: siblings.length,
+          visible: true,
+          createdAt: serverTimestamp()
+        }
+      );
+
+      await loadPortfolio();
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Error creating category:\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     RENAME CATEGORY
+  ========================================= */
+
+  async function renameCategory(category) {
+
+    const name =
+      prompt(
+        "New category name:",
+        category.name
+      );
+
+    if (!name || !name.trim()) {
+      return;
+    }
+
+
+    try {
+
+      await updateDoc(
+        doc(
+          db,
+          "portfolio_categories",
+          category.id
+        ),
+        {
+          name: name.trim()
+        }
+      );
+
+      await loadPortfolio();
+
+    } catch (error) {
+
+      alert(
+        "Error renaming category:\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     CATEGORY VISIBILITY
+  ========================================= */
+
+  async function toggleCategoryVisibility(category) {
+
+    try {
+
+      await updateDoc(
+        doc(
+          db,
+          "portfolio_categories",
+          category.id
+        ),
+        {
+          visible:
+            category.visible === false
+        }
+      );
+
+      await loadPortfolio();
+
+    } catch (error) {
+
+      alert(
+        "Error changing visibility:\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     DELETE CATEGORY
+  ========================================= */
+
+  async function deleteCategory(category) {
+
+    const children =
+      categories.filter(
+        item =>
+          item.parentId === category.id
+      );
+
+    const categoryPhotos =
+      photos.filter(
+        photo =>
+          photo.categoryId === category.id
+      );
+
+
+    if (children.length) {
+
+      alert(
+        "This category contains subcategories.\n\n" +
+        "Delete or move the subcategories first."
+      );
+
+      return;
+
+    }
+
+
+    if (categoryPhotos.length) {
+
+      alert(
+        "This category still contains photos.\n\n" +
+        "Delete the photos first."
+      );
+
+      return;
+
+    }
+
+
+    const confirmed =
+      confirm(
+        `Delete "${category.name}"?`
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    try {
+
+      await deleteDoc(
+        doc(
+          db,
+          "portfolio_categories",
+          category.id
+        )
+      );
+
+      await loadPortfolio();
+
+    } catch (error) {
+
+      alert(
+        "Error deleting category:\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     PHOTO MANAGER
+  ========================================= */
+
+  function openPhotoManager(categoryId) {
+
+    currentPhotoCategoryId =
+      categoryId;
+
+    const category =
+      categories.find(
+        item =>
+          item.id === categoryId
+      );
+
+    if (!category) {
+      return;
+    }
+
+
+    renderPhotoManager(category);
+
+  }
+
+
+  function renderPhotoManager(category) {
+
+    const existing =
+      document.getElementById(
+        "photo-manager-" + category.id
+      );
+
+    if (existing) {
+
+      existing.remove();
+
+      return;
+
+    }
+
+
+    const container =
+      document.createElement("div");
+
+    container.className =
+      "photo-list";
+
+    container.id =
+      "photo-manager-" + category.id;
+
+
+    const heading =
+      document.createElement("div");
+
+    heading.style.marginBottom =
+      "15px";
+
+    heading.innerHTML =
+      `<strong>
+        Photos in: ${escapeHtml(category.name)}
+      </strong>`;
+
+
+    const addBtn =
+      makeButton(
+        "+ Add Photo",
+        "btn btn-green"
+      );
+
+    addBtn.addEventListener(
+      "click",
+      () => openAddPhotoModal(category.id)
+    );
+
+
+    heading.appendChild(
+      addBtn
+    );
+
+
+    container.appendChild(
+      heading
+    );
+
+
+    const categoryPhotos =
+      photos
+        .filter(
+          photo =>
+            photo.categoryId === category.id
+        )
+        .sort(
+          (a, b) =>
+            (a.sortOrder || 0) -
+            (b.sortOrder || 0)
         );
 
 
+    if (!categoryPhotos.length) {
 
-        /* =====================================================
-           LOGOUT
-        ====================================================== */
+      const empty =
+        document.createElement("div");
 
-        logoutButton.addEventListener(
-            "click",
-            async () => {
+      empty.className = "empty";
 
-                try {
+      empty.textContent =
+        "No photos in this category.";
 
-                    await signOut(auth);
+      container.appendChild(empty);
 
-                } catch (error) {
+    } else {
 
-                    console.error(
-                        "Logout error:",
-                        error
-                    );
+      const grid =
+        document.createElement("div");
 
-                }
+      grid.className =
+        "photo-grid";
 
-            }
+
+      categoryPhotos.forEach(photo => {
+
+        grid.appendChild(
+          createPhotoCard(photo)
+        );
+
+      });
+
+
+      container.appendChild(grid);
+
+    }
+
+
+    const categoryElement =
+      findCategoryElement(category.id);
+
+    if (categoryElement) {
+
+      categoryElement.appendChild(
+        container
+      );
+
+    }
+
+  }
+
+
+  function findCategoryElement(categoryId) {
+
+    return document.querySelector(
+      `.category-item[data-category-id="${categoryId}"]`
+    ) || findCategoryByText(categoryId);
+
+  }
+
+
+  function findCategoryByText(categoryId) {
+
+    const all =
+      document.querySelectorAll(
+        ".category-item"
+      );
+
+    for (const element of all) {
+
+      if (
+        element.dataset.categoryId ===
+        categoryId
+      ) {
+
+        return element;
+
+      }
+
+    }
+
+    return null;
+
+  }
+
+
+  /* Add category data attribute after creation */
+
+  const originalCreateCategoryElement =
+    createCategoryElement;
+
+
+  /* =========================================
+     PHOTO CARD
+  ========================================= */
+
+  function createPhotoCard(photo) {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "photo-card";
+
+
+    const image =
+      document.createElement("img");
+
+    image.className =
+      "photo-preview";
+
+    image.src =
+      photo.imageUrl;
+
+    image.alt =
+      photo.title || "";
+
+    image.loading =
+      "lazy";
+
+
+    const info =
+      document.createElement("div");
+
+    info.className =
+      "photo-info";
+
+
+    if (photo.isCover) {
+
+      const badge =
+        document.createElement("div");
+
+      badge.className =
+        "cover-badge";
+
+      badge.textContent =
+        "★ COVER";
+
+      info.appendChild(
+        badge
+      );
+
+    }
+
+
+    const title =
+      document.createElement("div");
+
+    title.className =
+      "photo-title";
+
+    title.textContent =
+      photo.title || "Untitled";
+
+
+    const description =
+      document.createElement("div");
+
+    description.className =
+      "photo-description";
+
+    description.textContent =
+      photo.description || "";
+
+
+    const actions =
+      document.createElement("div");
+
+    actions.className =
+      "photo-actions";
+
+
+    if (!photo.isCover) {
+
+      const coverBtn =
+        makeButton(
+          "Set Cover",
+          "btn btn-orange"
+        );
+
+      coverBtn.addEventListener(
+        "click",
+        () => setCover(photo)
+      );
+
+      actions.appendChild(
+        coverBtn
+      );
+
+    }
+
+
+    const editBtn =
+      makeButton(
+        "Edit",
+        "btn btn-blue"
+      );
+
+    editBtn.addEventListener(
+      "click",
+      () => openEditPhotoModal(photo)
+    );
+
+
+    const hideBtn =
+      makeButton(
+        photo.visible === false
+          ? "Show"
+          : "Hide",
+        "btn btn-gray"
+      );
+
+    hideBtn.addEventListener(
+      "click",
+      () => togglePhotoVisibility(photo)
+    );
+
+
+    const deleteBtn =
+      makeButton(
+        "Delete",
+        "btn btn-red"
+      );
+
+    deleteBtn.addEventListener(
+      "click",
+      () => deletePhoto(photo)
+    );
+
+
+    actions.appendChild(editBtn);
+
+    actions.appendChild(hideBtn);
+
+    actions.appendChild(deleteBtn);
+
+
+    info.appendChild(title);
+
+    info.appendChild(description);
+
+    info.appendChild(actions);
+
+
+    card.appendChild(image);
+
+    card.appendChild(info);
+
+
+    return card;
+
+  }
+
+
+  /* =========================================
+     ADD PHOTO MODAL
+  ========================================= */
+
+  function openAddPhotoModal(categoryId) {
+
+    currentPhotoCategoryId =
+      categoryId;
+
+    document.getElementById(
+      "photo-form"
+    ).reset();
+
+    document.getElementById(
+      "selected-file"
+    ).textContent = "";
+
+    document.getElementById(
+      "upload-progress-bar"
+    ).style.width = "0%";
+
+
+    hideStatus(
+      document.getElementById(
+        "photo-status"
+      )
+    );
+
+
+    photoModal.classList.add(
+      "show"
+    );
+
+  }
+
+
+  function closePhotoModal() {
+
+    photoModal.classList.remove(
+      "show"
+    );
+
+  }
+
+
+  document.getElementById(
+    "close-photo-modal"
+  ).addEventListener(
+    "click",
+    closePhotoModal
+  );
+
+
+  document.getElementById(
+    "cancel-photo-btn"
+  ).addEventListener(
+    "click",
+    closePhotoModal
+  );
+
+
+  document.getElementById(
+    "photo-file"
+  ).addEventListener(
+    "change",
+    event => {
+
+      const file =
+        event.target.files[0];
+
+      document.getElementById(
+        "selected-file"
+      ).textContent =
+        file
+          ? `${file.name} • ${formatBytes(file.size)}`
+          : "";
+
+    }
+  );
+
+
+  /* =========================================
+     UPLOAD PHOTO
+  ========================================= */
+
+  document.getElementById(
+    "photo-form"
+  ).addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+      const file =
+        document.getElementById(
+          "photo-file"
+        ).files[0];
+
+      const title =
+        document.getElementById(
+          "photo-title"
+        ).value.trim();
+
+      const description =
+        document.getElementById(
+          "photo-description"
+        ).value.trim();
+
+
+      if (!file) {
+
+        alert(
+          "Please choose an image."
+        );
+
+        return;
+
+      }
+
+
+      if (!title) {
+
+        alert(
+          "Please enter a photo title."
+        );
+
+        return;
+
+      }
+
+
+      const photoStatus =
+        document.getElementById(
+          "photo-status"
+        );
+
+      const uploadButton =
+        document.getElementById(
+          "upload-photo-btn"
         );
 
 
+      try {
 
-        /* =====================================================
-           AUTH STATE
-        ====================================================== */
+        uploadButton.disabled = true;
 
-        onAuthStateChanged(
-            auth,
-            async (user) => {
-
-                if (user) {
-
-                    console.log(
-                        "Admin logged in:",
-                        user.email
-                    );
-
-
-                    loginSection.hidden =
-                        true;
-
-
-                    adminSection.hidden =
-                        false;
-
-
-                    await loadCategories();
-
-                } else {
-
-                    loginSection.hidden =
-                        false;
-
-
-                    adminSection.hidden =
-                        true;
-
-                }
-
-            }
+        showStatus(
+          photoStatus,
+          "Uploading image...",
+          "info"
         );
 
 
-
-        /* =====================================================
-           ADD ROOT CATEGORY
-        ====================================================== */
-
-        addCategoryButton.addEventListener(
-            "click",
-            async () => {
-
-                const name =
-                    prompt(
-                        "Enter category name:"
-                    );
+        const safeName =
+          sanitizeFilename(
+            file.name
+          );
 
 
-                if (
-                    !name ||
-                    !name.trim()
-                ) {
-
-                    return;
-
-                }
-
-
-                try {
-
-                    await addDoc(
-                        collection(
-                            db,
-                            "portfolio_categories"
-                        ),
-                        {
-
-                            name:
-                                name.trim(),
-
-                            description:
-                                "",
-
-                            parentId:
-                                null,
-
-                            sortOrder:
-                                Date.now(),
-
-                            visible:
-                                true,
-
-                            createdAt:
-                                serverTimestamp()
-
-                        }
-                    );
+        const uniqueName =
+          Date.now() +
+          "_" +
+          Math.random()
+            .toString(36)
+            .substring(2, 8) +
+          "_" +
+          safeName;
 
 
-                    await loadCategories();
+        const storagePath =
+          `portfolio/${currentPhotoCategoryId}/${uniqueName}`;
 
 
-                } catch (error) {
+        const storageRef =
+          ref(
+            storage,
+            storagePath
+          );
 
-                    console.error(
-                        error
-                    );
 
-
-                    alert(
-                        "Unable to create category:\n\n" +
-                        error.message
-                    );
-
-                }
-
+        const uploadTask =
+          uploadBytesResumable(
+            storageRef,
+            file,
+            {
+              contentType:
+                file.type
             }
-        );
+          );
 
 
+        uploadTask.on(
+          "state_changed",
 
-        /* =====================================================
-           LOAD CATEGORIES
-        ====================================================== */
+          snapshot => {
 
-        async function loadCategories() {
+            const progress =
+              (
+                snapshot.bytesTransferred /
+                snapshot.totalBytes
+              ) * 100;
 
-            categoryManager.innerHTML =
-                "<p>Loading categories...</p>";
 
+            document.getElementById(
+              "upload-progress-bar"
+            ).style.width =
+              progress + "%";
 
-            try {
+          },
 
-                const categoryQuery =
-                    query(
-                        collection(
-                            db,
-                            "portfolio_categories"
-                        ),
-                        orderBy(
-                            "sortOrder"
-                        )
-                    );
+          error => {
 
+            console.error(error);
 
-                const snapshot =
-                    await getDocs(
-                        categoryQuery
-                    );
-
-
-                const categories = [];
-
-
-                snapshot.forEach(
-                    item => {
-
-                        categories.push({
-
-                            id:
-                                item.id,
-
-                            ...item.data()
-
-                        });
-
-                    }
-                );
-
-
-                categoryManager.innerHTML =
-                    "";
-
-
-                if (
-                    categories.length === 0
-                ) {
-
-                    categoryManager.innerHTML =
-                        "<p>No categories yet. Click + Add Category.</p>";
-
-                    return;
-
-                }
-
-
-                const tree =
-                    buildTree(
-                        categories,
-                        null
-                    );
-
-
-                renderTree(
-                    tree,
-                    categoryManager
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "Category error:",
-                    error
-                );
-
-
-                categoryManager.innerHTML =
-                    "<p>Unable to load categories.</p>";
-
-
-                alert(
-                    "Firestore error:\n\n" +
-                    error.message
-                );
-
-            }
-
-        }
-
-
-
-        /* =====================================================
-           BUILD CATEGORY TREE
-        ====================================================== */
-
-        function buildTree(
-            categories,
-            parentId
-        ) {
-
-            return categories
-
-                .filter(
-                    category =>
-                        (
-                            category.parentId ||
-                            null
-                        ) === parentId
-                )
-
-                .map(
-                    category => ({
-
-                        ...category,
-
-                        children:
-                            buildTree(
-                                categories,
-                                category.id
-                            )
-
-                    })
-                );
-
-        }
-
-
-
-        /* =====================================================
-           RENDER CATEGORY TREE
-        ====================================================== */
-
-        function renderTree(
-            categories,
-            container
-        ) {
-
-            categories.forEach(
-                category => {
-
-                    const row =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    row.className =
-                        "category-row";
-
-
-                    const content =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    content.className =
-                        "category-content";
-
-
-                    const information =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    const name =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    name.className =
-                        "category-name";
-
-
-                    name.textContent =
-                        "📁 " +
-                        category.name;
-
-
-                    const info =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    info.className =
-                        "category-info";
-
-
-                    const childCount =
-                        category.children.length;
-
-
-                    info.textContent =
-                        childCount +
-                        (
-                            childCount === 1
-                                ? " subcategory"
-                                : " subcategories"
-                        );
-
-
-                    information.appendChild(
-                        name
-                    );
-
-
-                    information.appendChild(
-                        info
-                    );
-
-
-
-                    const actions =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    actions.className =
-                        "category-actions";
-
-
-
-                    /* =========================
-                       PHOTOS
-                    ========================= */
-
-                    const photosButton =
-                        document.createElement(
-                            "button"
-                        );
-
-
-                    photosButton.textContent =
-                        "Photos";
-
-
-                    photosButton.addEventListener(
-                        "click",
-                        () =>
-                            openPhotoManager(
-                                category
-                            )
-                    );
-
-
-                    actions.appendChild(
-                        photosButton
-                    );
-
-
-
-                    /* =========================
-                       SUBCATEGORY
-                    ========================= */
-
-                    const addChild =
-                        document.createElement(
-                            "button"
-                        );
-
-
-                    addChild.textContent =
-                        "+ Subcategory";
-
-
-                    addChild.addEventListener(
-                        "click",
-                        () =>
-                            addSubcategory(
-                                category.id
-                            )
-                    );
-
-
-                    actions.appendChild(
-                        addChild
-                    );
-
-
-
-                    /* =========================
-                       RENAME
-                    ========================= */
-
-                    const rename =
-                        document.createElement(
-                            "button"
-                        );
-
-
-                    rename.textContent =
-                        "Rename";
-
-
-                    rename.addEventListener(
-                        "click",
-                        () =>
-                            renameCategory(
-                                category
-                            )
-                    );
-
-
-                    actions.appendChild(
-                        rename
-                    );
-
-
-
-                    /* =========================
-                       DELETE
-                    ========================= */
-
-                    const deleteButton =
-                        document.createElement(
-                            "button"
-                        );
-
-
-                    deleteButton.textContent =
-                        "Delete";
-
-
-                    deleteButton.className =
-                        "delete-button";
-
-
-                    deleteButton.addEventListener(
-                        "click",
-                        () =>
-                            deleteCategory(
-                                category
-                            )
-                    );
-
-
-                    actions.appendChild(
-                        deleteButton
-                    );
-
-
-
-                    content.appendChild(
-                        information
-                    );
-
-
-                    content.appendChild(
-                        actions
-                    );
-
-
-                    row.appendChild(
-                        content
-                    );
-
-
-
-                    /* =========================
-                       CHILDREN
-                    ========================= */
-
-                    if (
-                        category.children &&
-                        category.children.length
-                    ) {
-
-                        const children =
-                            document.createElement(
-                                "div"
-                            );
-
-
-                        children.className =
-                            "children";
-
-
-                        renderTree(
-                            category.children,
-                            children
-                        );
-
-
-                        row.appendChild(
-                            children
-                        );
-
-                    }
-
-
-                    container.appendChild(
-                        row
-                    );
-
-                }
+            showStatus(
+              photoStatus,
+              "Upload failed: " +
+              error.message,
+              "error"
             );
 
-        }
+            uploadButton.disabled =
+              false;
 
+          },
 
-
-        /* =====================================================
-           ADD SUBCATEGORY
-        ====================================================== */
-
-        async function addSubcategory(
-            parentId
-        ) {
-
-            const name =
-                prompt(
-                    "Enter subcategory name:"
-                );
-
-
-            if (
-                !name ||
-                !name.trim()
-            ) {
-
-                return;
-
-            }
-
-
-            try {
-
-                await addDoc(
-                    collection(
-                        db,
-                        "portfolio_categories"
-                    ),
-                    {
-
-                        name:
-                            name.trim(),
-
-                        description:
-                            "",
-
-                        parentId:
-                            parentId,
-
-                        sortOrder:
-                            Date.now(),
-
-                        visible:
-                            true,
-
-                        createdAt:
-                            serverTimestamp()
-
-                    }
-                );
-
-
-                await loadCategories();
-
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-
-                alert(
-                    "Unable to create subcategory:\n\n" +
-                    error.message
-                );
-
-            }
-
-        }
-
-
-
-        /* =====================================================
-           RENAME CATEGORY
-        ====================================================== */
-
-        async function renameCategory(
-            category
-        ) {
-
-            const newName =
-                prompt(
-                    "Enter new name:",
-                    category.name
-                );
-
-
-            if (
-                !newName ||
-                !newName.trim() ||
-                newName.trim() ===
-                category.name
-            ) {
-
-                return;
-
-            }
-
-
-            try {
-
-                await updateDoc(
-                    doc(
-                        db,
-                        "portfolio_categories",
-                        category.id
-                    ),
-                    {
-
-                        name:
-                            newName.trim()
-
-                    }
-                );
-
-
-                await loadCategories();
-
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-
-                alert(
-                    "Unable to rename category:\n\n" +
-                    error.message
-                );
-
-            }
-
-        }
-
-
-
-        /* =====================================================
-           DELETE CATEGORY
-        ====================================================== */
-
-        async function deleteCategory(
-            category
-        ) {
-
-            const confirmed =
-                confirm(
-                    "Delete \"" +
-                    category.name +
-                    "\"?\n\n" +
-                    "This deletes the category only. " +
-                    "Subcategories and photos are not automatically deleted."
-                );
-
-
-            if (!confirmed) {
-
-                return;
-
-            }
-
-
-            try {
-
-                await deleteDoc(
-                    doc(
-                        db,
-                        "portfolio_categories",
-                        category.id
-                    )
-                );
-
-
-                await loadCategories();
-
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-
-                alert(
-                    "Unable to delete category:\n\n" +
-                    error.message
-                );
-
-            }
-
-        }
-
-
-
-        /* =====================================================
-           OPEN PHOTO MANAGER
-        ====================================================== */
-
-        async function openPhotoManager(
-            category
-        ) {
-
-            currentCategoryId =
-                category.id;
-
-
-            currentCategory =
-                category;
-
-
-            categoryPanel.hidden =
-                true;
-
-
-            photoManager.hidden =
-                false;
-
-
-            currentCategoryName.textContent =
-                category.name;
-
-
-            currentCategoryPath.textContent =
-                "Portfolio / " +
-                category.name;
-
-
-            await loadPhotos();
-
-        }
-
-
-
-        /* =====================================================
-           BACK TO CATEGORIES
-        ====================================================== */
-
-        backToCategories.addEventListener(
-            "click",
-            () => {
-
-                photoManager.hidden =
-                    true;
-
-
-                categoryPanel.hidden =
-                    false;
-
-            }
-        );
-
-
-
-        /* =====================================================
-           LOAD PHOTOS
-        ====================================================== */
-
-        async function loadPhotos() {
-
-            photoGrid.innerHTML =
-                "<p>Loading photos...</p>";
-
-
-            try {
-
-                const photoQuery =
-                    query(
-                        collection(
-                            db,
-                            "portfolio_photos"
-                        ),
-                        orderBy(
-                            "sortOrder"
-                        )
-                    );
-
-
-                const snapshot =
-                    await getDocs(
-                        photoQuery
-                    );
-
-
-                const photos = [];
-
-
-                snapshot.forEach(
-                    item => {
-
-                        const data =
-                            item.data();
-
-
-                        if (
-                            data.categoryId ===
-                            currentCategoryId
-                        ) {
-
-                            photos.push({
-
-                                id:
-                                    item.id,
-
-                                ...data
-
-                            });
-
-                        }
-
-                    }
-                );
-
-
-                photoGrid.innerHTML =
-                    "";
-
-
-                if (
-                    photos.length === 0
-                ) {
-
-                    photoGrid.innerHTML =
-                        "<p>No photos yet. Click + Add Photo.</p>";
-
-                    return;
-
-                }
-
-
-                photos.forEach(
-                    photo => {
-
-                        renderPhoto(
-                            photo
-                        );
-
-                    }
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-
-                photoGrid.innerHTML =
-                    "<p>Unable to load photos.</p>";
-
-
-                alert(
-                    "Photo loading error:\n\n" +
-                    error.message
-                );
-
-            }
-
-        }
-
-
-
-        /* =====================================================
-           RENDER PHOTO
-        ====================================================== */
-
-        function renderPhoto(
-            photo
-        ) {
-
-            const card =
-                document.createElement(
-                    "article"
-                );
-
-
-            card.className =
-                "photo-card";
-
-
-            const imageWrapper =
-                document.createElement(
-                    "div"
-                );
-
-
-            imageWrapper.className =
-                "photo-image-wrapper";
-
-
-            const image =
-                document.createElement(
-                    "img"
-                );
-
-
-            image.src =
-                photo.imageUrl;
-
-
-            image.alt =
-                photo.title ||
-                "Portfolio photo";
-
-
-            image.loading =
-                "lazy";
-
-
-            image.onerror =
-                () => {
-
-                    image.style.display =
-                        "none";
-
-
-                    const errorText =
-                        document.createElement(
-                            "p"
-                        );
-
-
-                    errorText.textContent =
-                        "Image not found";
-
-
-                    errorText.style.padding =
-                        "20px";
-
-
-                    imageWrapper.appendChild(
-                        errorText
-                    );
-
-                };
-
-
-            imageWrapper.appendChild(
-                image
-            );
-
-
-
-            /* COVER */
-
-            if (
-                photo.isCover
-            ) {
-
-                const badge =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                badge.className =
-                    "cover-badge";
-
-
-                badge.textContent =
-                    "⭐ COVER";
-
-
-                imageWrapper.appendChild(
-                    badge
-                );
-
-            }
-
-
-
-            /* INFO */
-
-            const info =
-                document.createElement(
-                    "div"
-                );
-
-
-            info.className =
-                "photo-info";
-
-
-            const title =
-                document.createElement(
-                    "div"
-                );
-
-
-            title.className =
-                "photo-title";
-
-
-            title.textContent =
-                photo.title ||
-                "Untitled";
-
-
-
-            const description =
-                document.createElement(
-                    "div"
-                );
-
-
-            description.className =
-                "photo-description";
-
-
-            description.textContent =
-                photo.description ||
-                "";
-
-
-
-            /* ACTIONS */
-
-            const actions =
-                document.createElement(
-                    "div"
-                );
-
-
-            actions.className =
-                "photo-actions";
-
-
-
-            if (
-                !photo.isCover
-            ) {
-
-                const coverButton =
-                    document.createElement(
-                        "button"
-                    );
-
-
-                coverButton.textContent =
-                    "Set Cover";
-
-
-                coverButton.addEventListener(
-                    "click",
-                    () =>
-                        setCover(
-                            photo.id
-                        )
-                );
-
-
-                actions.appendChild(
-                    coverButton
-                );
-
-            }
-
-
-
-            /* EDIT */
-
-            const editButton =
-                document.createElement(
-                    "button"
-                );
-
-
-            editButton.textContent =
-                "Edit";
-
-
-            editButton.addEventListener(
-                "click",
-                () =>
-                    editPhoto(
-                        photo
-                    )
-            );
-
-
-            actions.appendChild(
-                editButton
-            );
-
-
-
-            /* DELETE */
-
-            const deleteButton =
-                document.createElement(
-                    "button"
-                );
-
-
-            deleteButton.textContent =
-                "Delete";
-
-
-            deleteButton.className =
-                "delete-photo";
-
-
-            deleteButton.addEventListener(
-                "click",
-                () =>
-                    deletePhoto(
-                        photo
-                    )
-            );
-
-
-            actions.appendChild(
-                deleteButton
-            );
-
-
-
-            info.appendChild(
-                title
-            );
-
-
-            info.appendChild(
-                description
-            );
-
-
-            info.appendChild(
-                actions
-            );
-
-
-            card.appendChild(
-                imageWrapper
-            );
-
-
-            card.appendChild(
-                info
-            );
-
-
-            photoGrid.appendChild(
-                card
-            );
-
-        }
-
-
-
-        /* =====================================================
-           ADD PHOTO
-        ====================================================== */
-
-        addPhotoButton.addEventListener(
-            "click",
-            async () => {
-
-                const title =
-                    prompt(
-                        "Photo title:"
-                    );
-
-
-                if (
-                    !title ||
-                    !title.trim()
-                ) {
-
-                    return;
-
-                }
-
-
-                const imageUrl =
-                    prompt(
-                        "GitHub image URL:\n\nExample:\nhttps://reycreatestudio.github.io/reycreate_studio-portfolio/Assets/portfolio/photography/photo1.jpg"
-                    );
-
-
-                if (
-                    !imageUrl ||
-                    !imageUrl.trim()
-                ) {
-
-                    return;
-
-                }
-
-
-                const description =
-                    prompt(
-                        "Photo description (optional):"
-                    ) || "";
-
-
-                try {
-
-                    await addDoc(
-                        collection(
-                            db,
-                            "portfolio_photos"
-                        ),
-                        {
-
-                            categoryId:
-                                currentCategoryId,
-
-                            title:
-                                title.trim(),
-
-                            description:
-                                description.trim(),
-
-                            imageUrl:
-                                imageUrl.trim(),
-
-                            sortOrder:
-                                Date.now(),
-
-                            isCover:
-                                false,
-
-                            visible:
-                                true,
-
-                            createdAt:
-                                serverTimestamp()
-
-                        }
-                    );
-
-
-                    await loadPhotos();
-
-
-                } catch (error) {
-
-                    console.error(
-                        error
-                    );
-
-
-                    alert(
-                        "Unable to add photo:\n\n" +
-                        error.message
-                    );
-
-                }
-
-            }
-        );
-
-
-
-        /* =====================================================
-           SET COVER
-        ====================================================== */
-
-        async function setCover(
-            photoId
-        ) {
-
-            try {
-
-                const photoQuery =
-                    query(
-                        collection(
-                            db,
-                            "portfolio_photos"
-                        ),
-                        orderBy(
-                            "sortOrder"
-                        )
-                    );
-
-
-                const snapshot =
-                    await getDocs(
-                        photoQuery
-                    );
-
-
-                const updates = [];
-
-
-                snapshot.forEach(
-                    item => {
-
-                        const data =
-                            item.data();
-
-
-                        if (
-                            data.categoryId ===
-                            currentCategoryId
-                        ) {
-
-                            updates.push(
-
-                                updateDoc(
-                                    doc(
-                                        db,
-                                        "portfolio_photos",
-                                        item.id
-                                    ),
-                                    {
-
-                                        isCover:
-                                            item.id ===
-                                            photoId
-
-                                    }
-                                )
-
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                await Promise.all(
-                    updates
-                );
-
-
-                await loadPhotos();
-
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-
-                alert(
-                    "Unable to set cover:\n\n" +
-                    error.message
-                );
-
-            }
-
-        }
-
-
-
-        /* =====================================================
-           EDIT PHOTO
-        ====================================================== */
-
-        async function editPhoto(
-            photo
-        ) {
-
-            const title =
-                prompt(
-                    "Photo title:",
-                    photo.title || ""
-                );
-
-
-            if (
-                !title ||
-                !title.trim()
-            ) {
-
-                return;
-
-            }
-
+          async () => {
 
             const imageUrl =
-                prompt(
-                    "Image URL:",
-                    photo.imageUrl || ""
-                );
+              await getDownloadURL(
+                uploadTask.snapshot.ref
+              );
 
 
-            if (
-                !imageUrl ||
-                !imageUrl.trim()
-            ) {
-
-                return;
-
-            }
+            const categoryPhotos =
+              photos.filter(
+                photo =>
+                  photo.categoryId ===
+                  currentPhotoCategoryId
+              );
 
 
-            const description =
-                prompt(
-                    "Description:",
-                    photo.description || ""
-                ) || "";
+            await addDoc(
+              collection(
+                db,
+                "portfolio_photos"
+              ),
+              {
+                categoryId:
+                  currentPhotoCategoryId,
 
+                title,
+
+                description,
+
+                imageUrl,
+
+                storagePath,
+
+                sortOrder:
+                  categoryPhotos.length,
+
+                isCover:
+                  categoryPhotos.length === 0,
+
+                visible:
+                  true,
+
+                createdAt:
+                  serverTimestamp()
+              }
+            );
+
+
+            showStatus(
+              photoStatus,
+              "Photo uploaded successfully!",
+              "success"
+            );
+
+
+            await loadPortfolio();
+
+
+            setTimeout(
+              () => {
+
+                closePhotoModal();
+
+              },
+              700
+            );
+
+          }
+        );
+
+      } catch (error) {
+
+        console.error(error);
+
+        showStatus(
+          photoStatus,
+          error.message,
+          "error"
+        );
+
+        uploadButton.disabled =
+          false;
+
+      }
+
+    }
+  );
+
+
+  /* =========================================
+     SET COVER
+  ========================================= */
+
+  async function setCover(photo) {
+
+    try {
+
+      const categoryPhotos =
+        photos.filter(
+          item =>
+            item.categoryId ===
+            photo.categoryId
+        );
+
+
+      for (const item of categoryPhotos) {
+
+        await updateDoc(
+          doc(
+            db,
+            "portfolio_photos",
+            item.id
+          ),
+          {
+            isCover:
+              item.id === photo.id
+          }
+        );
+
+      }
+
+
+      await loadPortfolio();
+
+    } catch (error) {
+
+      alert(
+        "Error setting cover:\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     EDIT PHOTO
+  ========================================= */
+
+  function openEditPhotoModal(photo) {
+
+    document.getElementById(
+      "edit-photo-id"
+    ).value =
+      photo.id;
+
+    document.getElementById(
+      "edit-photo-title"
+    ).value =
+      photo.title || "";
+
+    document.getElementById(
+      "edit-photo-description"
+    ).value =
+      photo.description || "";
+
+    document.getElementById(
+      "edit-photo-file"
+    ).value = "";
+
+
+    hideStatus(
+      document.getElementById(
+        "edit-photo-status"
+      )
+    );
+
+
+    editPhotoModal.classList.add(
+      "show"
+    );
+
+  }
+
+
+  function closeEditPhotoModal() {
+
+    editPhotoModal.classList.remove(
+      "show"
+    );
+
+  }
+
+
+  document.getElementById(
+    "close-edit-photo-modal"
+  ).addEventListener(
+    "click",
+    closeEditPhotoModal
+  );
+
+
+  document.getElementById(
+    "cancel-edit-photo-btn"
+  ).addEventListener(
+    "click",
+    closeEditPhotoModal
+  );
+
+
+  document.getElementById(
+    "edit-photo-form"
+  ).addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+
+      const id =
+        document.getElementById(
+          "edit-photo-id"
+        ).value;
+
+
+      const photo =
+        photos.find(
+          item =>
+            item.id === id
+        );
+
+
+      if (!photo) {
+        return;
+      }
+
+
+      const title =
+        document.getElementById(
+          "edit-photo-title"
+        ).value.trim();
+
+
+      const description =
+        document.getElementById(
+          "edit-photo-description"
+        ).value.trim();
+
+
+      const newFile =
+        document.getElementById(
+          "edit-photo-file"
+        ).files[0];
+
+
+      const status =
+        document.getElementById(
+          "edit-photo-status"
+        );
+
+
+      try {
+
+        showStatus(
+          status,
+          "Saving changes...",
+          "info"
+        );
+
+
+        let imageUrl =
+          photo.imageUrl;
+
+        let storagePath =
+          photo.storagePath;
+
+
+        if (newFile) {
+
+          const safeName =
+            sanitizeFilename(
+              newFile.name
+            );
+
+
+          const uniqueName =
+            Date.now() +
+            "_" +
+            Math.random()
+              .toString(36)
+              .substring(2, 8) +
+            "_" +
+            safeName;
+
+
+          const newPath =
+            `portfolio/${photo.categoryId}/${uniqueName}`;
+
+
+          const newRef =
+            ref(
+              storage,
+              newPath
+            );
+
+
+          const snapshot =
+            await uploadBytesResumable(
+              newRef,
+              newFile,
+              {
+                contentType:
+                  newFile.type
+              }
+            );
+
+
+          imageUrl =
+            await getDownloadURL(
+              snapshot.ref
+            );
+
+
+          storagePath =
+            newPath;
+
+
+          if (photo.storagePath) {
 
             try {
 
-                await updateDoc(
-                    doc(
-                        db,
-                        "portfolio_photos",
-                        photo.id
-                    ),
-                    {
+              await deleteObject(
+                ref(
+                  storage,
+                  photo.storagePath
+                )
+              );
 
-                        title:
-                            title.trim(),
+            } catch (deleteError) {
 
-                        description:
-                            description.trim(),
-
-                        imageUrl:
-                            imageUrl.trim()
-
-                    }
-                );
-
-
-                await loadPhotos();
-
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-
-                alert(
-                    "Unable to edit photo:\n\n" +
-                    error.message
-                );
+              console.warn(
+                "Old image could not be deleted:",
+                deleteError
+              );
 
             }
+
+          }
 
         }
 
 
+        await updateDoc(
+          doc(
+            db,
+            "portfolio_photos",
+            id
+          ),
+          {
+            title,
 
-        /* =====================================================
-           DELETE PHOTO
-        ====================================================== */
+            description,
 
-        async function deletePhoto(
-            photo
-        ) {
+            imageUrl,
 
-            const confirmed =
-                confirm(
-                    "Delete \"" +
-                    photo.title +
-                    "\"?"
-                );
-
-
-            if (!confirmed) {
-
-                return;
-
-            }
+            storagePath
+          }
+        );
 
 
-            try {
-
-                await deleteDoc(
-                    doc(
-                        db,
-                        "portfolio_photos",
-                        photo.id
-                    )
-                );
+        showStatus(
+          status,
+          "Photo updated!",
+          "success"
+        );
 
 
-                await loadPhotos();
+        await loadPortfolio();
 
 
-            } catch (error) {
+        setTimeout(
+          closeEditPhotoModal,
+          600
+        );
 
-                console.error(
-                    error
-                );
+
+      } catch (error) {
+
+        console.error(error);
+
+        showStatus(
+          status,
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
 
 
-                alert(
-                    "Unable to delete photo:\n\n" +
-                    error.message
-                );
+  /* =========================================
+     PHOTO VISIBILITY
+  ========================================= */
 
-            }
+  async function togglePhotoVisibility(photo) {
+
+    try {
+
+      await updateDoc(
+        doc(
+          db,
+          "portfolio_photos",
+          photo.id
+        ),
+        {
+          visible:
+            photo.visible === false
+        }
+      );
+
+      await loadPortfolio();
+
+    } catch (error) {
+
+      alert(
+        "Error changing visibility:\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     DELETE PHOTO
+  ========================================= */
+
+  async function deletePhoto(photo) {
+
+    const confirmed =
+      confirm(
+        `Delete "${photo.title}"?\n\n` +
+        "This will also delete the image from Firebase Storage."
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    try {
+
+      if (photo.storagePath) {
+
+        try {
+
+          await deleteObject(
+            ref(
+              storage,
+              photo.storagePath
+            )
+          );
+
+        } catch (storageError) {
+
+          console.warn(
+            "Storage file could not be deleted:",
+            storageError
+          );
 
         }
 
-    </script>
+      }
+
+
+      await deleteDoc(
+        doc(
+          db,
+          "portfolio_photos",
+          photo.id
+        )
+      );
+
+
+      await loadPortfolio();
+
+
+    } catch (error) {
+
+      alert(
+        "Error deleting photo:\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     HELPERS
+  ========================================= */
+
+  function sanitizeFilename(filename) {
+
+    return filename
+      .replace(
+        /[^a-zA-Z0-9._-]/g,
+        "_"
+      );
+
+  }
+
+
+  function formatBytes(bytes) {
+
+    if (!bytes) {
+      return "0 Bytes";
+    }
+
+    const sizes =
+      [
+        "Bytes",
+        "KB",
+        "MB",
+        "GB"
+      ];
+
+    const i =
+      Math.floor(
+        Math.log(bytes) /
+        Math.log(1024)
+      );
+
+    return (
+      parseFloat(
+        (
+          bytes /
+          Math.pow(1024, i)
+        ).toFixed(2)
+      ) +
+      " " +
+      sizes[i]
+    );
+
+  }
+
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
+  }
+
+
+  /* =========================================
+     FIX CATEGORY DATA ATTRIBUTES
+  ========================================= */
+
+  const originalRenderCategories =
+    renderCategories;
+
+
+  function addCategoryDataAttributes() {
+
+    const elements =
+      document.querySelectorAll(
+        ".category-item"
+      );
+
+    const names =
+      document.querySelectorAll(
+        ".category-name"
+      );
+
+    elements.forEach(
+      (element, index) => {
+
+        if (categories[index]) {
+
+          element.dataset.categoryId =
+            categories[index].id;
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /*
+    Re-render category tree and attach IDs.
+  */
+
+  const oldRender =
+    renderCategories;
+
+
+  renderCategories = function() {
+
+    categoryTree.innerHTML = "";
+
+    const roots =
+      getChildren(null);
+
+
+    if (!roots.length) {
+
+      categoryTree.innerHTML =
+        '<div class="empty">No categories yet.</div>';
+
+      return;
+
+    }
+
+
+    roots.forEach(category => {
+
+      const element =
+        createCategoryElementWithId(
+          category
+        );
+
+      categoryTree.appendChild(
+        element
+      );
+
+    });
+
+  };
+
+
+  function createCategoryElementWithId(
+    category
+  ) {
+
+    const element =
+      createCategoryElement(category);
+
+    element.dataset.categoryId =
+      category.id;
+
+    return element;
+
+  }
+
+
+  /* Rebuild child IDs */
+
+  function applyCategoryIds() {
+
+    const elements =
+      document.querySelectorAll(
+        ".category-item"
+      );
+
+    const assign =
+      (element, category) => {
+
+        element.dataset.categoryId =
+          category.id;
+
+
+        const children =
+          getChildren(category.id);
+
+
+        const childElements =
+          element.querySelectorAll(
+            ":scope > .children > .category-item"
+          );
+
+
+        childElements.forEach(
+          (childElement, index) => {
+
+            if (children[index]) {
+
+              assign(
+                childElement,
+                children[index]
+              );
+
+            }
+
+          }
+        );
+
+      };
+
+
+    const rootElements =
+      categoryTree.querySelectorAll(
+        ":scope > .category-item"
+      );
+
+
+    rootElements.forEach(
+      (element, index) => {
+
+        if (rootsExist(index)) {
+
+          const roots =
+            getChildren(null);
+
+          assign(
+            element,
+            roots[index]
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+
+  function rootsExist(index) {
+
+    return getChildren(null)[index] != null;
+
+  }
+
+
+  /* =========================================
+     REPLACE RENDER WITH SAFE VERSION
+  ========================================= */
+
+  function renderCategories() {
+
+  categoryTree.innerHTML = "";
+
+  const roots = getChildren(null);
+
+  if (!roots.length) {
+
+    categoryTree.innerHTML =
+      '<div class="empty">No categories yet.</div>';
+
+    return;
+  }
+
+  roots.forEach(category => {
+
+    categoryTree.appendChild(
+      createCategoryElement(category)
+    );
+
+  });
+
+}
+
+
+function createCategoryElement(category) {
+
+  const wrapper =
+    document.createElement("div");
+
+  wrapper.className =
+    "category-item";
+
+  wrapper.dataset.categoryId =
+    category.id;
+
+
+  const row =
+    document.createElement("div");
+
+  row.className =
+    "category-row";
+
+
+  const info =
+    document.createElement("div");
+
+  info.className =
+    "category-info";
+
+
+  const name =
+    document.createElement("div");
+
+  name.className =
+    "category-name";
+
+  name.textContent =
+    category.name || "Untitled";
+
+
+  const meta =
+    document.createElement("div");
+
+  meta.className =
+    "category-meta";
+
+
+  const photoCount =
+    photos.filter(
+      photo =>
+        photo.categoryId === category.id
+    ).length;
+
+
+  const childCount =
+    categories.filter(
+      item =>
+        item.parentId === category.id
+    ).length;
+
+
+  meta.innerHTML =
+    `${photoCount} photo(s) • ` +
+    `${childCount} subcategory(ies)`;
+
+
+  if (category.visible === false) {
+
+    meta.innerHTML +=
+      ' • <span class="hidden-label">Hidden</span>';
+
+  }
+
+
+  info.appendChild(name);
+
+  info.appendChild(meta);
+
+
+  const actions =
+    document.createElement("div");
+
+  actions.className =
+    "category-actions";
+
+
+  const photoBtn =
+    makeButton(
+      "Photos",
+      "btn btn-green"
+    );
+
+  photoBtn.onclick =
+    () => openPhotoManager(category.id);
+
+
+  const subBtn =
+    makeButton(
+      "+ Subcategory",
+      "btn btn-blue"
+    );
+
+  subBtn.onclick =
+    () => addCategory(category.id);
+
+
+  const renameBtn =
+    makeButton(
+      "Rename",
+      "btn btn-gray"
+    );
+
+  renameBtn.onclick =
+    () => renameCategory(category);
+
+
+  const visibilityBtn =
+    makeButton(
+      category.visible === false
+        ? "Show"
+        : "Hide",
+      "btn btn-orange"
+    );
+
+  visibilityBtn.onclick =
+    () => toggleCategoryVisibility(category);
+
+
+  const deleteBtn =
+    makeButton(
+      "Delete",
+      "btn btn-red"
+    );
+
+  deleteBtn.onclick =
+    () => deleteCategory(category);
+
+
+  actions.appendChild(photoBtn);
+
+  actions.appendChild(subBtn);
+
+  actions.appendChild(renameBtn);
+
+  actions.appendChild(visibilityBtn);
+
+  actions.appendChild(deleteBtn);
+
+
+  row.appendChild(info);
+
+  row.appendChild(actions);
+
+  wrapper.appendChild(row);
+
+
+  const children =
+    getChildren(category.id);
+
+
+  if (children.length) {
+
+    const childContainer =
+      document.createElement("div");
+
+    childContainer.className =
+      "children";
+
+
+    children.forEach(child => {
+
+      childContainer.appendChild(
+        createCategoryElement(child)
+      );
+
+    });
+
+
+    wrapper.appendChild(
+      childContainer
+    );
+
+  }
+
+
+  return wrapper;
+
+}
+
+
+  /*
+    Use the safe renderer.
+  */
+
+  renderCategories =
+    renderCategoryTreeSafe;
+
+
+  /* =========================================
+     INITIAL RENDER FIX
+  ========================================= */
+
+  /*
+    loadPortfolio calls the current renderCategories
+    function above.
+  */
+
+</script>
 
 </body>
-
 </html>
