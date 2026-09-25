@@ -3,15 +3,15 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-                storageBucket: "YOUR_PROJECT.firebasestorage.app",
-                    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-                        appId: "YOUR_APP_ID"
-                        };
+    apiKey: "AIzaSyBlbeyeynUXvrSE-TBVjwaEiBobHTrBlQo",
+    authDomain: "reycreatestudio-portfoli-9b09b.firebaseapp.com",
+    projectId: "reycreatestudio-portfoli-9b09b",
+    storageBucket: "reycreatestudio-portfoli-9b09b.firebasestorage.app",
+    messagingSenderId: "41750977632",
+    appId: "1:41750977632:web:f202e8614f20e5d9ceb705"
+};
 
-                        const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-                        export const auth = getAuth(app);
-                        export const db = getFirestore(app);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
