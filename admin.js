@@ -14,6 +14,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 
+/* =========================
+   ELEMENTS
+========================= */
+
 const loginSection =
     document.getElementById("login-section");
 
@@ -61,7 +65,7 @@ loginForm.addEventListener("submit", async (event) => {
 
     } catch (error) {
 
-        console.error(error);
+        console.error("Login error:", error);
 
         loginMessage.textContent =
             "Login failed. Check your email and password.";
@@ -77,7 +81,15 @@ loginForm.addEventListener("submit", async (event) => {
 
 logoutButton.addEventListener("click", async () => {
 
-    await signOut(auth);
+    try {
+
+        await signOut(auth);
+
+    } catch (error) {
+
+        console.error("Logout error:", error);
+
+    }
 
 });
 
@@ -90,14 +102,20 @@ onAuthStateChanged(auth, async (user) => {
 
     if (user) {
 
+        console.log("Admin logged in:", user.email);
+
         loginSection.hidden = true;
+
         adminSection.hidden = false;
 
         await loadCategories();
 
     } else {
 
+        console.log("No user logged in.");
+
         loginSection.hidden = false;
+
         adminSection.hidden = true;
 
     }
@@ -141,6 +159,8 @@ async function loadCategories() {
             const item =
                 document.createElement("div");
 
+            item.className = "category-row";
+
             item.textContent =
                 data.name || "Unnamed category";
 
@@ -150,7 +170,7 @@ async function loadCategories() {
 
     } catch (error) {
 
-        console.error(error);
+        console.error("Category loading error:", error);
 
         categoryManager.innerHTML =
             "<p>Unable to load categories.</p>";
