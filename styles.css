@@ -1541,3 +1541,75 @@ body.lightbox-open {
     }
 
 }
+
+.portfolio-lightbox .lightbox-content {
+  overflow: hidden;
+}
+
+#lightbox-image {
+  will-change: transform, opacity;
+}
+
+#lightbox-image.slide-out-left {
+  animation: lightboxSlideOutLeft 0.18s ease forwards;
+}
+
+#lightbox-image.slide-out-right {
+  animation: lightboxSlideOutRight 0.18s ease forwards;
+}
+
+#lightbox-image.slide-in-right {
+  animation: lightboxSlideInRight 0.35s ease forwards;
+}
+
+#lightbox-image.slide-in-left {
+  animation: lightboxSlideInLeft 0.35s ease forwards;
+}
+
+@keyframes lightboxSlideOutLeft {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes lightboxSlideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes lightboxSlideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes lightboxSlideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
