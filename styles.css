@@ -4,6 +4,7 @@
    MINIMALIST PHOTOGRAPHY PORTFOLIO
    ========================================================= */
 
+
 /* =========================================================
    GENERAL
    ========================================================= */
@@ -56,11 +57,6 @@ a,
    IMAGE PROTECTION
    ========================================================= */
 
-/*
- * Prevent normal browser image interaction.
- * This does not affect the gallery click events.
- */
-
 img {
    -webkit-user-drag: none;
    user-drag: none;
@@ -69,14 +65,7 @@ img {
 
    user-select: none;
    -webkit-user-select: none;
-
-   -webkit-user-drag: none;
 }
-
-
-/*
- * Portfolio images specifically.
- */
 
 #portfolio img,
 #portfolio-lightbox img {
@@ -89,19 +78,6 @@ img {
    -webkit-user-select: none;
 }
 
-
-/*
- * Invisible protection layer over the lightbox image.
-
- * pointer-events:none is intentional.
- *
- * It means the protection layer cannot interfere with:
- * - swipe
- * - next/previous
- * - lightbox animation
- * - existing JavaScript
- */
-
 .lightbox-image-protection {
    position: absolute;
 
@@ -112,7 +88,6 @@ img {
    pointer-events: none;
 
    user-select: none;
-
    -webkit-user-select: none;
 
    -webkit-touch-callout: none;
@@ -131,18 +106,22 @@ nav,
 nav {
    justify-content: space-around;
    align-items: center;
+
    height: 17vh;
 }
 
 .logo {
    font-size: 2rem;
    font-weight: 500;
+
    cursor: default;
 }
 
 .nav-links {
    gap: 2rem;
+
    list-style: none;
+
    font-size: 1.5rem;
 }
 
@@ -157,11 +136,13 @@ nav {
 
 .hamburger-menu {
    position: relative;
+
    display: inline-block;
 }
 
 .hamburger-icon {
    display: flex;
+
    flex-direction: column;
    justify-content: space-between;
 
@@ -192,6 +173,7 @@ nav {
    right: 0;
 
    width: 200px;
+
    max-height: 0;
 
    overflow: hidden;
@@ -223,17 +205,32 @@ nav {
 .menu-links a {
    display: block;
 
-   padding: 12px 20px;
+   width: 100%;
+
+   padding: 14px 20px;
 
    text-align: center;
 
    font-size: 1.2rem;
 
    color: #000000;
+
+   text-decoration: none;
+
+   cursor: pointer;
+
+   position: relative;
+
+   z-index: 1001;
 }
 
-.menu-links a:hover {
+.menu-links a:hover,
+.menu-links a:active {
    background-color: rgb(245, 245, 245);
+
+   color: #000000;
+
+   text-decoration: none;
 }
 
 
@@ -337,6 +334,7 @@ section {
    display: flex;
 
    justify-content: center;
+   align-items: center;
 
    gap: 1rem;
 
@@ -383,100 +381,7 @@ section {
    border-color: rgb(53, 53, 53);
 }
 
-/* -------------------------
-   PROFILE - MOBILE CENTER
-   ------------------------- */
 
-#profile {
-   display: flex;
-
-   flex-direction: column;
-
-   justify-content: center;
-   align-items: center;
-
-   gap: 1.5rem;
-
-   min-height: 85vh;
-
-   text-align: center;
-}
-
-.section__pic-container {
-   display: flex;
-
-   justify-content: center;
-   align-items: center;
-
-   width: 100%;
-}
-
-.section__pic-container img {
-   width: 280px;
-   height: 280px;
-
-   object-fit: cover;
-
-   border-radius: 50%;
-}
-
-.section__text {
-   width: 100%;
-
-   display: flex;
-
-   flex-direction: column;
-
-   align-items: center;
-
-   justify-content: center;
-
-   text-align: center;
-}
-
-.section__text__p1,
-.section__text__p2,
-.title {
-   width: 100%;
-
-   text-align: center;
-}
-
-.section__text__p2 {
-   font-size: 1.25rem;
-
-   margin-bottom: 1rem;
-}
-
-/* BUTTONS */
-
-.btn-container {
-   display: flex;
-
-   justify-content: center;
-   align-items: center;
-
-   width: 100%;
-
-   gap: 0.75rem;
-
-   margin-top: 1rem;
-}
-
-/* SOCIAL ICONS */
-
-#socials-container {
-   display: flex;
-
-   justify-content: center;
-   align-items: center;
-
-   width: 100%;
-
-   gap: 0.75rem;
-
-   margin-top: 1rem;
-}
 /* =========================================================
    SOCIAL MEDIA
    ========================================================= */
@@ -709,7 +614,6 @@ section {
    margin: 0 auto 25px;
 
    font-size: 0.72rem;
-
    font-weight: 400;
 
    letter-spacing: 0.08em;
@@ -843,6 +747,25 @@ section {
    cursor: pointer;
 
    outline: none;
+
+   border: 1px solid #d8d8d8;
+
+   border-radius: 4px;
+
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+   transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
+}
+
+.portfolio-category-card:hover {
+   border-color: #999999;
+
+   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10);
+
+   transform: translateY(-3px);
 }
 
 .portfolio-category-card:focus-visible {
@@ -1021,11 +944,31 @@ section {
 
    outline: none;
 
-   /*
-    * Prevent accidental text/image selection.
-    */
    user-select: none;
    -webkit-user-select: none;
+
+   border: 1px solid #d8d8d8;
+
+   border-radius: 4px;
+
+   padding: 8px;
+
+   background: #ffffff;
+
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+   transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
+}
+
+.portfolio-photo-card:hover {
+   border-color: #999999;
+
+   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10);
+
+   transform: translateY(-3px);
 }
 
 .portfolio-photo-card:focus-visible {
@@ -1048,6 +991,8 @@ section {
 
    background: #f3f3f3;
 
+   border-radius: 2px;
+
    user-select: none;
    -webkit-user-select: none;
 }
@@ -1056,14 +1001,12 @@ section {
    display: block;
 
    width: 100%;
-
    height: auto;
+
+   max-width: 100%;
 
    object-fit: contain;
 
-   /*
-    * Image protection
-    */
    pointer-events: auto;
 
    user-select: none;
@@ -1318,19 +1261,14 @@ section {
    align-items: center;
    justify-content: center;
 
-   width: min(1100px, 90vw);
+   width: 96vw;
 
-   max-height: 92vh;
+   max-width: 1400px;
+
+   max-height: 94vh;
 
    overflow: hidden;
 }
-
-
-/*
- * Keep protection layer over the image
- * while allowing existing controls and
- * slide animation to continue.
- */
 
 .lightbox-image-protection {
    position: absolute;
@@ -1342,12 +1280,15 @@ section {
    pointer-events: none;
 
    user-select: none;
-
    -webkit-user-select: none;
 
    -webkit-touch-callout: none;
 }
 
+
+/* =========================================================
+   LIGHTBOX IMAGE
+   ========================================================= */
 
 #lightbox-image {
    display: block;
@@ -1357,21 +1298,20 @@ section {
    z-index: 1;
 
    width: auto;
+   height: auto;
 
-   max-width: 100%;
+   max-width: 94vw;
 
-   max-height: 78vh;
+   max-height: 84vh;
 
    object-fit: contain;
 
    will-change: transform, opacity;
 
    user-select: none;
-
    -webkit-user-select: none;
 
    -webkit-user-drag: none;
-
    user-drag: none;
 
    -webkit-touch-callout: none;
@@ -1534,7 +1474,6 @@ section {
    animation: lightboxSlideInLeft 0.35s ease forwards;
 }
 
-
 @keyframes lightboxSlideOutLeft {
 
    from {
@@ -1550,7 +1489,6 @@ section {
    }
 
 }
-
 
 @keyframes lightboxSlideOutRight {
 
@@ -1568,7 +1506,6 @@ section {
 
 }
 
-
 @keyframes lightboxSlideInRight {
 
    from {
@@ -1584,7 +1521,6 @@ section {
    }
 
 }
-
 
 @keyframes lightboxSlideInLeft {
 
@@ -1669,6 +1605,7 @@ article h3 {
    margin: 0;
 
    font-size: 1rem;
+
    line-height: 1.4;
 }
 
@@ -1676,6 +1613,7 @@ article p {
    margin: 2px 0 0;
 
    font-size: 0.85rem;
+
    line-height: 1.4;
 }
 
@@ -1798,23 +1736,92 @@ article p {
    }
 
 
-   /* PROFILE */
+   /* =====================================================
+      MOBILE NAVIGATION
+      ===================================================== */
+
+   #desktop-nav {
+      display: none;
+   }
+
+   #hamburger-nav {
+      display: flex;
+
+      justify-content: space-between;
+      align-items: center;
+
+      height: 10vh;
+
+      padding: 0 1rem;
+   }
+
+   #hamburger-nav .logo {
+      font-size: 1.5rem;
+   }
+
+
+   /* =====================================================
+      MOBILE PROFILE
+      ===================================================== */
 
    #profile {
+      display: flex;
+
       flex-direction: column;
 
-      gap: 2rem;
+      justify-content: center;
+      align-items: center;
+
+      gap: 1.5rem;
 
       min-height: 85vh;
+
+      text-align: center;
+   }
+
+   .section__pic-container {
+      display: flex;
+
+      justify-content: center;
+      align-items: center;
+
+      width: 100%;
    }
 
    .section__pic-container img {
       width: 280px;
       height: 280px;
+
+      object-fit: cover;
+
+      border-radius: 50%;
+   }
+
+   .section__text {
+      width: 100%;
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+   }
+
+   .section__text__p1,
+   .section__text__p2,
+   .title {
+      width: 100%;
+
+      text-align: center;
    }
 
    .section__text__p2 {
       font-size: 1.25rem;
+
+      margin-bottom: 1rem;
    }
 
    .title {
@@ -1822,7 +1829,53 @@ article p {
    }
 
 
-   /* ABOUT */
+   /* =====================================================
+      MOBILE PROFILE BUTTONS
+      ===================================================== */
+
+   .btn-container {
+      display: flex;
+
+      justify-content: center;
+      align-items: center;
+
+      width: 100%;
+
+      gap: 0.75rem;
+
+      margin-top: 1rem;
+   }
+
+   .btn {
+      width: 9rem;
+
+      padding: 0.85rem 0.7rem;
+
+      font-size: 0.85rem;
+   }
+
+
+   /* =====================================================
+      MOBILE SOCIAL ICONS
+      ===================================================== */
+
+   #socials-container {
+      display: flex;
+
+      justify-content: center;
+      align-items: center;
+
+      width: 100%;
+
+      gap: 0.75rem;
+
+      margin-top: 1rem;
+   }
+
+
+   /* =====================================================
+      MOBILE ABOUT
+      ===================================================== */
 
    .about-containers {
       flex-direction: column;
@@ -1831,7 +1884,9 @@ article p {
    }
 
 
-   /* EXPERIENCE */
+   /* =====================================================
+      MOBILE EXPERIENCE
+      ===================================================== */
 
    #experience {
       padding-top: 8vh;
@@ -1849,10 +1904,19 @@ article p {
 
    article {
       width: 100%;
+
+      grid-template-columns: 2rem 1fr;
+   }
+
+   article .icon {
+      width: 1.4rem;
+      height: 1.4rem;
    }
 
 
-   /* CONTACT */
+   /* =====================================================
+      MOBILE CONTACT
+      ===================================================== */
 
    .contact-info-upper-container {
       width: 100%;
@@ -1867,7 +1931,9 @@ article p {
    }
 
 
-   /* PORTFOLIO */
+   /* =====================================================
+      MOBILE PORTFOLIO
+      ===================================================== */
 
    #portfolio {
       padding: 60px 15px 80px;
@@ -1884,7 +1950,9 @@ article p {
    }
 
 
-   /* BREADCRUMB */
+   /* =====================================================
+      MOBILE BREADCRUMB
+      ===================================================== */
 
    .portfolio-breadcrumb {
       gap: 6px;
@@ -1895,7 +1963,9 @@ article p {
    }
 
 
-   /* BACK */
+   /* =====================================================
+      MOBILE BACK BUTTON
+      ===================================================== */
 
    .portfolio-back {
       margin-bottom: 22px;
@@ -1904,7 +1974,9 @@ article p {
    }
 
 
-   /* CATEGORIES */
+   /* =====================================================
+      MOBILE CATEGORY GRID
+      ===================================================== */
 
    .portfolio-category-view {
       grid-template-columns: 1fr;
@@ -1929,7 +2001,9 @@ article p {
    }
 
 
-   /* SUBCATEGORIES */
+   /* =====================================================
+      MOBILE SUBCATEGORIES
+      ===================================================== */
 
    .portfolio-subcategories {
       grid-template-columns: 1fr;
@@ -1940,7 +2014,9 @@ article p {
    }
 
 
-   /* PHOTOS */
+   /* =====================================================
+      MOBILE PHOTO GRID
+      ===================================================== */
 
    .portfolio-photo-grid {
       grid-template-columns: 1fr;
@@ -1948,12 +2024,18 @@ article p {
       gap: 25px;
    }
 
+   .portfolio-photo-card {
+      padding: 6px;
+   }
+
    .portfolio-photo-info {
       padding-top: 10px;
    }
 
 
-   /* LIGHTBOX */
+   /* =====================================================
+      MOBILE LIGHTBOX
+      ===================================================== */
 
    .portfolio-lightbox {
       padding: 15px;
@@ -1961,12 +2043,21 @@ article p {
 
    .portfolio-lightbox .lightbox-content {
       width: 100%;
+
+      max-width: none;
+
+      max-height: 94vh;
    }
 
    #lightbox-image {
-      max-width: 100%;
+      width: auto;
+      height: auto;
 
-      max-height: 72vh;
+      max-width: 96vw;
+
+      max-height: 78vh;
+
+      object-fit: contain;
    }
 
    .lightbox-caption {
@@ -1982,7 +2073,9 @@ article p {
    }
 
 
-   /* ARROWS */
+   /* =====================================================
+      MOBILE LIGHTBOX ARROWS
+      ===================================================== */
 
    .lightbox-prev,
    .lightbox-next {
@@ -2002,7 +2095,9 @@ article p {
    }
 
 
-   /* CLOSE */
+   /* =====================================================
+      MOBILE LIGHTBOX CLOSE
+      ===================================================== */
 
    .lightbox-close {
       top: 8px;
@@ -2013,6 +2108,16 @@ article p {
       height: 40px;
 
       font-size: 1.8rem;
+   }
+
+
+   /* =====================================================
+      MOBILE PORTFOLIO FRAMES
+      ===================================================== */
+
+   .portfolio-category-card,
+   .portfolio-photo-card {
+      border-radius: 4px;
    }
 
 }
@@ -2028,6 +2133,10 @@ article p {
       margin: 0 1rem;
    }
 
+   #hamburger-nav .logo {
+      font-size: 1.3rem;
+   }
+
    #portfolio {
       padding-left: 12px;
 
@@ -2036,6 +2145,11 @@ article p {
 
    #portfolio .title {
       font-size: 1.8rem;
+   }
+
+   .section__pic-container img {
+      width: 240px;
+      height: 240px;
    }
 
    .portfolio-category-info {
@@ -2089,146 +2203,6 @@ article p {
 
    .portfolio-loading span {
       animation: none;
-   }
-
-}
-
-/* =========================================================
-   VISIBLE PORTFOLIO BUTTON FRAME
-   ========================================================= */
-
-/* Category cards */
-.portfolio-category-card {
-   border: 1px solid #d8d8d8;
-   border-radius: 4px;
-   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-
-   transition:
-      border-color 0.3s ease,
-      box-shadow 0.3s ease,
-      transform 0.3s ease;
-}
-
-.portfolio-category-card:hover {
-   border-color: #999999;
-
-   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10);
-
-   transform: translateY(-3px);
-}
-
-
-/* Photo cards */
-.portfolio-photo-card {
-   border: 1px solid #d8d8d8;
-   border-radius: 4px;
-
-   padding: 8px;
-
-   background: #ffffff;
-
-   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-
-   transition:
-      border-color 0.3s ease,
-      box-shadow 0.3s ease,
-      transform 0.3s ease;
-}
-
-.portfolio-photo-card:hover {
-   border-color: #999999;
-
-   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10);
-
-   transform: translateY(-3px);
-}
-
-
-/* Keep photo image inside the frame */
-.portfolio-photo-image {
-   border-radius: 2px;
-}
-
-
-/* Visible CLICK indicator */
-.portfolio-category-card::after,
-.portfolio-photo-card::after {
-   content: "VIEW";
-
-   position: absolute;
-
-   right: 14px;
-   top: 14px;
-
-   padding: 5px 10px;
-
-   border: 1px solid rgba(255, 255, 255, 0.75);
-
-   border-radius: 2px;
-
-   background: rgba(0, 0, 0, 0.45);
-
-   color: #ffffff;
-
-   font-family: "Poppins", sans-serif;
-
-   font-size: 0.58rem;
-
-   font-weight: 400;
-
-   letter-spacing: 0.12em;
-
-   opacity: 0;
-
-   transform: translateY(-5px);
-
-   transition:
-      opacity 0.3s ease,
-      transform 0.3s ease;
-
-   pointer-events: none;
-
-   z-index: 5;
-}
-
-
-/* Show VIEW button when hovering */
-.portfolio-category-card:hover::after,
-.portfolio-photo-card:hover::after {
-   opacity: 1;
-
-   transform: translateY(0);
-}
-
-
-/* Keyboard accessibility */
-.portfolio-category-card:focus-visible,
-.portfolio-photo-card:focus-visible {
-   outline: 2px solid #111111;
-
-   outline-offset: 4px;
-}
-
-
-/* Mobile */
-@media screen and (max-width: 600px) {
-
-   .portfolio-photo-card {
-      padding: 6px;
-   }
-
-   .portfolio-category-card::after,
-   .portfolio-photo-card::after {
-      opacity: 1;
-
-      transform: none;
-
-      right: 10px;
-      top: 10px;
-
-      padding: 4px 8px;
-
-      font-size: 0.52rem;
    }
 
 }
