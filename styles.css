@@ -1248,6 +1248,46 @@ section {
 
 
 /* =========================================================
+   LIGHTBOX
+   ========================================================= */
+
+.portfolio-lightbox {
+   position: fixed;
+
+   inset: 0;
+
+   z-index: 9999;
+
+   display: flex;
+
+   align-items: center;
+   justify-content: center;
+
+   padding: 20px;
+
+   background: rgba(10, 10, 10, 0.96);
+
+   opacity: 0;
+
+   visibility: hidden;
+
+   pointer-events: none;
+
+   transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease;
+}
+
+.portfolio-lightbox.active {
+   opacity: 1;
+
+   visibility: visible;
+
+   pointer-events: auto;
+}
+
+
+/* =========================================================
    LIGHTBOX CONTENT
    ========================================================= */
 
@@ -1261,14 +1301,19 @@ section {
    align-items: center;
    justify-content: center;
 
-   width: 96vw;
+   width: auto;
 
-   max-width: 1400px;
+   max-width: 92vw;
 
-   max-height: 94vh;
+   max-height: 92vh;
 
    overflow: hidden;
 }
+
+
+/* =========================================================
+   IMAGE PROTECTION
+   ========================================================= */
 
 .lightbox-image-protection {
    position: absolute;
@@ -1298,11 +1343,12 @@ section {
    z-index: 1;
 
    width: auto;
+
    height: auto;
 
-   max-width: 94vw;
+   max-width: 92vw;
 
-   max-height: 84vh;
+   max-height: 80vh;
 
    object-fit: contain;
 
@@ -1325,9 +1371,11 @@ section {
    ========================================================= */
 
 .lightbox-caption {
-   width: 100%;
+   width: auto;
 
-   padding: 15px 20px 0;
+   max-width: 650px;
+
+   padding: 12px 20px 0;
 
    text-align: center;
 
@@ -1396,7 +1444,7 @@ section {
 
 
 /* =========================================================
-   LIGHTBOX CLOSE
+   CLOSE
    ========================================================= */
 
 .lightbox-close {
@@ -1420,7 +1468,7 @@ section {
 
 
 /* =========================================================
-   LIGHTBOX PREVIOUS / NEXT
+   PREVIOUS / NEXT
    ========================================================= */
 
 .lightbox-prev,
@@ -1478,13 +1526,11 @@ section {
 
    from {
       transform: translateX(0);
-
       opacity: 1;
    }
 
    to {
       transform: translateX(-100%);
-
       opacity: 0;
    }
 
@@ -1494,13 +1540,11 @@ section {
 
    from {
       transform: translateX(0);
-
       opacity: 1;
    }
 
    to {
       transform: translateX(100%);
-
       opacity: 0;
    }
 
@@ -1510,13 +1554,11 @@ section {
 
    from {
       transform: translateX(100%);
-
       opacity: 0;
    }
 
    to {
       transform: translateX(0);
-
       opacity: 1;
    }
 
@@ -1526,19 +1568,15 @@ section {
 
    from {
       transform: translateX(-100%);
-
       opacity: 0;
    }
 
    to {
       transform: translateX(0);
-
       opacity: 1;
    }
 
 }
-
-
 /* =========================================================
    EXPERIENCE
    ========================================================= */
