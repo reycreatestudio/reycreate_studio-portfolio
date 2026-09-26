@@ -8,7 +8,7 @@
    GENERAL
    ========================================================= */
 
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
 * {
    margin: 0;
@@ -51,6 +51,74 @@ a,
    transition: all 300ms ease;
 }
 
+
+/* =========================================================
+   IMAGE PROTECTION
+   ========================================================= */
+
+/*
+ * Prevent normal browser image interaction.
+ * This does not affect the gallery click events.
+ */
+
+img {
+   -webkit-user-drag: none;
+   user-drag: none;
+
+   -webkit-touch-callout: none;
+
+   user-select: none;
+   -webkit-user-select: none;
+
+   -webkit-user-drag: none;
+}
+
+
+/*
+ * Portfolio images specifically.
+ */
+
+#portfolio img,
+#portfolio-lightbox img {
+   -webkit-user-drag: none;
+   user-drag: none;
+
+   -webkit-touch-callout: none;
+
+   user-select: none;
+   -webkit-user-select: none;
+}
+
+
+/*
+ * Invisible protection layer over the lightbox image.
+
+ * pointer-events:none is intentional.
+ *
+ * It means the protection layer cannot interfere with:
+ * - swipe
+ * - next/previous
+ * - lightbox animation
+ * - existing JavaScript
+ */
+
+.lightbox-image-protection {
+   position: absolute;
+
+   inset: 0;
+
+   z-index: 2;
+
+   pointer-events: none;
+
+   user-select: none;
+
+   -webkit-user-select: none;
+
+   -webkit-touch-callout: none;
+}
+
+
 /* =========================================================
    NAVIGATION
    ========================================================= */
@@ -77,6 +145,7 @@ nav {
    list-style: none;
    font-size: 1.5rem;
 }
+
 
 /* =========================================================
    HAMBURGER NAVIGATION
@@ -110,6 +179,7 @@ nav {
 
    transition: all 0.3s ease-in-out;
 }
+
 
 /* =========================================================
    HAMBURGER MENU
@@ -166,6 +236,7 @@ nav {
    background-color: rgb(245, 245, 245);
 }
 
+
 /* =========================================================
    HAMBURGER ANIMATION
    ========================================================= */
@@ -182,6 +253,7 @@ nav {
    transform: rotate(-45deg) translate(7px, -7px);
 }
 
+
 /* =========================================================
    SECTIONS
    ========================================================= */
@@ -197,6 +269,7 @@ section {
 
    box-sizing: border-box;
 }
+
 
 /* =========================================================
    PROFILE
@@ -255,6 +328,7 @@ section {
    text-align: center;
 }
 
+
 /* =========================================================
    BUTTONS
    ========================================================= */
@@ -309,6 +383,7 @@ section {
    border-color: rgb(53, 53, 53);
 }
 
+
 /* =========================================================
    SOCIAL MEDIA
    ========================================================= */
@@ -346,6 +421,7 @@ section {
    width: auto;
 }
 
+
 /* =========================================================
    ABOUT
    ========================================================= */
@@ -381,6 +457,7 @@ section {
    margin-bottom: 2rem;
 }
 
+
 /* =========================================================
    ABOUT CARDS
    ========================================================= */
@@ -405,6 +482,7 @@ section {
    transform: translateY(-5px);
 }
 
+
 /* =========================================================
    ABOUT ICONS
    ========================================================= */
@@ -420,6 +498,7 @@ section {
    margin: 0 auto 1rem;
 }
 
+
 /* =========================================================
    ABOUT TEXT
    ========================================================= */
@@ -434,6 +513,7 @@ section {
    margin: 0 auto;
 }
 
+
 /* =========================================================
    ARROW
    ========================================================= */
@@ -444,6 +524,7 @@ section {
    right: 2rem;
    bottom: 2rem;
 }
+
 
 /* =========================================================
    SCROLL FADE-IN
@@ -465,6 +546,7 @@ section {
    transform: translateY(0);
 }
 
+
 /* =========================================================
    PORTFOLIO
    ========================================================= */
@@ -481,6 +563,7 @@ section {
 
    padding: 90px 24px 120px;
 }
+
 
 /* =========================================================
    PORTFOLIO TITLE
@@ -510,6 +593,7 @@ section {
 
    text-align: center;
 }
+
 
 /* =========================================================
    BREADCRUMB
@@ -578,6 +662,7 @@ section {
    color: #cccccc;
 }
 
+
 /* =========================================================
    BACK BUTTON
    ========================================================= */
@@ -622,6 +707,7 @@ section {
    display: none;
 }
 
+
 /* =========================================================
    PORTFOLIO GRID CONTAINER
    ========================================================= */
@@ -631,6 +717,7 @@ section {
 
    min-height: 100px;
 }
+
 
 /* =========================================================
    CATEGORY GRID
@@ -645,6 +732,7 @@ section {
 
    width: 100%;
 }
+
 
 /* =========================================================
    CATEGORY CARD
@@ -670,6 +758,7 @@ section {
    outline-offset: 4px;
 }
 
+
 /* =========================================================
    CATEGORY IMAGE
    ========================================================= */
@@ -694,12 +783,14 @@ section {
 
    object-fit: cover;
 
-   transition: transform 0.7s cubic-bezier(0.2, 0.65, 0.3, 1);
+   transition:
+      transform 0.7s cubic-bezier(0.2, 0.65, 0.3, 1);
 }
 
 .portfolio-category-card:hover .portfolio-category-image img {
    transform: scale(1.035);
 }
+
 
 /* =========================================================
    CATEGORY OVERLAY
@@ -719,6 +810,7 @@ section {
 
    pointer-events: none;
 }
+
 
 /* =========================================================
    CATEGORY INFORMATION
@@ -780,6 +872,7 @@ section {
    color: rgba(255, 255, 255, 0.75);
 }
 
+
 /* =========================================================
    SUBCATEGORY
    ========================================================= */
@@ -806,6 +899,7 @@ section {
    font-size: 1.2rem;
 }
 
+
 /* =========================================================
    PHOTO GALLERY
    ========================================================= */
@@ -820,6 +914,7 @@ section {
    width: 100%;
 }
 
+
 /* =========================================================
    PHOTO CARD
    ========================================================= */
@@ -832,6 +927,12 @@ section {
    cursor: pointer;
 
    outline: none;
+
+   /*
+    * Prevent accidental text/image selection.
+    */
+   user-select: none;
+   -webkit-user-select: none;
 }
 
 .portfolio-photo-card:focus-visible {
@@ -840,16 +941,22 @@ section {
    outline-offset: 5px;
 }
 
+
 /* =========================================================
    PHOTO IMAGE
    ========================================================= */
 
 .portfolio-photo-image {
+   position: relative;
+
    width: 100%;
 
    overflow: hidden;
 
    background: #f3f3f3;
+
+   user-select: none;
+   -webkit-user-select: none;
 }
 
 .portfolio-photo-image img {
@@ -861,6 +968,18 @@ section {
 
    object-fit: contain;
 
+   /*
+    * Image protection
+    */
+   pointer-events: auto;
+
+   user-select: none;
+   -webkit-user-select: none;
+
+   -webkit-touch-callout: none;
+
+   -webkit-user-drag: none;
+
    transition:
       transform 0.65s cubic-bezier(0.2, 0.65, 0.3, 1),
       opacity 0.3s ease;
@@ -869,6 +988,7 @@ section {
 .portfolio-photo-card:hover .portfolio-photo-image img {
    transform: scale(1.018);
 }
+
 
 /* =========================================================
    PHOTO INFORMATION
@@ -902,6 +1022,7 @@ section {
    color: #777777;
 }
 
+
 /* =========================================================
    PORTFOLIO VIEW ANIMATION
    ========================================================= */
@@ -911,6 +1032,7 @@ section {
 }
 
 @keyframes portfolioFadeIn {
+
    from {
       opacity: 0;
 
@@ -922,7 +1044,9 @@ section {
 
       transform: translateY(0);
    }
+
 }
+
 
 /* =========================================================
    LOADING
@@ -965,6 +1089,7 @@ section {
 }
 
 @keyframes portfolioLoading {
+
    0%,
    60%,
    100% {
@@ -978,7 +1103,9 @@ section {
 
       transform: translateY(-4px);
    }
+
 }
+
 
 /* =========================================================
    EMPTY / ERROR
@@ -1015,6 +1142,7 @@ section {
    color: #888888;
 }
 
+
 /* =========================================================
    IMAGE PLACEHOLDER
    ========================================================= */
@@ -1041,6 +1169,7 @@ section {
 
    text-align: center;
 }
+
 
 /* =========================================================
    LIGHTBOX
@@ -1081,6 +1210,7 @@ section {
    pointer-events: auto;
 }
 
+
 /* =========================================================
    LIGHTBOX CONTENT
    ========================================================= */
@@ -1102,8 +1232,36 @@ section {
    overflow: hidden;
 }
 
+
+/*
+ * Keep protection layer over the image
+ * while allowing existing controls and
+ * slide animation to continue.
+ */
+
+.lightbox-image-protection {
+   position: absolute;
+
+   inset: 0;
+
+   z-index: 2;
+
+   pointer-events: none;
+
+   user-select: none;
+
+   -webkit-user-select: none;
+
+   -webkit-touch-callout: none;
+}
+
+
 #lightbox-image {
    display: block;
+
+   position: relative;
+
+   z-index: 1;
 
    width: auto;
 
@@ -1117,8 +1275,17 @@ section {
 
    user-select: none;
 
+   -webkit-user-select: none;
+
    -webkit-user-drag: none;
+
+   user-drag: none;
+
+   -webkit-touch-callout: none;
+
+   pointer-events: auto;
 }
+
 
 /* =========================================================
    LIGHTBOX CAPTION
@@ -1158,6 +1325,7 @@ section {
    color: rgba(255, 255, 255, 0.7);
 }
 
+
 /* =========================================================
    LIGHTBOX BUTTONS
    ========================================================= */
@@ -1193,6 +1361,7 @@ section {
    opacity: 0.6;
 }
 
+
 /* =========================================================
    LIGHTBOX CLOSE
    ========================================================= */
@@ -1215,6 +1384,7 @@ section {
 .lightbox-close:hover {
    transform: rotate(90deg);
 }
+
 
 /* =========================================================
    LIGHTBOX PREVIOUS / NEXT
@@ -1250,6 +1420,7 @@ section {
    transform: translateX(4px);
 }
 
+
 /* =========================================================
    LIGHTBOX SLIDE ANIMATIONS
    ========================================================= */
@@ -1270,7 +1441,9 @@ section {
    animation: lightboxSlideInLeft 0.35s ease forwards;
 }
 
+
 @keyframes lightboxSlideOutLeft {
+
    from {
       transform: translateX(0);
 
@@ -1282,9 +1455,12 @@ section {
 
       opacity: 0;
    }
+
 }
+
 
 @keyframes lightboxSlideOutRight {
+
    from {
       transform: translateX(0);
 
@@ -1296,9 +1472,12 @@ section {
 
       opacity: 0;
    }
+
 }
+
 
 @keyframes lightboxSlideInRight {
+
    from {
       transform: translateX(100%);
 
@@ -1310,9 +1489,12 @@ section {
 
       opacity: 1;
    }
+
 }
 
+
 @keyframes lightboxSlideInLeft {
+
    from {
       transform: translateX(-100%);
 
@@ -1324,7 +1506,9 @@ section {
 
       opacity: 1;
    }
+
 }
+
 
 /* =========================================================
    EXPERIENCE
@@ -1388,6 +1572,7 @@ article h3 {
 article p {
    font-size: 0.85rem;
 }
+
 
 /* =========================================================
    CONTACT
@@ -1453,11 +1638,13 @@ article p {
    width: 2rem;
 }
 
+
 /* =========================================================
    TABLET
    ========================================================= */
 
 @media screen and (max-width: 1100px) {
+
    section {
       margin: 0 5rem;
    }
@@ -1465,13 +1652,16 @@ article p {
    #portfolio {
       margin: 0 auto;
    }
+
 }
+
 
 /* =========================================================
    PORTFOLIO TABLET
    ========================================================= */
 
 @media screen and (max-width: 900px) {
+
    #portfolio {
       padding: 70px 20px 100px;
    }
@@ -1487,20 +1677,22 @@ article p {
    .portfolio-category-info {
       padding: 20px;
    }
+
 }
+
 
 /* =========================================================
    MOBILE
    ========================================================= */
 
 @media screen and (max-width: 600px) {
+
    section {
       margin: 0 1.5rem;
    }
 
-   /* -------------------------
-       PROFILE
-       ------------------------- */
+
+   /* PROFILE */
 
    #profile {
       flex-direction: column;
@@ -1523,9 +1715,8 @@ article p {
       font-size: 2.2rem;
    }
 
-   /* -------------------------
-       ABOUT
-       ------------------------- */
+
+   /* ABOUT */
 
    .about-containers {
       flex-direction: column;
@@ -1533,9 +1724,8 @@ article p {
       gap: 1rem;
    }
 
-   /* -------------------------
-       EXPERIENCE
-       ------------------------- */
+
+   /* EXPERIENCE */
 
    #experience {
       padding-top: 8vh;
@@ -1555,9 +1745,8 @@ article p {
       width: 100%;
    }
 
-   /* -------------------------
-       CONTACT
-       ------------------------- */
+
+   /* CONTACT */
 
    .contact-info-upper-container {
       width: 100%;
@@ -1571,9 +1760,8 @@ article p {
       width: 100%;
    }
 
-   /* -------------------------
-       PORTFOLIO
-       ------------------------- */
+
+   /* PORTFOLIO */
 
    #portfolio {
       padding: 60px 15px 80px;
@@ -1589,7 +1777,8 @@ article p {
       font-size: 2rem;
    }
 
-   /* Breadcrumb */
+
+   /* BREADCRUMB */
 
    .portfolio-breadcrumb {
       gap: 6px;
@@ -1599,7 +1788,8 @@ article p {
       font-size: 0.62rem;
    }
 
-   /* Back */
+
+   /* BACK */
 
    .portfolio-back {
       margin-bottom: 22px;
@@ -1607,7 +1797,8 @@ article p {
       font-size: 0.68rem;
    }
 
-   /* Categories */
+
+   /* CATEGORIES */
 
    .portfolio-category-view {
       grid-template-columns: 1fr;
@@ -1631,7 +1822,8 @@ article p {
       font-size: 0.72rem;
    }
 
-   /* Subcategories */
+
+   /* SUBCATEGORIES */
 
    .portfolio-subcategories {
       grid-template-columns: 1fr;
@@ -1641,7 +1833,8 @@ article p {
       margin-bottom: 25px;
    }
 
-   /* Photos */
+
+   /* PHOTOS */
 
    .portfolio-photo-grid {
       grid-template-columns: 1fr;
@@ -1653,9 +1846,8 @@ article p {
       padding-top: 10px;
    }
 
-   /* -------------------------
-       LIGHTBOX
-       ------------------------- */
+
+   /* LIGHTBOX */
 
    .portfolio-lightbox {
       padding: 15px;
@@ -1683,7 +1875,8 @@ article p {
       font-size: 0.68rem;
    }
 
-   /* Arrows */
+
+   /* ARROWS */
 
    .lightbox-prev,
    .lightbox-next {
@@ -1702,7 +1895,8 @@ article p {
       right: 3px;
    }
 
-   /* Close */
+
+   /* CLOSE */
 
    .lightbox-close {
       top: 8px;
@@ -1714,13 +1908,16 @@ article p {
 
       font-size: 1.8rem;
    }
+
 }
+
 
 /* =========================================================
    SMALL PHONES
    ========================================================= */
 
 @media screen and (max-width: 380px) {
+
    section {
       margin: 0 1rem;
    }
@@ -1746,13 +1943,16 @@ article p {
    .portfolio-photo-grid {
       gap: 20px;
    }
+
 }
+
 
 /* =========================================================
    REDUCED MOTION
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+
    *,
    *::before,
    *::after {
@@ -1784,4 +1984,5 @@ article p {
    .portfolio-loading span {
       animation: none;
    }
+
 }
