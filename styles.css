@@ -1550,27 +1550,40 @@ section {
 }
 
 article {
-   display: flex;
+   display: grid;
+
+   grid-template-columns: 2rem 1fr;
+
+   align-items: start;
 
    width: 10rem;
 
-   justify-content: space-around;
-
    gap: 0.5rem;
+
+   text-align: left;
 }
 
 article .icon {
-   cursor: default;
+   width: 1.5rem;
+   height: 1.5rem;
 
-   position: relative;
+   margin-top: 2px;
+
+   cursor: default;
 }
 
 article h3 {
+   margin: 0;
+
    font-size: 1rem;
+   line-height: 1.4;
 }
 
 article p {
+   margin: 2px 0 0;
+
    font-size: 0.85rem;
+   line-height: 1.4;
 }
 
 
